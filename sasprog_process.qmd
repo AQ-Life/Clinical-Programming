@@ -1,0 +1,169 @@
+# SAS运行机制
+
+# Data step 处理机制 {.unnumbered}
+
+Data step分为编码阶段和执行阶段。
+
+![](images/图片1.png)
+
+## 编译阶段
+
+编译阶段会进行语法的检查（keywords缺失或错误，无效的变量名，标点符合的缺失或错误，无效的选项等等），且将SAS语句转换为可执行的机器代码，并创建以下内容：
+
+1.  input buffer
+
+    input buffer只会在SAS input语句读入数据时才会创建的一个逻辑空间，如果是SAS set语句，则会直接创建PDV。可以理解为input buffer只有一行的空间，读入数据时，也只能一行一行的读取。
+
+    |     |     |     |     |     |     |     |     |     |
+    |-----|-----|-----|-----|-----|-----|-----|-----|-----|
+    | 1   | 2   | 3   | 4   | 5   | 6   | 7   | 8   | ... |
+    |     |     |     |     |     |     |     |     |     |
+
+2.  program data vector (PDV)
+
+    PDV也是一个逻辑空间，同样理解为PDV只有一行的空间。会根据运行的SAS程序，创建SAS变量以及两个自动变量_N\_,\_ERROR\_（自动变量最终不会写入到SAS数据集）。
+
+    | \_N\_ | \_ERROR\_ |     |     |     |     |     |
+    |-------|-----------|-----|-----|-----|-----|-----|
+    |       |           |     |     |     |     |     |
+
+3.  dataset attributesand variable attributes
+
+    在编译阶段就已经确定了SAS数据集与变量的属性（Proc contents 的输出内容：数据集的名称，观测数，变量数，变量名称，变量属性等等）。
+
+## 执行阶段
+
+在编译阶段结束时，SAS数据集中是没有观测的。还没有开始执行阶段。执行阶段其实是多次迭代的过程，对数据一行一行的执行。
+
+1.  初始化变量（假设读入的数据集有Var1,Var2,Var3三个变量，其中Var3是数值型变量，初始化为.），将变量设置为缺失值（除了自动变量）。
+
+    |       |           |      |      |      |
+    |-------|-----------|------|------|------|
+    | \_N\_ | \_ERROR\_ | Var1 | Var2 | Var3 |
+    | 1     | 0         |      |      | .    |
+
+2.  input buffer存储第一行记录（仅针对input读入数据，否则跳过），这里还涉及指针（该指针不同于其他语言，是一种虚指），使用指针确当每一个变量的开始与结束。
+
+    |     |     |     |     |     |     |     |     |
+    |-----|-----|-----|-----|-----|-----|-----|-----|
+    | 1   | 2   | 3   | 4   | 5   | 6   | 7   | 8   |
+    | T   | o   | m   |     | M   |     | 1   | 5   |
+
+3.  在PDV中对变量进行赋值，如果涉及运算如Var4=Var3\*10，也会进行处理。
+
+    |       |           |      |      |      |
+    |-------|-----------|------|------|------|
+    | \_N\_ | \_ERROR\_ | Var1 | Var2 | Var3 |
+    | 1     | 0         | Tom  | M    | 15   |
+
+4.  Data step遇到run;或者proc xxx;等语句表明执行结束时。会将PDV中变量的值写入到SAS数据集中作为一条观测。\_N_会被赋值为2（逐步迭代+1），并返回到Data step的开头。但是，这里需要注意，分为两种情况：
+
+    如果是通过input语句读入raw data，则每一次迭代开始时，对变量初始化为缺失值。（如果程序中通过 RETAIN, SUM, \_TEMPORARY\_ array 创建的变量，当然也包括自动变量，则不会被初始化为缺失值。）
+
+    |       |           |      |      |      |
+    |-------|-----------|------|------|------|
+    | \_N\_ | \_ERROR\_ | Var1 | Var2 | Var3 |
+    | 2     | 0         |      |      | .    |
+
+    如果是通过set语句读入SAS数据集，数据集中的变量则只会在最开始的第一次迭代中对变量初始化为缺失值，后面的迭代中会保留上一次的值直到被替换掉。
+
+    |       |           |      |      |      |
+    |-------|-----------|------|------|------|
+    | \_N\_ | \_ERROR\_ | Var1 | Var2 | Var3 |
+    | 2     | 0         | Tom  | M    | 15   |
+
+5.  当没有更多的数据可以读入，或是SAS遇到end-of-file的标记，则结束执行阶段。并打印SAS log.
+
+# Macro 宏处理 SAS 语句机制 {.unnumbered}
+
+## 没有Macro的SAS语句运行机制
+
+在了解macro如何处理SAS语句之前，先来了解一下如果没有macro，SAS如何处理这些命令语句。这里需要介绍两个概念：
+
+-   input stack，存放输入的SAS语句
+
+-   word scanner，从input stack中提取token（token分为literal:引号引起来的字符；number：数字；name：不用引号引起来的字符；special：特殊符号）
+
++--------------+----------------------------+
+| word scanner | input stack                |
++==============+============================+
+|              | data class(keep=name age); |
+|              |                            |
+|              | set sashelp.class;         |
+|              |                            |
+|              | run;                       |
++--------------+----------------------------+
+
+从input stack中scan第一行的SAS语句，一共有8个token（4个name，4个special）。
+
+``` sas
+data class(keep=name age);
+```
+
+当word scanner识别到data这个token，会触发Data step编译器，开始data step 编译阶段，编译器会拉取这些tokens，直到识别到该step结束（如这里的run;），开始data step的执行阶段。
+
+## 具有Macro的SAS语句运行机制
+
+Macro有macro variable 和 macro statement。
+
+针对macro variable有一个symbol table，用来存储宏变量的对应信息，包括自动宏变量（如系统内置的宏变量）和全局宏变量。
+
++----------+--------------------+-----------------+---------------+
+| compiler | input stack        | macro processor | symbol table  |
++==========+====================+=================+===============+
+|          | %let text="aa";    |                 | sysday Monday |
+|          |                    |                 |               |
+|          | data class;        |                 |               |
+|          |                    |                 |               |
+|          | set sashelp.class; |                 |               |
+|          |                    |                 |               |
+|          | text=&text;        |                 |               |
+|          |                    |                 |               |
+|          | run;               |                 |               |
++----------+--------------------+-----------------+---------------+
+
+当word scanner识别到&或%这两种token，会触发Macro processor，对第一行的定义宏变量的语句进行处理。
+
+``` sas
+%let text="aa";
+```
+
++----------+--------------------+-----------------+---------------+
+| compiler | input stack        | macro processor | symbol table  |
++==========+====================+=================+===============+
+|          | data class;        |                 | sysday Monday |
+|          |                    |                 |               |
+|          | set sashelp.class; |                 | text "aa"     |
+|          |                    |                 |               |
+|          | text=&text;        |                 |               |
+|          |                    |                 |               |
+|          | run;               |                 |               |
++----------+--------------------+-----------------+---------------+
+
+在macro processor运行的时候，data step是没有动作的，只有当macro processor处理结束后，word scanner 会继续读取SAS语句。而后识别到data class;中data这个token，会触发data step编译器。
+
+``` sas
+data class; 
+```
+
++-------------+--------------------+-----------------+---------------+
+| compiler    | input stack        | macro processor | symbol table  |
++=============+====================+=================+===============+
+| data class; | set sashelp.class; |                 | sysday Monday |
+|             |                    |                 |               |
+|             | text=&text;        |                 | text "aa"     |
+|             |                    |                 |               |
+|             | run;               |                 |               |
++-------------+--------------------+-----------------+---------------+
+
+compiler会继续从input stack拉取tokens。当word scanner又识别到&或%token的时候，再次触发macro processor，识别到在symbol table中存在该宏变量，并用 symbol table中的值替换input stack中的macro variable。
+
++--------------------+--------------+-------------+-----------------+---------------+
+| compiler           | word scanner | input stack | macro processor | symbol table  |
++====================+==============+=============+=================+===============+
+| data class;        | text=        | "aa";       |                 | sysday Monday |
+|                    |              |             |                 |               |
+| set sashelp.class; |              | run;        |                 | text "aa"     |
++--------------------+--------------+-------------+-----------------+---------------+
+
+而后compiler继续拉取tokens，当word scanner识别&或%token时，继续触发macro processor，如上述操作，直到识别到该step结束（如这里的run;），开始data step的执行阶段。
