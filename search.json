@@ -49,6 +49,34 @@
     "text": "1.4 具有Macro的SAS语句运行机制\nMacro有macro variable 和 macro statement。\n针对macro variable有一个symbol table，用来存储宏变量的对应信息，包括自动宏变量（如系统内置的宏变量）和全局宏变量。\n\n\n\n\n\n\n\n\n\ncompiler\ninput stack\nmacro processor\nsymbol table\n\n\n\n\n\n%let text=“aa”;\ndata class;\nset sashelp.class;\ntext=&text;\nrun;\n\nsysday Monday\n\n\n\n当word scanner识别到&或%这两种token，会触发Macro processor，对第一行的定义宏变量的语句进行处理。\n%let text=\"aa\";\n\n\n\n\n\n\n\n\n\ncompiler\ninput stack\nmacro processor\nsymbol table\n\n\n\n\n\ndata class;\nset sashelp.class;\ntext=&text;\nrun;\n\nsysday Monday\ntext “aa”\n\n\n\n在macro processor运行的时候，data step是没有动作的，只有当macro processor处理结束后，word scanner 会继续读取SAS语句。而后识别到data class;中data这个token，会触发data step编译器。\ndata class; \n\n\n\n\n\n\n\n\n\ncompiler\ninput stack\nmacro processor\nsymbol table\n\n\n\n\ndata class;\nset sashelp.class;\ntext=&text;\nrun;\n\nsysday Monday\ntext “aa”\n\n\n\ncompiler会继续从input stack拉取tokens。当word scanner又识别到&或%token的时候，再次触发macro processor，识别到在symbol table中存在该宏变量，并用 symbol table中的值替换input stack中的macro variable。\n\n\n\n\n\n\n\n\n\n\ncompiler\nword scanner\ninput stack\nmacro processor\nsymbol table\n\n\n\n\ndata class;\nset sashelp.class;\ntext=\n“aa”;\nrun;\n\nsysday Monday\ntext “aa”\n\n\n\n而后compiler继续拉取tokens，当word scanner识别&或%token时，继续触发macro processor，如上述操作，直到识别到该step结束（如这里的run;），开始data step的执行阶段。"
   },
   {
+    "objectID": "sasprog_gtl.html",
+    "href": "sasprog_gtl.html",
+    "title": "GTL",
+    "section": "",
+    "text": "GTL(Graph Template Language)\nseriesplot plot绘制折线图，groupdisplay=cluster可以控制折线在访视点左右散开，以及设置clusterwidth控制左右散开的程度。\nbarchart plot绘制柱状图，groupdisplay=Stack设置为堆积图\nforest plot绘制森林图，其他的所有label通过annotation实现。\n如果想要间隔一行加一条浅色的背景色块，可以通过referenceline y=ref /datatransparency=0.8 lineattrs=(thickness=20 color=grey);实现。"
+  },
+  {
+    "objectID": "sasprog_gtl.html#通过discreteattrmap预定义分组属性",
+    "href": "sasprog_gtl.html#通过discreteattrmap预定义分组属性",
+    "title": "GTL",
+    "section": "通过discreteattrmap预定义分组属性",
+    "text": "通过discreteattrmap预定义分组属性\n\n   discreteattrmap name=\"backcolor\";\n      value \"1\"/ fillattrs=(color=gray ) markerattrs=(color=gray symbol=circlefilled)  lineattrs=(color=gray);\n      value \"2\"/ fillattrs=(color=blue ) markerattrs=(color=blue symbol=circlefilled)  lineattrs=(color=blue);\n   enddiscreteattrmap;\n   discreteattrvar attrvar=backgroup var=grp attrmap=\"backcolor\";\n并在后续代码中调用该属性，如group=backgroup选项：\nscatterplot x=xp1 y=aval / name='scatter' markerattrs=( size=3 ) group=backgroup;"
+  },
+  {
+    "objectID": "sasprog_gtl.html#通过proc-template修改style重定义属性",
+    "href": "sasprog_gtl.html#通过proc-template修改style重定义属性",
+    "title": "GTL",
+    "section": "通过proc template修改style重定义属性",
+    "text": "通过proc template修改style重定义属性\n使用discreteattrmap无法分组实现带有画线的属性，如下图：\n\n使用proc template修改style，可以设置多个GraphData1-GraphDataN为多个分组设置不同属性，其中的fillpattern可以设置柱状图中的划线。另外GTL默认输出的图形的坐标轴往往是灰色的线条，而sgplot中默认的是黑色实线，可设置 contrastcolor=black改成黑色实线。\nproc template;\n define style tlout;\n parent=styles.htmlblue;\n  style graphwalls from graphwalls /\n   frameborder=on\n   linestyle=1\n   linethickness=1px\n   backgroundcolor=GraphColors(\"gwalls\")\n   contrastcolor= white;\n\n style graphaxislines from graphaxislines /\n   linestyle=1\n   linethickness=1px\n   contrastcolor=black;\n\n    replace GraphFonts                                                        \n         \"Fonts used in graph styles\" /                                       \n         'NodeDetailFont' = (\"Arial\",7pt,bold)              \n         'NodeLinkLabelFont' = (\"Arial\",9pt,bold)           \n         'NodeInputLabelFont' = (\"Arial\",9pt,bold)          \n         'NodeLabelFont' = (\"Arial\",9pt,bold)               \n         'NodeTitleFont' = (\"Arial\",9pt,bold)               \n         'GraphDataFont' = (\"Arial\",7pt,bold)               \n         'GraphUnicodeFont' = (\"Arial\",9pt,bold)                  \n         'GraphValueFont' = (\"Arial\",9pt,bold)              \n         'GraphLabel2Font' = (\"Arial\",10pt,bold)            \n         'GraphLabelFont' = (\"Arial\",10pt,bold)        \n         'GraphFootnoteFont' = (\"Arial\",10pt,bold)          \n         'GraphTitleFont' = (\"Arial\",11pt,bold)        \n         'GraphTitle1Font' = (\"Arial\",14pt,bold)       \n         'GraphAnnoFont' = (\"Arial\",10pt,bold);    \n\n   replace GraphData1 /                                                      \n         fillpattern = \"R1\"   \n         color = grey\n         contrastcolor = grey\n         ;  \n   replace GraphData2 /                                                      \n         fillpattern = \"NA\"  \n         color = grey\n         contrastcolor = grey\n         ;  \n   replace GraphData3 /                                                      \n         fillpattern = \"R1\"   \n         color = blue \n         contrastcolor = blue\n         ;  \n   replace GraphData4 /                                                      \n         fillpattern = \"NA\"   \n         color = blue  \n         contrastcolor = blue\n         ;  \n   replace GraphData5 /                                                      \n         fillpattern = \"R1\"       \n         color = red  \n         contrastcolor = red\n         ;  \n   replace GraphData6 /                                                      \n         fillpattern = \"NA\"   \n         color = red \n         contrastcolor = red \n         ;  \n   end;\nrun;"
+  },
+  {
+    "objectID": "sasprog_gtl.html#y轴实现101-102-103",
+    "href": "sasprog_gtl.html#y轴实现101-102-103",
+    "title": "GTL",
+    "section": "Y轴实现101, 102 ,103 …",
+    "text": "Y轴实现101, 102 ,103 …\n首先定义这一类数字在10的右肩上的format\nproc format;\n  value yfmt\n  1=\"10(*ESC*){Unicode '2070'x}\"\n    10=\"10(*ESC*){Unicode '00B9'x}\"\n    100=\"10(*ESC*){Unicode '00B2'x}\"\n    1000=\"10(*ESC*){Unicode '00B3'x}\"\n    10000=\"10(*ESC*){Unicode '2074'x}\"\n    100000=\"10(*ESC*){Unicode '2075'x}\"\n    ;\nrun;\n并在yaxisopts语句中定义刻度值的属性字体为Arial Unicode MS\nyaxisopts=(offsetmax=0 offsetmin=0 display=( LINE ticks tickvalues)  type=log \n                logopts=( viewmin=1 viewmax= 10000 base=10 tickintervalstyle=logexpand minorticks=true tickvalueformat=yfmt.) \n                labelattrs=( size=9 color = black weight=bold) tickvalueattrs=(size=10pt weight=bold family='Arial Unicode MS'));"
+  },
+  {
     "objectID": "intro.html",
     "href": "intro.html",
     "title": "Introduction",
