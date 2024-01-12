@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Clinical Programming - GTL</title>
+<title>Clinical Programming - 2&nbsp; GTL</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -64,7 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./intro.html" rel="next">
+<link href="./stat.html" rel="next">
 <link href="./sasprog_process.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -108,7 +108,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./sasprog.html">Preface</a></li><li class="breadcrumb-item"><a href="./sasprog_gtl.html">GTL</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./sasprog.html">Preface</a></li><li class="breadcrumb-item"><a href="./sasprog_gtl.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">GTL</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -157,15 +157,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./sasprog_gtl.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">GTL</span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">GTL</span></span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="./intro.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Introduction</span></a>
+            <a href="./stat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Statistics (统计学)</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -173,8 +173,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./intro.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Introduction</span></a>
+  <a href="./survivalanalysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Surivival Analysis（生存分析）</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pkanalysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">PK Analysis（PK分析）</span></span></a>
   </div>
 </li>
       </ul>
@@ -190,19 +196,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#gtlgraph-template-language" id="toc-gtlgraph-template-language" class="nav-link active" data-scroll-target="#gtlgraph-template-language">GTL(Graph Template Language)</a></li>
-  <li><a href="#proc-template无法更新" id="toc-proc-template无法更新" class="nav-link" data-scroll-target="#proc-template无法更新">proc template无法更新</a></li>
-  <li><a href="#gtl控制分组属性" id="toc-gtl控制分组属性" class="nav-link" data-scroll-target="#gtl控制分组属性">GTL控制分组属性</a>
+  <li><a href="#proc-template无法更新" id="toc-proc-template无法更新" class="nav-link" data-scroll-target="#proc-template无法更新"><span class="header-section-number">3</span> proc template无法更新</a></li>
+  <li><a href="#gtl控制分组属性" id="toc-gtl控制分组属性" class="nav-link" data-scroll-target="#gtl控制分组属性"><span class="header-section-number">4</span> GTL控制分组属性</a>
   <ul class="collapse">
-  <li><a href="#通过discreteattrmap预定义分组属性" id="toc-通过discreteattrmap预定义分组属性" class="nav-link" data-scroll-target="#通过discreteattrmap预定义分组属性">通过discreteattrmap预定义分组属性</a></li>
-  <li><a href="#通过proc-template修改style重定义属性" id="toc-通过proc-template修改style重定义属性" class="nav-link" data-scroll-target="#通过proc-template修改style重定义属性">通过proc template修改style重定义属性</a></li>
+  <li><a href="#通过discreteattrmap预定义分组属性" id="toc-通过discreteattrmap预定义分组属性" class="nav-link" data-scroll-target="#通过discreteattrmap预定义分组属性"><span class="header-section-number">4.1</span> 通过discreteattrmap预定义分组属性</a></li>
+  <li><a href="#通过proc-template修改style重定义属性" id="toc-通过proc-template修改style重定义属性" class="nav-link" data-scroll-target="#通过proc-template修改style重定义属性"><span class="header-section-number">4.2</span> 通过proc template修改style重定义属性</a></li>
   </ul></li>
-  <li><a href="#gtl控制xy轴属性" id="toc-gtl控制xy轴属性" class="nav-link" data-scroll-target="#gtl控制xy轴属性">GTL控制X,Y轴属性</a>
+  <li><a href="#gtl控制xy轴属性" id="toc-gtl控制xy轴属性" class="nav-link" data-scroll-target="#gtl控制xy轴属性"><span class="header-section-number">5</span> GTL控制X,Y轴属性</a>
   <ul class="collapse">
-  <li><a href="#y轴实现101-102-103" id="toc-y轴实现101-102-103" class="nav-link" data-scroll-target="#y轴实现101-102-103">Y轴实现10<sup>1,</sup> 10<sup>2</sup> ,10<sup>3</sup> …</a></li>
+  <li><a href="#y轴实现101-102-103" id="toc-y轴实现101-102-103" class="nav-link" data-scroll-target="#y轴实现101-102-103"><span class="header-section-number">5.1</span> Y轴实现10<sup>1,</sup> 10<sup>2</sup> ,10<sup>3</sup> …</a></li>
   </ul></li>
-  <li><a href="#gtl绘制折线图" id="toc-gtl绘制折线图" class="nav-link" data-scroll-target="#gtl绘制折线图">GTL绘制折线图</a></li>
-  <li><a href="#gtl绘制柱状图" id="toc-gtl绘制柱状图" class="nav-link" data-scroll-target="#gtl绘制柱状图">GTL绘制柱状图</a></li>
-  <li><a href="#gtl绘制森林图" id="toc-gtl绘制森林图" class="nav-link" data-scroll-target="#gtl绘制森林图">GTL绘制森林图</a></li>
+  <li><a href="#gtl绘制折线图" id="toc-gtl绘制折线图" class="nav-link" data-scroll-target="#gtl绘制折线图"><span class="header-section-number">6</span> GTL绘制折线图</a></li>
+  <li><a href="#gtl绘制柱状图" id="toc-gtl绘制柱状图" class="nav-link" data-scroll-target="#gtl绘制柱状图"><span class="header-section-number">7</span> GTL绘制柱状图</a></li>
+  <li><a href="#gtl绘制森林图" id="toc-gtl绘制森林图" class="nav-link" data-scroll-target="#gtl绘制森林图"><span class="header-section-number">8</span> GTL绘制森林图</a></li>
   </ul>
 </nav>
     </div>
@@ -211,7 +217,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">GTL</h1>
+<h1 class="title"><span id="2" class="quarto-section-identifier"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">GTL</span></span></h1>
 </div>
 
 
@@ -229,14 +235,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="gtlgraph-template-language" class="level1 unnumbered">
 <h1 class="unnumbered">GTL(Graph Template Language)</h1>
 </section>
-<section id="proc-template无法更新" class="level1">
-<h1>proc template无法更新</h1>
+<section id="proc-template无法更新" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> proc template无法更新</h1>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ods <span class="fu">path</span>(prepend) <span class="fu">work.templat</span>(update);</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="gtl控制分组属性" class="level1">
-<h1>GTL控制分组属性</h1>
-<section id="通过discreteattrmap预定义分组属性" class="level2">
-<h2 class="anchored" data-anchor-id="通过discreteattrmap预定义分组属性">通过discreteattrmap预定义分组属性</h2>
+<section id="gtl控制分组属性" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> GTL控制分组属性</h1>
+<section id="通过discreteattrmap预定义分组属性" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="通过discreteattrmap预定义分组属性"><span class="header-section-number">4.1</span> 通过discreteattrmap预定义分组属性</h2>
 <p><img src="images/f_gmtAB.png" class="img-fluid"></p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>   discreteattrmap name<span class="ot">=</span><span class="st">"backcolor"</span>;</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>      value <span class="st">"1"</span><span class="sc">/</span> fillattrs<span class="ot">=</span>(<span class="at">color=</span>gray ) markerattrs<span class="ot">=</span>(<span class="at">color=</span>gray <span class="at">symbol=</span>circlefilled)  lineattrs<span class="ot">=</span>(<span class="at">color=</span>gray);</span>
@@ -246,8 +252,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>并在后续代码中调用该属性，如group=backgroup选项：</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>scatterplot x<span class="ot">=</span>xp1 y<span class="ot">=</span>aval <span class="sc">/</span> name<span class="ot">=</span><span class="st">'scatter'</span> markerattrs<span class="ot">=</span>( <span class="at">size=</span><span class="dv">3</span> ) group<span class="ot">=</span>backgroup;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="通过proc-template修改style重定义属性" class="level2">
-<h2 class="anchored" data-anchor-id="通过proc-template修改style重定义属性">通过proc template修改style重定义属性</h2>
+<section id="通过proc-template修改style重定义属性" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="通过proc-template修改style重定义属性"><span class="header-section-number">4.2</span> 通过proc template修改style重定义属性</h2>
 <p>使用discreteattrmap无法分组实现带有画线的属性，如下图：</p>
 <p><img src="images/f_gmt_v01c_tmp.png" class="img-fluid"></p>
 <p>使用proc template修改style，可以设置多个GraphData1-GraphDataN为多个分组设置不同属性，其中的fillpattern可以设置柱状图中的划线。另外GTL默认输出的图形的坐标轴往往是灰色的线条，而sgplot中默认的是黑色实线，可设置 contrastcolor=black改成黑色实线。</p>
@@ -317,10 +323,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a>run;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 </section>
-<section id="gtl控制xy轴属性" class="level1">
-<h1>GTL控制X,Y轴属性</h1>
-<section id="y轴实现101-102-103" class="level2">
-<h2 class="anchored" data-anchor-id="y轴实现101-102-103">Y轴实现10<sup>1,</sup> 10<sup>2</sup> ,10<sup>3</sup> …</h2>
+<section id="gtl控制xy轴属性" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> GTL控制X,Y轴属性</h1>
+<section id="y轴实现101-102-103" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="y轴实现101-102-103"><span class="header-section-number">5.1</span> Y轴实现10<sup>1,</sup> 10<sup>2</sup> ,10<sup>3</sup> …</h2>
 <p>首先定义这一类数字在10的右肩上的format</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>proc format;</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  value yfmt</span>
@@ -332,14 +338,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="dv">100000</span><span class="ot">=</span><span class="st">"10(*ESC*){Unicode '2075'x}"</span></span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    ;</span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>run;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>并在yaxisopts语句中定义刻度值的属性字体为Arial Unicode MS</p>
+<p>并在yaxisopts语句中定义刻度值的属性字体为Arial Unicode MS，最终呈现结果如<a href="#gtl控制分组属性">GTL控制分组属性</a>中的图所示。</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>yaxisopts<span class="ot">=</span>(<span class="at">offsetmax=</span><span class="dv">0</span> <span class="at">offsetmin=</span><span class="dv">0</span> <span class="at">display=</span>( LINE ticks tickvalues)  <span class="at">type=</span>log </span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">logopts=</span>( <span class="at">viewmin=</span><span class="dv">1</span> <span class="at">viewmax=</span> <span class="dv">10000</span> <span class="at">base=</span><span class="dv">10</span> <span class="at">tickintervalstyle=</span>logexpand <span class="at">minorticks=</span>true <span class="at">tickvalueformat=</span>yfmt.) </span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">labelattrs=</span>( <span class="at">size=</span><span class="dv">9</span> <span class="at">color =</span> black <span class="at">weight=</span>bold) <span class="at">tickvalueattrs=</span>(<span class="at">size=</span>10pt <span class="at">weight=</span>bold <span class="at">family=</span><span class="st">'Arial Unicode MS'</span>));</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 </section>
-<section id="gtl绘制折线图" class="level1">
-<h1>GTL绘制折线图</h1>
+<section id="gtl绘制折线图" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> GTL绘制折线图</h1>
 <p>seriesplot plot绘制折线图，groupdisplay=cluster可以控制折线在访视点左右散开，以及设置clusterwidth控制左右散开的程度。</p>
 <p><img src="images/r_ex_错开1.png" class="img-fluid"></p>
 <pre class="sas"><code>proc template;
@@ -363,8 +369,8 @@ endgraph;
 end;
 run;</code></pre>
 </section>
-<section id="gtl绘制柱状图" class="level1">
-<h1>GTL绘制柱状图</h1>
+<section id="gtl绘制柱状图" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> GTL绘制柱状图</h1>
 <p>barchart plot绘制柱状图，groupdisplay=Stack设置为堆积图</p>
 <p><img src="images/f_aetoxgr2_en_rel1.png" class="img-fluid"></p>
 <pre class="sas"><code>proc template;
@@ -400,8 +406,8 @@ endgraph;
 end;
 run;</code></pre>
 </section>
-<section id="gtl绘制森林图" class="level1">
-<h1>GTL绘制森林图</h1>
+<section id="gtl绘制森林图" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> GTL绘制森林图</h1>
 <p>forest plot绘制森林图，其他的所有label通过annotation实现。</p>
 <p><img src="images/f_forest_gmt_en2.png" class="img-fluid"></p>
 <pre class="sas"><code>proc template;
@@ -694,8 +700,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./intro.html" class="pagination-link">
-        <span class="nav-page-text">Introduction</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./stat.html" class="pagination-link">
+        <span class="nav-page-text">Statistics (统计学)</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
