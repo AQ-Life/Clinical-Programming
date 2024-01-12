@@ -6,10 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Qi">
-<meta name="dcterms.date" content="2024-01-08">
 
-<title>Clinical Programming</title>
+<title>Clinical Programming - Surivival Analysis（生存分析）</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -25,23 +23,24 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<link href="./sas/sasprog.html" rel="next">
-<script src="site_libs/quarto-html/quarto.js"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../stat/pkanalysis.html" rel="next">
+<link href="../stat/stat.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -75,7 +74,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Clinical Programming</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../stat/stat.html">Statistics (统计学)</a></li><li class="breadcrumb-item"><a href="../stat/survivalanalysis.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Surivival Analysis（生存分析）</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -90,7 +89,7 @@ ul.task-list li input[type="checkbox"] {
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">Clinical Programming</a> 
+      <a href="../">Clinical Programming</a> 
     </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -102,13 +101,13 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Clinical Programming</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="./sas/sasprog.html" class="sidebar-item-text sidebar-link">
+            <a href="../sas/sasprog.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">SAS Skills</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -117,13 +116,13 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./sas/sasprog_process.html" class="sidebar-item-text sidebar-link">
+  <a href="../sas/sasprog_process.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">SAS运行机制</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./sas/sasprog_gtl.html" class="sidebar-item-text sidebar-link">
+  <a href="../sas/sasprog_gtl.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">GTL</span></span></a>
   </div>
 </li>
@@ -131,7 +130,7 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="./stat/stat.html" class="sidebar-item-text sidebar-link">
+            <a href="../stat/stat.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Statistics (统计学)</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -140,13 +139,13 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./stat/survivalanalysis.html" class="sidebar-item-text sidebar-link">
+  <a href="../stat/survivalanalysis.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Surivival Analysis（生存分析）</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./stat/pkanalysis.html" class="sidebar-item-text sidebar-link">
+  <a href="../stat/pkanalysis.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">PK Analysis（PK分析）</span></span></a>
   </div>
 </li>
@@ -166,7 +165,8 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#clinical-programming" id="toc-clinical-programming" class="nav-link active" data-scroll-target="#clinical-programming">Clinical Programming</a></li>
+  <li><a href="#cox-模型中基于殃残差的比例风险判定" id="toc-cox-模型中基于殃残差的比例风险判定" class="nav-link active" data-scroll-target="#cox-模型中基于殃残差的比例风险判定">Cox 模型中基于殃残差的比例风险判定</a></li>
+  <li><a href="#生存曲线的校正" id="toc-生存曲线的校正" class="nav-link" data-scroll-target="#生存曲线的校正">生存曲线的校正</a></li>
   </ul>
 </nav>
     </div>
@@ -175,26 +175,14 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Clinical Programming</h1>
+<h1 class="title">Surivival Analysis（生存分析）</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Qi </p>
-          </div>
-  </div>
     
-    <div>
-    <div class="quarto-title-meta-heading">Published</div>
-    <div class="quarto-title-meta-contents">
-      <p class="date">January 8, 2024</p>
-    </div>
-  </div>
   
     
   </div>
@@ -202,9 +190,69 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="clinical-programming" class="level1 unnumbered">
-<h1 class="unnumbered">Clinical Programming</h1>
-<p>临床编程</p>
+<p>关于phreg中参考值的选择， 你可以在程序中加ref, 比如下面的例子</p>
+<pre class="sas"><code>proc phreg data = ads.adtte;
+  class cat(ref='A组');
+  model aval * CNSR(1 2 3) = cat trt / risklimits ties = exact  alpha=0.05;
+run;</code></pre>
+<section id="cox-模型中基于殃残差的比例风险判定" class="level2">
+<h2 class="anchored" data-anchor-id="cox-模型中基于殃残差的比例风险判定">Cox 模型中基于殃残差的比例风险判定</h2>
+<p>Cox 模型中的比例风险假定判定的方法和软件操作，推荐 UCLA 的 IDRE 官方网页：</p>
+<p><a href="https://stats.idre.ucla.edu/other/examples/asa2/testing-the-proportional-hazard-assumption-in-cox-models/" class="uri">https://stats.idre.ucla.edu/other/examples/asa2/testing-the-proportional-hazard-assumption-in-cox-models/</a></p>
+<p>Cox 模型中基于殃残差的比例风险判定，在SAS的 phreg 过程步中有一个非常方便的实现方法，那就是经常被大家忽略的 assess 语句。</p>
+<pre class="sas"><code>proc phreg data=sashelp.bmt;
+  class group;
+     model T * Status(0)=group /rl ;
+  assess ph;
+run;</code></pre>
+</section>
+<section id="生存曲线的校正" class="level2">
+<h2 class="anchored" data-anchor-id="生存曲线的校正">生存曲线的校正</h2>
+<p>对于生存数据，单因素分析时，通常绘制K-M曲线，多因素分析时，则通过 Cox 模型计算校正的HR。其实，如果能够同时展示校正的K-M曲线，那结果将会更加生动。如何做校正的K-M，分享一篇小综述。</p>
+<p>生存分析中，当有多个结局事件时，且某结局事件的发生会影响甚至阻止其它结局事件的发生，此时就会存在竞争风险。针对竞争分析，常用三种分析策略: (1) 复合终点; (2) 原因别风险; (3) Fine-Gray模型。三种分析策略的总结见下表：</p>
+<table class="table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 28%">
+<col style="width: 55%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>处理策略</strong></td>
+<td><strong>具体方法</strong></td>
+<td><strong>解读</strong></td>
+</tr>
+<tr class="even">
+<td>复合终点</td>
+<td>- K-M估计曲线<br>
+- Log-rank检验<br>
+- Cox比例风险函数</td>
+<td>- 联合事件不一定 具有临床意义，可解释性差<br>
+- 无法精细分析 各成分事件，造成信息损失</td>
+</tr>
+<tr class="odd">
+<td>原因别风险</td>
+<td>- Nelson-Aalen累积风险曲线<br>
+- Gray’s检验<br>
+- 原因别风险函数</td>
+<td>- 将其它事件视为删失，分别对每个事件采用传统Cox回归<br>
+- 适合病因学问题<br>
+- 相对作用</td>
+</tr>
+<tr class="even">
+<td>Fine-Gray模型</td>
+<td>- Nelson-Aalen累积风险曲线<br>
+- Gray’s检验<br>
+- 次分布风险函数</td>
+<td>- 发生其它事件的研究对象仍纳入风险集，估计关注事件的CIF<br>
+- 适合预测预后问题<br>
+- 绝对效应</td>
+</tr>
+</tbody>
+</table>
+<p>生存率，标准误，置信区间的算法：</p>
+<p><a href="https://blog.csdn.net/xiaohukun/article/details/77936022" class="uri">https://blog.csdn.net/xiaohukun/article/details/77936022</a></p>
+<p>关于lifetest 如果不加conftype=linear 默认的是loglog的方法，我以前做的经常是用conftype=linear是线性拟合的方法，其实结果相差不是很多，双方统一就行，针对敏感性分析有可能会有些区别，但是在常规分析中，我感觉都可以</p>
 
 
 </section>
@@ -445,10 +493,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="../stat/stat.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Statistics (统计学)</span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./sas/sasprog.html" class="pagination-link">
-        <span class="nav-page-text">SAS Skills</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../stat/pkanalysis.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">PK Analysis（PK分析）</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
