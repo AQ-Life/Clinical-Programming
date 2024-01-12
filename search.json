@@ -173,5 +173,12 @@
     "title": "CDISC",
     "section": "SDTM",
     "text": "SDTM\n\nUNII（Unique Ingredient Identifier (FDA)）:\nhttp://fdasis.nlm.nih.gov/srs/\n\n\nSNOMED:\nhttp://browser.ihtsdotools.org/?\n\n\nMED-RT:\nhttps://evs.nci.nih.gov/ftp1/MED-RT/\n\n\nSDTM CT:\nhttps://evs.nci.nih.gov/ftp1/CDISC/SDTM/SDTM%20Terminology.html#top"
+  },
+  {
+    "objectID": "cdisc/cdiscae.html",
+    "href": "cdisc/cdiscae.html",
+    "title": "AE Domain",
+    "section": "",
+    "text": "AE的定义\n“any untoward medical occurrence in a patient or clinical investigation subject administered a pharmaceutical product and which does not necessarily have to have a causal relationship with this treatment” (ICH E2A). 节选自ICH的话，可以看出AE指发生的任何不良医疗事件，不一定与治疗有因果关系。\n\nAE: adverse event 不良事件\nADR: adverse drug reaction 不良药品反应\nSAE/SAR: serious adverse event/reaction 严重不良事件/反应\nside effect: 副作用\n\n\n\n\n\n\n\nVariable\nComments\n\n\n\n\nAETERM\ntopic变量；req变量；\nAE domain仅展示真实发生了的AE,所以不存在–OCCUR, –STAT,--REASND等变量；\nAE的记录：一般是当AE发生了任何变化（严重程度，相关性，采取的措施，转归等），都需要重新记录一条AE\n\n\nAEPRESP\nCRF预设了一些关注的AE，设置AEPRESP=Y；\n由于AE只能放真实发生的AE，当这些被关注的AE是否发生都想保留这部分信息，可在FA Domain中展示\n\n\n\nFAOBJ\nFATESTCD\nFAORRES\n\n\n\n\nXXXAE\nOCCUR\nY/N\n\n\n\n\n\nAEBODSYS\nAESOC\nAE采用MedDRA编码，其中SOC是primary SOC，AE编码可以根据发病原因，也可以根据发病部位进行编码，根据需要决定primary SOC。而AEBODSYS根据sponsor需求决定，并不一定是AESOC。\n\n\nAETOXGR\n根据CTCAE收集的严重程度，设置成级别中的数，如 GRADE 2，则 AETOXGR = 2."
   }
 ]
