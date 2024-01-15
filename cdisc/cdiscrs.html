@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Clinical Programming - CDISC</title>
+<title>Clinical Programming – cdiscrs</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../cdisc/cdiscae.html" rel="next">
-<link href="../stat/pkanalysis.html" rel="prev">
+<link href="../cdisc/cdisctu.html" rel="next">
+<link href="../cdisc/cdiscdm.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -65,7 +65,7 @@ ul.task-list li input[type="checkbox"] {
 
 </head>
 
-<body class="nav-sidebar floating">
+<body class="nav-sidebar floating fullcontent">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -74,7 +74,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../cdisc/cdisc.html">CDISC</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../cdisc/cdisc.html">CDISC</a></li><li class="breadcrumb-item"><a href="../cdisc/cdiscrs.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">cdiscrs.html</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -153,7 +153,7 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../cdisc/cdisc.html" class="sidebar-item-text sidebar-link active">
+            <a href="../cdisc/cdisc.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">CDISC</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
@@ -174,7 +174,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../cdisc/cdiscrs.html" class="sidebar-item-text sidebar-link">
+  <a href="../cdisc/cdiscrs.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">cdiscrs.html</span></span></a>
   </div>
 </li>
@@ -197,80 +197,30 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
-   
-  <ul>
-  <li><a href="#sdtm-standard" id="toc-sdtm-standard" class="nav-link active" data-scroll-target="#sdtm-standard">SDTM Standard</a>
-  <ul class="collapse">
-  <li><a href="#uniiunique-ingredient-identifier-fda" id="toc-uniiunique-ingredient-identifier-fda" class="nav-link" data-scroll-target="#uniiunique-ingredient-identifier-fda">UNII（Unique Ingredient Identifier (FDA)）:</a></li>
-  <li><a href="#snomed" id="toc-snomed" class="nav-link" data-scroll-target="#snomed">SNOMED:</a></li>
-  <li><a href="#med-rt" id="toc-med-rt" class="nav-link" data-scroll-target="#med-rt">MED-RT:</a></li>
-  <li><a href="#sdtm-ct" id="toc-sdtm-ct" class="nav-link" data-scroll-target="#sdtm-ct">SDTM CT:</a></li>
-  </ul></li>
-  <li><a href="#nmpa-递交" id="toc-nmpa-递交" class="nav-link" data-scroll-target="#nmpa-递交">NMPA 递交</a></li>
-  </ul>
-</nav>
-    </div>
+    
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">CDISC</h1>
-</div>
 
 
-
-<div class="quarto-title-meta">
-
-    
-  
-    
-  </div>
-  
-
-</header>
-
-<section id="sdtm-standard" class="level2">
-<h2 class="anchored" data-anchor-id="sdtm-standard">SDTM Standard</h2>
-<section id="uniiunique-ingredient-identifier-fda" class="level3">
-<h3 class="anchored" data-anchor-id="uniiunique-ingredient-identifier-fda">UNII（<a href="http://m.shortof.com/suolueci/Unique-Ingredient-Identifier-28FDA29-UNII">Unique Ingredient Identifier (FDA)</a>）:</h3>
-<p><a href="http://fdasis.nlm.nih.gov/srs/" class="uri">http://fdasis.nlm.nih.gov/srs/</a></p>
-</section>
-<section id="snomed" class="level3">
-<h3 class="anchored" data-anchor-id="snomed">SNOMED:</h3>
-<p><a href="http://browser.ihtsdotools.org/" class="uri">http://browser.ihtsdotools.org/</a>?</p>
-</section>
-<section id="med-rt" class="level3">
-<h3 class="anchored" data-anchor-id="med-rt">MED-RT:</h3>
-<p><a href="https://evs.nci.nih.gov/ftp1/MED-RT/" class="uri">https://evs.nci.nih.gov/ftp1/MED-RT/</a></p>
-</section>
-<section id="sdtm-ct" class="level3">
-<h3 class="anchored" data-anchor-id="sdtm-ct">SDTM CT:</h3>
-<p><a href="https://evs.nci.nih.gov/ftp1/CDISC/SDTM/SDTM%20Terminology.html#top" class="uri">https://evs.nci.nih.gov/ftp1/CDISC/SDTM/SDTM%20Terminology.html#top</a></p>
-</section>
-</section>
-<section id="nmpa-递交" class="level2">
-<h2 class="anchored" data-anchor-id="nmpa-递交">NMPA 递交</h2>
-<ul>
-<li><p>define.xml （数据说明）</p></li>
-<li><p>aCRF.pdf （是递交的数据集XPT对应aCRF，不是EDC数据集的aCRF）</p></li>
-<li><p>csdrg.pdf/adrg.pdf （原始数据库审阅说明/分析数据库审阅说明）</p></li>
-<li><p>数据文件：</p>
-<ol type="1">
-<li><p>XPT v5: SAS (proc copy)</p></li>
-<li><p>XPT v8: SAS macro ( <a href="http://support.sas.com/kb/46/944.html" class="uri">http://support.sas.com/kb/46/944.html</a>)</p></li>
-</ol>
-<p><font color="red"><strong>SAS proc cport 生成的XPT不符合要求</strong></font></p>
-<ol start="3" type="1">
-<li>Encoding: 需要在审阅说明中说明 UTF-8</li>
-</ol></li>
-</ul>
+<p>RS Domain</p>
+<p>Response Assessment</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Comments</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>RSDTC</td>
+<td>影像学检查日期而非疗效判断的日期。</td>
+</tr>
+</tbody>
+</table>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -508,13 +458,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../stat/pkanalysis.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">PK Analysis（PK分析）</span></span>
+      <a href="../cdisc/cdiscdm.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">DM Domain</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../cdisc/cdiscae.html" class="pagination-link">
-        <span class="nav-page-text">AE Domain</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../cdisc/cdisctu.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">TU Domain</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
