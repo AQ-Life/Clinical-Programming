@@ -168,17 +168,38 @@
     "text": "基于power model评价PK参数\n\\(ln(y)=\\alpha+\\beta*ln(dose)\\)，其中\\(y\\)表示PK参数如\\(AUC_{0-inf}\\),\\(C_{max}\\)等，\\(\\alpha\\) 代表截距项，\\(\\beta\\) 代表斜率。\nMIX model计算P值。\ndata pp1;\n    set adpcp.adpp;\n    where PKPSFL=\"Y\" AND paramcd=\"CMAX\" AND PPGRPID=\"DAY 1, DOSE 1\";\n    logaval=log(aval);\n    logdose=log(trtan);\nrun;\n\nproc mixed data=pp1;\n    class subjid ;\n    model logaval=logdose/ddfm=kr;\n    random intercept logdose/subject= subjid type=un gcorr s;\n/*  lsmeans trtan / diff=control('R') alpha=0.1 cl;*/\n    estimate 'aa' logdose 1/ cl alpha=0.1;\nquit;\n参考文章计算置信区间与判断区间。 置信区间法用于线性药代动力学特征评价\ndata pkdata1;\n    set pkdata;\n    logaval=log(aval);\n    logdose=log(dose);\nrun;\n\nproc means data=pkdata1;\n    by dose;\n    var aval;\nrun;\n\nproc reg data=pkdata1;\n    model aval=dose;\nquit;\n\n**** 计算回归方程的斜率及其置信区间 ****;\nproc reg data=pkdata1;\n    model logaval=logdose/ clb alpha=0.1;\nquit;\n\n\n**** 判断区间 ****;\ndata ecl;\n    le=0.8;\n    ue=1.25;\n    r=2.5/0.625;\n    lcl=1+log(0.8)/log(r);\n    ucl=1+log(1.25)/log(r);\nrun;"
   },
   {
-    "objectID": "cdisc/cdisc.html#sdtm",
-    "href": "cdisc/cdisc.html#sdtm",
+    "objectID": "cdisc/cdisc.html#sdtm-standard",
+    "href": "cdisc/cdisc.html#sdtm-standard",
     "title": "CDISC",
-    "section": "SDTM",
-    "text": "SDTM\n\nUNII（Unique Ingredient Identifier (FDA)）:\nhttp://fdasis.nlm.nih.gov/srs/\n\n\nSNOMED:\nhttp://browser.ihtsdotools.org/?\n\n\nMED-RT:\nhttps://evs.nci.nih.gov/ftp1/MED-RT/\n\n\nSDTM CT:\nhttps://evs.nci.nih.gov/ftp1/CDISC/SDTM/SDTM%20Terminology.html#top"
+    "section": "SDTM Standard",
+    "text": "SDTM Standard\n\nUNII（Unique Ingredient Identifier (FDA)）:\nhttp://fdasis.nlm.nih.gov/srs/\n\n\nSNOMED:\nhttp://browser.ihtsdotools.org/?\n\n\nMED-RT:\nhttps://evs.nci.nih.gov/ftp1/MED-RT/\n\n\nSDTM CT:\nhttps://evs.nci.nih.gov/ftp1/CDISC/SDTM/SDTM%20Terminology.html#top"
+  },
+  {
+    "objectID": "cdisc/cdisc.html#nmpa-递交",
+    "href": "cdisc/cdisc.html#nmpa-递交",
+    "title": "CDISC",
+    "section": "NMPA 递交",
+    "text": "NMPA 递交\n\ndefine.xml （数据说明）\naCRF.pdf （是递交的数据集XPT对应aCRF，不是EDC数据集的aCRF）\ncsdrg.pdf/adrg.pdf （原始数据库审阅说明/分析数据库审阅说明）\n数据文件：\n\nXPT v5: SAS (proc copy)\nXPT v8: SAS macro ( http://support.sas.com/kb/46/944.html)\n\nSAS proc cport 生成的XPT不符合要求\n\nEncoding: 需要在审阅说明中说明 UTF-8"
   },
   {
     "objectID": "cdisc/cdiscae.html",
     "href": "cdisc/cdiscae.html",
     "title": "AE Domain",
     "section": "",
-    "text": "AE的定义\n“any untoward medical occurrence in a patient or clinical investigation subject administered a pharmaceutical product and which does not necessarily have to have a causal relationship with this treatment” (ICH E2A). 节选自ICH的话，可以看出AE指发生的任何不良医疗事件，不一定与治疗有因果关系。\n\nAE: adverse event 不良事件\nADR: adverse drug reaction 不良药品反应\nSAE/SAR: serious adverse event/reaction 严重不良事件/反应\nside effect: 副作用\n\n\n\n\n\n\n\nVariable\nComments\n\n\n\n\nAETERM\ntopic变量；req变量；\nAE domain仅展示真实发生了的AE,所以不存在–OCCUR, –STAT,--REASND等变量；\nAE的记录：一般是当AE发生了任何变化（严重程度，相关性，采取的措施，转归等），都需要重新记录一条AE\n\n\nAEPRESP\nCRF预设了一些关注的AE，设置AEPRESP=Y；\n由于AE只能放真实发生的AE，当这些被关注的AE是否发生都想保留这部分信息，可在FA Domain中展示\n\n\n\nFAOBJ\nFATESTCD\nFAORRES\n\n\n\n\nXXXAE\nOCCUR\nY/N\n\n\n\n\n\nAEBODSYS\nAESOC\nAE采用MedDRA编码，其中SOC是primary SOC，AE编码可以根据发病原因，也可以根据发病部位进行编码，根据需要决定primary SOC。而AEBODSYS根据sponsor需求决定，并不一定是AESOC。\n\n\nAETOXGR\n根据CTCAE收集的严重程度，设置成级别中的数，如 GRADE 2，则 AETOXGR = 2."
+    "text": "AE的定义\n“any untoward medical occurrence in a patient or clinical investigation subject administered a pharmaceutical product and which does not necessarily have to have a causal relationship with this treatment” (ICH E2A). 节选自ICH的话，可以看出AE指发生的任何不良医疗事件，不一定与治疗有因果关系。\n\nAE: adverse event 不良事件\nADR: adverse drug reaction 不良药品反应\nSAE/SAR: serious adverse event/reaction 严重不良事件/反应\nside effect: 副作用\n\n\n\n\n\n\n\nVariable\nComments\n\n\n\n\nAETERM\ntopic变量；req变量；\nAE domain仅展示真实发生了的AE,所以不存在–OCCUR, –STAT,--REASND等变量；\nAE的记录：一般是当AE发生了任何变化（严重程度，相关性，采取的措施，转归等），都需要重新记录一条AE\n\n\nAEPRESP\nCRF预设了一些关注的AE，设置AEPRESP=Y；\n由于AE只能放真实发生的AE，当这些被关注的AE是否发生都想保留这部分信息，可在FA Domain中展示\n\n\n\nFAOBJ\nFATESTCD\nFAORRES\n\n\n\n\nXXXAE\nOCCUR\nY/N\n\n\n\n\n\nAEBODSYS\nAESOC\nAE采用MedDRA编码，其中SOC是primary SOC，AE编码可以根据发病原因，也可以根据发病部位或目的进行编码，根据需要决定primary SOC。而AEBODSYS根据sponsor需求决定，并不一定是AESOC。\n\n\nAETOXGR\n根据CTCAE收集的严重程度，设置成级别中的数，如 GRADE 2，则 AETOXGR = 2.\n\n\nAEOUT\n不良事件应随访至事件解决或恢复都基线时的状态或稳定。\n失访受试者：应填写失访前最后一次获得信息而非\"未知\"；当AE发生后没有检查或访视才记录为\"未知\"。\n死亡受试者：死亡本身不应作为一个AETERM，死亡是结局，导致死亡的原因才是AETERM。只有当该AE导致的死亡才记录结局为\"死亡\"。\n\n\nAESTDTC\n症状，体征或检查异常的发生时间，而非诊断时间（有一定滞后）\nAE的采集从签署知情同意书就开始\nSAE的开始日期时间应该为该AE的开始日期时间而非达到SAE标准的时间，如发生了AE（时间1），然后选择去住院（时间2）（达到SAE标准），应选择前者时间1。\n\n\nAEACN\n针对该AE采取的措施。有对应的CT[ACN]，1. 无变化，2. 剂量增加，3. 给药速率降低，4. 剂量减少，5. 暂停给药，6. 停药，7. 不适用。\ncase1: 给药延迟（dose delay）应属于暂停用药（DRUG INTERRUPTED）。\ncase2: 受试者发生3级AE而后恢复正常。研究者考虑上一次AE较为严重，下一次研究用药剂量减少，针对该3级AE的AEACN应记录为”无变化”。采取的措施是预防，避免再次发生SAE，而不是针对该AE的措施。\ncase3: 如果连续的采取了多个措施，比如先研究用药减量，然后速率降低，后来暂停用药，一般取最后一次采取的措施。\n\n\nAEENDTC\n痊愈或痊愈有后遗症的日期\nAE导致死亡的死亡日期\n好转或未好转，AE未结束，置空AEENDTC，此时可通过AEENRTPT,AEENTPT结合使用来描述这类信息。"
+  },
+  {
+    "objectID": "cdisc/cdisctu.html",
+    "href": "cdisc/cdisctu.html",
+    "title": "TU Domain",
+    "section": "",
+    "text": "Tumor/Lesion Identification，肿瘤/病灶标识\n病灶标识的信息存放在TU domain，检查结果在TR domain。\n\ntu.xpt\n\n\n\nTULINKID\nTUTESTCD\nTUTEST\nTUORRES\nVISIT\n\n\n\n\nT01\nTUMIDENT\nTumor Identification\nTARGET\nSCREEN\n\n\nT02\nTUMIDENT\nTumor Identification\nTARGET\nSCREEN\n\n\nT03\nTUMIDENT\nTumor Identification\nTARGET\nSCREEN\n\n\nT04\nTUMIDENT\nTumor Identification\nTARGET\nSCREEN\n\n\nNT01\nTUMIDENT\nTumor Identification\nNON-TARGET\nSCREEN\n\n\nT02/T03\nTUMERG\nTumor Merged\nTARGET\nWEEK 6\n\n\nT04.1\nTUSPLIT\nTumor Split\nTARGET\nWEEK 6\n\n\nT04.2\nTUSPLIT\nTumor Split\nTARGET\nWEEK 6\n\n\nNEW01\nTUMIDENT\nTumor Identification\nNEW\nWEEK 6\n\n\n\ntr.xpt\n\n\n\n\n\n\n\n\n\n\n\nTRLNKGRP\nTRLNKID\nTRTESTCD\nTRTEST\nTRORRES\nVISIT\n\n\n\n\nA1\nT01\nDIAMETER\nDiameter\n20\nSCREEN\n\n\nA1\nT02\nDIAMETER\nDiameter\n20\nSCREEN\n\n\nA1\nT03\nDIAMETER\nDiameter\n15\nSCREEN\n\n\nA1\nT04\nDIAMETER\nDiameter\n15\nSCREEN\n\n\nA1\nNT01\nTUMSTATE\nTumor State\nPRESENT\nSCREEN\n\n\nA2\nT01\nDIAMETER\nDiameter\nTOO SMALL TO MERSURE\nWEEK 6\n\n\nA2\nT02/T03\nDIAMETER\nDiameter\n5\nWEEK 6\n\n\nA2\nT04.1\nDIAMETER\nDiameter\n5\nWEEK 6\n\n\nA2\nT04.2\nDIAMETER\nDiameter\n5\nWEEK 6\n\n\nA2\nNT01\nTUMSTATE\nTumor State\nABESENT\nWEEK 6\n\n\nA2\nNEW01\nDIAMETER\nDiameter\n5\nWEEK 6\n\n\n\nrelrec.xpt\n\n\n\nSTUDYID\nRDOMAIN\nUSUBJID\nIDVAR\nIDVARVAL\nRELTYPE\nRELID\n\n\n\n\nSTUDY1\nTU\n\nTULNKID\n\nONE\nTUTR\n\n\nSTUDY1\nTR\n\nTRLNKID\n\nMANY\nTUTR\n\n\n\n\n\n\n\n\n\n\nVariable\nComments\n\n\n\n\nTULNKID\n选取的病灶都有自己唯一的编号，即为TULINKID，每个病灶在TU里只有一条记录。"
+  },
+  {
+    "objectID": "cdisc/cdisctr.html",
+    "href": "cdisc/cdisctr.html",
+    "title": "TU Domain",
+    "section": "",
+    "text": "Variable\nComments\n\n\n\n\nTRORRES\n“无法评价”是由于影像质量差无法评价。\n如果认为病灶消失，应记录为0mm；如果因为太小无法定义准确的数值结果，则记录为”太小而无法测量”。"
   }
 ]
