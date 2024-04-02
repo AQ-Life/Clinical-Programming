@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.433">
+<meta name="generator" content="quarto-1.3.450">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -74,7 +74,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../cdisc/cdisc.html">CDISC</a></li><li class="breadcrumb-item"><a href="../cdisc/cdiscae.html">AE Domain</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../cdisc/cdisc.html">CDISC</a></li><li class="breadcrumb-item"><a href="../cdisc/cdiscae.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">AE Domain</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -139,14 +139,20 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../stat/freqanalysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">列联表分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../stat/survivalanalysis.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Surivival Analysis（生存分析）</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Surivival Analysis（生存分析）</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../stat/pkanalysis.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">PK Analysis（PK分析）</span></span></a>
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">PK Analysis（PK分析）</span></span></a>
   </div>
 </li>
       </ul>
@@ -163,31 +169,31 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../cdisc/cdiscae.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">AE Domain</span></a>
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">AE Domain</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../cdisc/cdiscdm.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">DM Domain</span></span></a>
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">DM Domain</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../cdisc/cdiscrs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">cdiscrs.html</span></span></a>
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">RS Domain</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../cdisc/cdisctu.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">TU Domain</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">TU Domain</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../cdisc/cdisctr.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">TU Domain</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">TR Domain</span></span></a>
   </div>
 </li>
       </ul>
@@ -247,12 +253,16 @@ ul.task-list li input[type="checkbox"] {
 </thead>
 <tbody>
 <tr class="odd">
-<td>AETERM</td>
-<td><p>topic变量；req变量；</p>
-<p>AE domain仅展示真实发生了的AE,所以不存在–OCCUR, –STAT,--REASND等变量；</p>
-<p>AE的记录：一般是当AE发生了任何变化（严重程度，相关性，采取的措施，转归等），都需要重新记录一条AE</p></td>
+<td>AEREFID</td>
+<td>如可以放SAE编号</td>
 </tr>
 <tr class="even">
+<td>AETERM</td>
+<td><p>topic变量；req变量；</p>
+<p>AE domain仅展示真实发生了的AE,所以不存在–OCCUR, –STAT,–REASND等变量；</p>
+<p>AE的记录：一般是当AE发生了任何变化（严重程度，相关性，采取的措施，转归等），都需要重新记录一条AE</p></td>
+</tr>
+<tr class="odd">
 <td>AEPRESP</td>
 <td><p>CRF预设了一些关注的AE，设置AEPRESP=Y；</p>
 <p>由于AE只能放真实发生的AE，当这些被关注的AE是否发生都想保留这部分信息，可在FA Domain中展示</p>
@@ -273,45 +283,45 @@ ul.task-list li input[type="checkbox"] {
 </tbody>
 </table></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><p>AEBODSYS</p>
 <p>AESOC</p></td>
 <td>AE采用MedDRA编码，其中SOC是primary SOC，AE编码可以根据<strong>发病原因</strong>，也可以根据<strong>发病部位</strong>或<strong>目的</strong>进行编码，根据需要决定primary SOC。而AEBODSYS根据sponsor需求决定，并不一定是AESOC。</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>AETOXGR</td>
 <td>根据CTCAE收集的严重程度，设置成级别中的数，如 GRADE 2，则 AETOXGR = 2.</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>AEOUT</td>
 <td><p>不良事件应随访至事件解决或恢复都基线时的状态或稳定。</p>
-<p>失访受试者：应填写失访前最后一次获得信息而非"未知"；当AE发生后没有检查或访视才记录为"未知"。</p>
-<p>死亡受试者：死亡本身不应作为一个AETERM，死亡是结局，导致死亡的原因才是AETERM。只有当该AE导致的死亡才记录结局为"死亡"。</p></td>
+<p>失访受试者：应填写失访前最后一次获得信息而非”未知”；当AE发生后没有检查或访视才记录为”未知”。</p>
+<p>死亡受试者：死亡本身不应作为一个AETERM，死亡是结局，导致死亡的原因才是AETERM。只有当该AE导致的死亡才记录结局为”死亡”。</p></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>AESTDTC</td>
 <td><p>症状，体征或检查异常的发生时间，而非诊断时间（有一定滞后）</p>
 <p>AE的采集从签署知情同意书就开始</p>
 <p>SAE的开始日期时间应该为该AE的开始日期时间而非达到SAE标准的时间，如发生了AE（时间1），然后选择去住院（时间2）（达到SAE标准），应选择前者时间1。</p></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>AEACN</td>
 <td><p>针对该AE采取的措施。有对应的CT[ACN]，1. 无变化，2. 剂量增加，3. 给药速率降低，4. 剂量减少，5. 暂停给药，6. 停药，7. 不适用。</p>
 <p>case1: 给药延迟（dose delay）应属于暂停用药（DRUG INTERRUPTED）。</p>
 <p>case2: 受试者发生3级AE而后恢复正常。研究者考虑上一次AE较为严重，下一次研究用药剂量减少，针对该3级AE的AEACN应记录为”无变化”。采取的措施是预防，避免再次发生SAE，而不是针对该AE的措施。</p>
 <p>case3: 如果连续的采取了多个措施，比如先研究用药减量，然后速率降低，后来暂停用药，一般取最后一次采取的措施。</p></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>AEENDTC</td>
 <td><p>痊愈或痊愈有后遗症的日期</p>
 <p>AE导致死亡的死亡日期</p>
 <p>好转或未好转，AE未结束，置空AEENDTC，此时可通过AEENRTPT,AEENTPT结合使用来描述这类信息。</p></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td></td>
 <td></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td></td>
 <td></td>
 </tr>
@@ -563,7 +573,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="../cdisc/cdiscdm.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">DM Domain</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">DM Domain</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

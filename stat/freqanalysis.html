@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Clinical Programming - 列联表分析</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../stat/survivalanalysis.html" rel="next">
+<link href="../stat/stat.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../stat/stat.html">Statistics (统计学)</a></li><li class="breadcrumb-item"><a href="../stat/freqanalysis.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">列联表分析</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Clinical Programming</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clinical Programming</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../sas/sasprog.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SAS Skills</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../sas/sasprog_process.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">SAS运行机制</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../sas/sasprog_gtl.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">GTL</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../stat/stat.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Statistics (统计学)</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stat/freqanalysis.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">列联表分析</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stat/survivalanalysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Surivival Analysis（生存分析）</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../stat/pkanalysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">PK Analysis（PK分析）</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../cdisc/cdisc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CDISC</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../cdisc/cdiscae.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">AE Domain</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../cdisc/cdiscdm.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">DM Domain</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../cdisc/cdiscrs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">RS Domain</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../cdisc/cdisctu.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">TU Domain</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../cdisc/cdisctr.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">TR Domain</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#率差" id="toc-率差" class="nav-link active" data-scroll-target="#率差">率差</a>
+  <ul class="collapse">
+  <li><a href="#试验组与对照组的比率不是都为100或0mn方法" id="toc-试验组与对照组的比率不是都为100或0mn方法" class="nav-link" data-scroll-target="#试验组与对照组的比率不是都为100或0mn方法">试验组与对照组的比率不是都为100%或0%（MN方法）</a></li>
+  <li><a href="#试验组与对照组的比率都为100或0mn方法" id="toc-试验组与对照组的比率都为100或0mn方法" class="nav-link" data-scroll-target="#试验组与对照组的比率都为100或0mn方法">试验组与对照组的比率都为100%或0%（MN方法）</a></li>
+  <li><a href="#分层的miettinen-nurminen方法计算率差与p值" id="toc-分层的miettinen-nurminen方法计算率差与p值" class="nav-link" data-scroll-target="#分层的miettinen-nurminen方法计算率差与p值">分层的Miettinen-Nurminen方法计算率差与P值</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">列联表分析</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<table class="table">
+<thead>
+<tr class="header">
+<th></th>
+<th>发生</th>
+<th>未发生</th>
+<th>合计</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>对照组</td>
+<td>a</td>
+<td>b</td>
+<td><span class="math inline">\(N_0\)</span></td>
+</tr>
+<tr class="even">
+<td>试验组</td>
+<td>c</td>
+<td>d</td>
+<td><span class="math inline">\(N_1\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>率比（Risk Ratio），也称相对危险度（Relative Risk）: <span class="math inline">\(RR=\frac{a/N_0}{c/N_1}\)</span>，相对量，这里表示对照组发生事件是试验组发生事件的多少倍。</p>
+<p>率差（Rate Difference）: <span class="math inline">\(RD=\frac{a}{N_0}-\frac{c}{N_1}\)</span>，绝对量，率差能够直观的看出疗效的大小，可理解为试验组比对照组多百分之多少的可能发生事件。</p>
+<p>优势比，也称比值比（Odds Ratio）:<span class="math inline">\(OR=\frac{a/b}{c/d}\)</span>，这里反映了组别之间发生事件的关联强度。</p>
+<section id="率差" class="level2">
+<h2 class="anchored" data-anchor-id="率差">率差</h2>
+<p>假设样本均值等于总体均值，其置信区间以均值为中心分布在其两侧。方法：正态近似法。</p>
+<p><img src="images/图片3.png" class="img-fluid"></p>
+<pre class="sas"><code>data test1;
+    gp="A";r=0;n=13;output;
+    gp="A";r=1;n=48;output;
+    gp="B";r=0;n=8;output;
+    gp="B";r=1;n=56;output;
+run;
+
+
+**** Method 1 ****;
+proc freq data=test1;
+    tables gp*r/ riskdiff(cl=exact);
+    exact riskdiff;
+    weight n/ zeros;
+run;</code></pre>
+<p>假设样本均值不等于总体均值，样本出现在总体分布的置信区间内。方法：Miettinen and Nurminen.</p>
+<p><img src="images/图片4.png" class="img-fluid"></p>
+<section id="试验组与对照组的比率不是都为100或0mn方法" class="level3">
+<h3 class="anchored" data-anchor-id="试验组与对照组的比率不是都为100或0mn方法">试验组与对照组的比率不是都为100%或0%（MN方法）</h3>
+<pre class="sas"><code>data test1;
+    gp="A";r=0;n=13;output;
+    gp="A";r=1;n=48;output;
+    gp="B";r=0;n=8;output;
+    gp="B";r=1;n=56;output;
+run;
+
+
+**** Method 1 ****;
+proc freq data=test1;
+    tables gp*r/ riskdiff(cl=mn);
+    weight n/ zeros;
+    ods output pdiffcls=mn;
+run;</code></pre>
+</section>
+<section id="试验组与对照组的比率都为100或0mn方法" class="level3">
+<h3 class="anchored" data-anchor-id="试验组与对照组的比率都为100或0mn方法">试验组与对照组的比率都为100%或0%（MN方法）</h3>
+<pre class="sas"><code>%macro ratediff(n1=,n1_event=,n2=,n2_event=,alpha=,side=);
+data mienur;
+n1=&amp;n1.;
+a1=&amp;n1_event.;
+a2=n1-a1;
+p1=a1/n1;
+n2=&amp;n2.;
+a3=&amp;n2_event.;
+a4=n2-a3;
+p2=a3/n2;
+z=probit(1-&amp;alpha./&amp;side.);
+d=p1-p2;
+**率差置信区间下限;
+**率差置信区间上限;
+l_diff=-(z**2*(a1+a3)/((a1+a3-1)*a1))/((z**2*(a1+a3)/((a1+a3-1)*a1))+1);
+u_diff= (z**2*(a1+a3)/((a1+a3-1)*a3))/((z**2*(a1+a3)/((a1+a3-1)*a3))+1);
+run;
+%mend ratediff;
+
+%ratediff(n1=100,n1_event=100,n2=100,n2_event=100,alpha=0.05,side=2);</code></pre>
+</section>
+<section id="分层的miettinen-nurminen方法计算率差与p值" class="level3">
+<h3 class="anchored" data-anchor-id="分层的miettinen-nurminen方法计算率差与p值">分层的Miettinen-Nurminen方法计算率差与P值</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>%macro <span class="fu">rrv</span>(c0,c1,s0,s1,z,rd,ra,rb,vv);<span class="sc">/</span><span class="er">*</span>根据rd计算r0和r1<span class="sc">*</span><span class="er">/</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a> c0<span class="ot">=</span><span class="er">&amp;</span>c0.;</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a> c1<span class="ot">=</span><span class="er">&amp;</span>c1.;</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a> s0<span class="ot">=</span><span class="er">&amp;</span>s0.;</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a> s1<span class="ot">=</span><span class="er">&amp;</span>s1.;</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a> c<span class="ot">=</span>c1<span class="sc">+</span>c0;</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a> s<span class="ot">=</span>s1<span class="sc">+</span>s0;</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a> p1<span class="ot">=</span>c1<span class="sc">/</span>s1;</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a> p0<span class="ot">=</span>c0<span class="sc">/</span>s0;</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a> z2<span class="ot">=</span><span class="er">&amp;</span>z.<span class="sc">**</span><span class="dv">2</span>;</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a> rd<span class="ot">=</span><span class="er">&amp;</span>rd.;</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a> l3<span class="ot">=</span>s;</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a> l2<span class="ot">=</span>(s1<span class="sc">+</span><span class="dv">2</span><span class="sc">*</span>s0)<span class="sc">*</span>rd<span class="sc">-</span>s<span class="sc">-</span>c;</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a> l1<span class="ot">=</span>(s0<span class="sc">*</span>rd<span class="sc">-</span>s<span class="dv">-2</span><span class="sc">*</span>c0)<span class="sc">*</span>rd<span class="sc">+</span>c;</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a> l0<span class="ot">=</span>c0<span class="sc">*</span>rd<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>rd);</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a> q<span class="ot">=</span>l2<span class="sc">**</span><span class="dv">3</span><span class="sc">/</span>(<span class="dv">3</span><span class="sc">*</span>l3)<span class="sc">**</span><span class="dv">3</span><span class="sc">-</span>l1<span class="sc">*</span>l2<span class="sc">/</span>(<span class="dv">6</span><span class="sc">*</span>l3<span class="sc">**</span><span class="dv">2</span>)<span class="sc">+</span>l0<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>l3);</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a> p<span class="ot">=</span><span class="fu">sign</span>(q)<span class="sc">*</span>(l2<span class="sc">**</span><span class="dv">2</span><span class="sc">/</span>(<span class="dv">3</span><span class="sc">*</span>l3)<span class="sc">**</span><span class="dv">2</span><span class="sc">-</span>l1<span class="sc">/</span>(<span class="dv">3</span><span class="sc">*</span>l3))<span class="sc">**</span><span class="fl">0.5</span>;</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a> <span class="cf">if</span> p<span class="ot">=</span><span class="dv">0</span> then aa<span class="ot">=</span><span class="dv">0</span>; </span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a> <span class="cf">else</span> aa<span class="ot">=</span>q<span class="sc">/</span>p<span class="sc">**</span><span class="dv">3</span>;</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a> <span class="cf">if</span> <span class="fu">abs</span>(aa)<span class="sc">&gt;</span><span class="dv">1</span> then aa<span class="ot">=</span><span class="dv">1</span>;</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a> a<span class="ot">=</span><span class="dv">1</span><span class="sc">/</span><span class="dv">3</span><span class="sc">*</span>(pi<span class="sc">+</span><span class="fu">arcos</span>(aa));</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a> r0<span class="ot">=</span><span class="dv">2</span><span class="sc">*</span>p<span class="sc">*</span><span class="fu">cos</span>(a)<span class="sc">-</span>l2<span class="sc">/</span>(<span class="dv">3</span><span class="sc">*</span>l3);</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a> r1<span class="ot">=</span>r0<span class="sc">+</span>rd;</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a> v<span class="ot">=</span>(r1<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>r1)<span class="sc">/</span>s1<span class="sc">+</span>r0<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>r0)<span class="sc">/</span>s0)<span class="sc">*</span>s<span class="sc">/</span>(s<span class="dv">-1</span>);</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a> <span class="sc">&amp;</span>ra.<span class="ot">=</span>r0;</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a> <span class="sc">&amp;</span>rb.<span class="ot">=</span>r1;</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a> <span class="sc">&amp;</span>vv.<span class="ot">=</span>v;</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>%mend;</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>%macro <span class="fu">stra_mn</span>(<span class="at">dat=</span>,<span class="at">stra=</span>,<span class="at">trt=</span>,<span class="at">c=</span>,<span class="at">n=</span>,<span class="at">alp=</span>,<span class="at">Wmethod=</span><span class="dv">2</span>,<span class="at">all=</span><span class="dv">0</span>,<span class="at">out=</span>);</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="sc">%if &amp;stra.=0 %</span>then %do;</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>proc sort data<span class="ot">=</span><span class="er">&amp;</span>dat. out<span class="ot">=</span>dat1;</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a> by <span class="sc">&amp;</span>trt.;</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>run;</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>data dat1x;</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a> set dat1 nobs<span class="ot">=</span>nob;</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a> by <span class="sc">&amp;</span>trt.;</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a> array <span class="fu">ccc</span>(<span class="dv">2</span>);</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a> array <span class="fu">nnn</span>(<span class="dv">2</span>);</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a> retain ccc<span class="sc">:</span> nnn<span class="sc">:</span>;</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a> <span class="cf">if</span> first.<span class="sc">&amp;</span>trt. then do;</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>    i<span class="sc">+</span><span class="dv">1</span>;</span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ccc</span>(i)<span class="ot">=</span><span class="er">&amp;</span>c.;</span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>    <span class="fu">nnn</span>(i)<span class="ot">=</span><span class="er">&amp;</span>n.;</span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a> end;</span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a> <span class="cf">if</span> _N_<span class="ot">=</span>nob then do;</span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>    ca<span class="ot">=</span><span class="fu">ccc</span>(<span class="dv">1</span>);</span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>    cb<span class="ot">=</span><span class="fu">ccc</span>(<span class="dv">2</span>);</span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>    na<span class="ot">=</span><span class="fu">nnn</span>(<span class="dv">1</span>);</span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>    nb<span class="ot">=</span><span class="fu">nnn</span>(<span class="dv">2</span>);</span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>    output;</span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a> end;</span>
+<span id="cb4-59"><a href="#cb4-59" aria-hidden="true" tabindex="-1"></a> keep ca cb na nb;</span>
+<span id="cb4-60"><a href="#cb4-60" aria-hidden="true" tabindex="-1"></a>run;</span>
+<span id="cb4-61"><a href="#cb4-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-62"><a href="#cb4-62" aria-hidden="true" tabindex="-1"></a>data dat2;</span>
+<span id="cb4-63"><a href="#cb4-63" aria-hidden="true" tabindex="-1"></a> set dat1x;</span>
+<span id="cb4-64"><a href="#cb4-64" aria-hidden="true" tabindex="-1"></a> z<span class="ot">=</span><span class="fu">probit</span>(<span class="dv">1</span><span class="sc">-</span><span class="er">&amp;</span>alp.<span class="sc">/</span><span class="dv">2</span>);</span>
+<span id="cb4-65"><a href="#cb4-65" aria-hidden="true" tabindex="-1"></a> pi<span class="ot">=</span><span class="fu">constant</span>(<span class="st">"pi"</span>);</span>
+<span id="cb4-66"><a href="#cb4-66" aria-hidden="true" tabindex="-1"></a> pa<span class="ot">=</span>ca<span class="sc">/</span>na;</span>
+<span id="cb4-67"><a href="#cb4-67" aria-hidden="true" tabindex="-1"></a> pb<span class="ot">=</span>cb<span class="sc">/</span>nb;</span>
+<span id="cb4-68"><a href="#cb4-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-69"><a href="#cb4-69" aria-hidden="true" tabindex="-1"></a><span class="sc">/</span><span class="er">*</span>计算置信下限<span class="sc">*</span><span class="er">/</span></span>
+<span id="cb4-70"><a href="#cb4-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-71"><a href="#cb4-71" aria-hidden="true" tabindex="-1"></a> str<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-72"><a href="#cb4-72" aria-hidden="true" tabindex="-1"></a> qxq<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-73"><a href="#cb4-73" aria-hidden="true" tabindex="-1"></a> do qcyc<span class="ot">=</span><span class="dv">1</span> to <span class="dv">3</span>;</span>
+<span id="cb4-74"><a href="#cb4-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-75"><a href="#cb4-75" aria-hidden="true" tabindex="-1"></a>    poit<span class="ot">=</span><span class="dv">10</span><span class="sc">**</span>(<span class="sc">-</span>qcyc<span class="sc">*</span><span class="dv">2</span>);</span>
+<span id="cb4-76"><a href="#cb4-76" aria-hidden="true" tabindex="-1"></a>    lmin<span class="ot">=</span><span class="dv">10</span>;</span>
+<span id="cb4-77"><a href="#cb4-77" aria-hidden="true" tabindex="-1"></a>    str<span class="ot">=</span>str<span class="sc">+</span>qxq<span class="sc">*</span>poit<span class="sc">*</span><span class="dv">100</span>;</span>
+<span id="cb4-78"><a href="#cb4-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-79"><a href="#cb4-79" aria-hidden="true" tabindex="-1"></a> do cyc<span class="ot">=</span><span class="sc">-</span><span class="dv">99</span> to <span class="dv">99</span>;</span>
+<span id="cb4-80"><a href="#cb4-80" aria-hidden="true" tabindex="-1"></a>    rdlx<span class="ot">=</span>str<span class="sc">+</span>cyc<span class="sc">*</span>poit;</span>
+<span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>    %<span class="fu">rrv</span>(ca,cb,na,nb,z,rdlx,ra,rb,vv);</span>
+<span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="fu">abs</span>(vv)<span class="sc">&lt;</span><span class="dv">10</span><span class="sc">**</span>(<span class="sc">-</span><span class="dv">12</span>) then vv<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-83"><a href="#cb4-83" aria-hidden="true" tabindex="-1"></a>    rdx<span class="ot">=</span>pb<span class="sc">-</span>pa<span class="sc">-</span>(z<span class="sc">*</span>z<span class="sc">*</span>vv)<span class="sc">**</span><span class="fl">0.5</span>; <span class="sc">/</span><span class="er">*</span>置信下限<span class="sc">*</span><span class="er">/</span></span>
+<span id="cb4-84"><a href="#cb4-84" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> vv<span class="sc">^</span><span class="er">=</span><span class="dv">0</span> then diff<span class="ot">=</span><span class="fu">abs</span>(rdx<span class="sc">-</span>rdlx);</span>
+<span id="cb4-85"><a href="#cb4-85" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> diff<span class="sc">&lt;</span>lmin then do;</span>
+<span id="cb4-86"><a href="#cb4-86" aria-hidden="true" tabindex="-1"></a>       lmin<span class="ot">=</span>diff;</span>
+<span id="cb4-87"><a href="#cb4-87" aria-hidden="true" tabindex="-1"></a>       qxq<span class="ot">=</span>cyc;</span>
+<span id="cb4-88"><a href="#cb4-88" aria-hidden="true" tabindex="-1"></a>    end;</span>
+<span id="cb4-89"><a href="#cb4-89" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="sc">&amp;</span>all.<span class="ot">=</span><span class="dv">1</span> then output;</span>
+<span id="cb4-90"><a href="#cb4-90" aria-hidden="true" tabindex="-1"></a> end; </span>
+<span id="cb4-91"><a href="#cb4-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-92"><a href="#cb4-92" aria-hidden="true" tabindex="-1"></a> end;</span>
+<span id="cb4-93"><a href="#cb4-93" aria-hidden="true" tabindex="-1"></a> rdl<span class="ot">=</span>str<span class="sc">+</span>qxq<span class="sc">*</span>poit;</span>
+<span id="cb4-94"><a href="#cb4-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-95"><a href="#cb4-95" aria-hidden="true" tabindex="-1"></a> <span class="sc">/</span><span class="er">*</span>计算置信上限<span class="sc">*</span><span class="er">/</span></span>
+<span id="cb4-96"><a href="#cb4-96" aria-hidden="true" tabindex="-1"></a> str<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-97"><a href="#cb4-97" aria-hidden="true" tabindex="-1"></a> qxq<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-98"><a href="#cb4-98" aria-hidden="true" tabindex="-1"></a> do qcyc<span class="ot">=</span><span class="dv">1</span> to <span class="dv">3</span>;</span>
+<span id="cb4-99"><a href="#cb4-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-100"><a href="#cb4-100" aria-hidden="true" tabindex="-1"></a>    poit<span class="ot">=</span><span class="dv">10</span><span class="sc">**</span>(<span class="sc">-</span>qcyc<span class="sc">*</span><span class="dv">2</span>);</span>
+<span id="cb4-101"><a href="#cb4-101" aria-hidden="true" tabindex="-1"></a>    dmin<span class="ot">=</span><span class="dv">10</span>;</span>
+<span id="cb4-102"><a href="#cb4-102" aria-hidden="true" tabindex="-1"></a>    str<span class="ot">=</span>str<span class="sc">+</span>qxq<span class="sc">*</span>poit<span class="sc">*</span><span class="dv">100</span>;</span>
+<span id="cb4-103"><a href="#cb4-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-104"><a href="#cb4-104" aria-hidden="true" tabindex="-1"></a> do cyc<span class="ot">=</span><span class="sc">-</span><span class="dv">99</span> to <span class="dv">99</span>;</span>
+<span id="cb4-105"><a href="#cb4-105" aria-hidden="true" tabindex="-1"></a>    rdlx<span class="ot">=</span>str<span class="sc">+</span>cyc<span class="sc">*</span>poit;</span>
+<span id="cb4-106"><a href="#cb4-106" aria-hidden="true" tabindex="-1"></a>    %<span class="fu">rrv</span>(ca,cb,na,nb,z,rdlx,ra,rb,vv);</span>
+<span id="cb4-107"><a href="#cb4-107" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="fu">abs</span>(vv)<span class="sc">&lt;</span><span class="dv">10</span><span class="sc">**</span>(<span class="sc">-</span><span class="dv">12</span>) then vv<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-108"><a href="#cb4-108" aria-hidden="true" tabindex="-1"></a>    rdx<span class="ot">=</span>pb<span class="sc">-</span>pa<span class="sc">+</span>(z<span class="sc">*</span>z<span class="sc">*</span>vv)<span class="sc">**</span><span class="fl">0.5</span>; <span class="sc">/</span><span class="er">*</span>置信上限<span class="sc">*</span><span class="er">/</span></span>
+<span id="cb4-109"><a href="#cb4-109" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> vv<span class="sc">^</span><span class="er">=</span><span class="dv">0</span> then diff<span class="ot">=</span><span class="fu">abs</span>(rdx<span class="sc">-</span>rdlx);</span>
+<span id="cb4-110"><a href="#cb4-110" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> diff<span class="sc">&lt;</span>dmin then do;</span>
+<span id="cb4-111"><a href="#cb4-111" aria-hidden="true" tabindex="-1"></a>       dmin<span class="ot">=</span>diff;</span>
+<span id="cb4-112"><a href="#cb4-112" aria-hidden="true" tabindex="-1"></a>       qxq<span class="ot">=</span>cyc;</span>
+<span id="cb4-113"><a href="#cb4-113" aria-hidden="true" tabindex="-1"></a>    end;</span>
+<span id="cb4-114"><a href="#cb4-114" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="sc">&amp;</span>all.<span class="ot">=</span><span class="dv">1</span> then output;</span>
+<span id="cb4-115"><a href="#cb4-115" aria-hidden="true" tabindex="-1"></a> end; </span>
+<span id="cb4-116"><a href="#cb4-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-117"><a href="#cb4-117" aria-hidden="true" tabindex="-1"></a> end;</span>
+<span id="cb4-118"><a href="#cb4-118" aria-hidden="true" tabindex="-1"></a> rdu<span class="ot">=</span>str<span class="sc">+</span>qxq<span class="sc">*</span>poit;</span>
+<span id="cb4-119"><a href="#cb4-119" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb4-120"><a href="#cb4-120" aria-hidden="true" tabindex="-1"></a><span class="sc">/</span><span class="er">*</span>Z统计量<span class="sc">*</span><span class="er">/</span></span>
+<span id="cb4-121"><a href="#cb4-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-122"><a href="#cb4-122" aria-hidden="true" tabindex="-1"></a> rdlx<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-123"><a href="#cb4-123" aria-hidden="true" tabindex="-1"></a> %<span class="fu">rrv</span>(ca,cb,na,nb,z,rdlx,ra,rb,vv);</span>
+<span id="cb4-124"><a href="#cb4-124" aria-hidden="true" tabindex="-1"></a> <span class="cf">if</span> <span class="fu">abs</span>(vv)<span class="sc">&lt;</span><span class="dv">10</span><span class="sc">**</span>(<span class="sc">-</span><span class="dv">16</span>) then Zsc<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-125"><a href="#cb4-125" aria-hidden="true" tabindex="-1"></a> <span class="cf">else</span> Zsc<span class="ot">=</span><span class="sc">-</span><span class="fu">abs</span>((pb<span class="sc">-</span>pa)<span class="sc">/</span>vv<span class="sc">**</span><span class="fl">0.5</span>);</span>
+<span id="cb4-126"><a href="#cb4-126" aria-hidden="true" tabindex="-1"></a> Pvalue<span class="ot">=</span><span class="fu">probnorm</span>(Zsc)<span class="sc">*</span><span class="dv">2</span>;</span>
+<span id="cb4-127"><a href="#cb4-127" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-128"><a href="#cb4-128" aria-hidden="true" tabindex="-1"></a> <span class="sc">/</span><span class="er">*</span>率差<span class="sc">*</span><span class="er">/</span></span>
+<span id="cb4-129"><a href="#cb4-129" aria-hidden="true" tabindex="-1"></a> rankdiff<span class="ot">=</span>pb<span class="sc">-</span>pa;</span>
+<span id="cb4-130"><a href="#cb4-130" aria-hidden="true" tabindex="-1"></a> output;</span>
+<span id="cb4-131"><a href="#cb4-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-132"><a href="#cb4-132" aria-hidden="true" tabindex="-1"></a> <span class="sc">%if &amp;all.=1 %</span>then %do;</span>
+<span id="cb4-133"><a href="#cb4-133" aria-hidden="true" tabindex="-1"></a>     keep diff rdx rdlx rdl ra rb vv rdl dmin rdu lmin str qxq;</span>
+<span id="cb4-134"><a href="#cb4-134" aria-hidden="true" tabindex="-1"></a> %end;</span>
+<span id="cb4-135"><a href="#cb4-135" aria-hidden="true" tabindex="-1"></a> <span class="sc">%else %</span>do;</span>
+<span id="cb4-136"><a href="#cb4-136" aria-hidden="true" tabindex="-1"></a>     keep rdl rdu dmin lmin Zsc Pvalue rankdiff ;</span>
+<span id="cb4-137"><a href="#cb4-137" aria-hidden="true" tabindex="-1"></a> %end;</span>
+<span id="cb4-138"><a href="#cb4-138" aria-hidden="true" tabindex="-1"></a>run;</span>
+<span id="cb4-139"><a href="#cb4-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-140"><a href="#cb4-140" aria-hidden="true" tabindex="-1"></a>%end;</span>
+<span id="cb4-141"><a href="#cb4-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-142"><a href="#cb4-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-143"><a href="#cb4-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-144"><a href="#cb4-144" aria-hidden="true" tabindex="-1"></a><span class="sc">/</span><span class="er">**************************************************/</span></span>
+<span id="cb4-145"><a href="#cb4-145" aria-hidden="true" tabindex="-1"></a><span class="er">/*</span>分层MN<span class="sc">*</span><span class="er">/</span></span>
+<span id="cb4-146"><a href="#cb4-146" aria-hidden="true" tabindex="-1"></a><span class="sc">%else %</span>do;</span>
+<span id="cb4-147"><a href="#cb4-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-148"><a href="#cb4-148" aria-hidden="true" tabindex="-1"></a>proc sort data<span class="ot">=</span><span class="er">&amp;</span>dat. out<span class="ot">=</span>dat1;</span>
+<span id="cb4-149"><a href="#cb4-149" aria-hidden="true" tabindex="-1"></a> by <span class="sc">&amp;</span>stra. <span class="sc">&amp;</span>trt.;</span>
+<span id="cb4-150"><a href="#cb4-150" aria-hidden="true" tabindex="-1"></a>run;</span>
+<span id="cb4-151"><a href="#cb4-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-152"><a href="#cb4-152" aria-hidden="true" tabindex="-1"></a>data _NULL_;</span>
+<span id="cb4-153"><a href="#cb4-153" aria-hidden="true" tabindex="-1"></a> set dat1 nobs<span class="ot">=</span>nob;</span>
+<span id="cb4-154"><a href="#cb4-154" aria-hidden="true" tabindex="-1"></a> array <span class="fu">cc</span>(<span class="dv">99</span>);</span>
+<span id="cb4-155"><a href="#cb4-155" aria-hidden="true" tabindex="-1"></a> array <span class="fu">nn</span>(<span class="dv">99</span>);</span>
+<span id="cb4-156"><a href="#cb4-156" aria-hidden="true" tabindex="-1"></a> retain cc<span class="sc">:</span> nn<span class="sc">:</span>;</span>
+<span id="cb4-157"><a href="#cb4-157" aria-hidden="true" tabindex="-1"></a> by <span class="sc">&amp;</span>stra. <span class="sc">&amp;</span>trt.;</span>
+<span id="cb4-158"><a href="#cb4-158" aria-hidden="true" tabindex="-1"></a> x<span class="sc">+</span><span class="dv">1</span>;</span>
+<span id="cb4-159"><a href="#cb4-159" aria-hidden="true" tabindex="-1"></a> <span class="fu">cc</span>(x)<span class="ot">=</span><span class="er">&amp;</span>c.;</span>
+<span id="cb4-160"><a href="#cb4-160" aria-hidden="true" tabindex="-1"></a> <span class="fu">nn</span>(x)<span class="ot">=</span><span class="er">&amp;</span>n.;</span>
+<span id="cb4-161"><a href="#cb4-161" aria-hidden="true" tabindex="-1"></a> <span class="cf">if</span> _N_<span class="ot">=</span>nob then do;</span>
+<span id="cb4-162"><a href="#cb4-162" aria-hidden="true" tabindex="-1"></a>    grp<span class="ot">=</span>x<span class="sc">/</span><span class="dv">2</span>;</span>
+<span id="cb4-163"><a href="#cb4-163" aria-hidden="true" tabindex="-1"></a>    do i<span class="ot">=</span><span class="dv">1</span> to grp;</span>
+<span id="cb4-164"><a href="#cb4-164" aria-hidden="true" tabindex="-1"></a>       call <span class="fu">symputx</span>(<span class="st">"c"</span><span class="sc">||</span><span class="fu">strip</span>(<span class="fu">put</span>(i,best.))<span class="sc">||</span><span class="st">"_0"</span>,<span class="fu">strip</span>(<span class="fu">put</span>(<span class="fu">cc</span>(i<span class="sc">*</span><span class="dv">2-1</span>),best.)));</span>
+<span id="cb4-165"><a href="#cb4-165" aria-hidden="true" tabindex="-1"></a>       call <span class="fu">symputx</span>(<span class="st">"c"</span><span class="sc">||</span><span class="fu">strip</span>(<span class="fu">put</span>(i,best.))<span class="sc">||</span><span class="st">"_1"</span>,<span class="fu">strip</span>(<span class="fu">put</span>(<span class="fu">cc</span>(i<span class="sc">*</span><span class="dv">2</span>),best.)));</span>
+<span id="cb4-166"><a href="#cb4-166" aria-hidden="true" tabindex="-1"></a>       call <span class="fu">symputx</span>(<span class="st">"n"</span><span class="sc">||</span><span class="fu">strip</span>(<span class="fu">put</span>(i,best.))<span class="sc">||</span><span class="st">"_0"</span>,<span class="fu">strip</span>(<span class="fu">put</span>(<span class="fu">nn</span>(i<span class="sc">*</span><span class="dv">2-1</span>),best.)));</span>
+<span id="cb4-167"><a href="#cb4-167" aria-hidden="true" tabindex="-1"></a>       call <span class="fu">symputx</span>(<span class="st">"n"</span><span class="sc">||</span><span class="fu">strip</span>(<span class="fu">put</span>(i,best.))<span class="sc">||</span><span class="st">"_1"</span>,<span class="fu">strip</span>(<span class="fu">put</span>(<span class="fu">nn</span>(i<span class="sc">*</span><span class="dv">2</span>),best.)));</span>
+<span id="cb4-168"><a href="#cb4-168" aria-hidden="true" tabindex="-1"></a>    end;</span>
+<span id="cb4-169"><a href="#cb4-169" aria-hidden="true" tabindex="-1"></a>    call <span class="fu">symputx</span>(<span class="st">"Ntrt"</span>,<span class="fu">strip</span>(<span class="fu">put</span>(x<span class="sc">/</span><span class="dv">2</span>,best.)));</span>
+<span id="cb4-170"><a href="#cb4-170" aria-hidden="true" tabindex="-1"></a> end;</span>
+<span id="cb4-171"><a href="#cb4-171" aria-hidden="true" tabindex="-1"></a>run;</span>
+<span id="cb4-172"><a href="#cb4-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-173"><a href="#cb4-173" aria-hidden="true" tabindex="-1"></a>data dat2;</span>
+<span id="cb4-174"><a href="#cb4-174" aria-hidden="true" tabindex="-1"></a> array <span class="fu">ca</span>(<span class="sc">&amp;</span>Ntrt.);</span>
+<span id="cb4-175"><a href="#cb4-175" aria-hidden="true" tabindex="-1"></a> array <span class="fu">cb</span>(<span class="sc">&amp;</span>Ntrt.);</span>
+<span id="cb4-176"><a href="#cb4-176" aria-hidden="true" tabindex="-1"></a> array <span class="fu">na</span>(<span class="sc">&amp;</span>Ntrt.);</span>
+<span id="cb4-177"><a href="#cb4-177" aria-hidden="true" tabindex="-1"></a> array <span class="fu">nb</span>(<span class="sc">&amp;</span>Ntrt.);</span>
+<span id="cb4-178"><a href="#cb4-178" aria-hidden="true" tabindex="-1"></a> array <span class="fu">pa</span>(<span class="sc">&amp;</span>Ntrt.);</span>
+<span id="cb4-179"><a href="#cb4-179" aria-hidden="true" tabindex="-1"></a> array <span class="fu">pb</span>(<span class="sc">&amp;</span>Ntrt.);</span>
+<span id="cb4-180"><a href="#cb4-180" aria-hidden="true" tabindex="-1"></a> array <span class="fu">ra</span>(<span class="sc">&amp;</span>Ntrt.);</span>
+<span id="cb4-181"><a href="#cb4-181" aria-hidden="true" tabindex="-1"></a> array <span class="fu">rb</span>(<span class="sc">&amp;</span>Ntrt.);</span>
+<span id="cb4-182"><a href="#cb4-182" aria-hidden="true" tabindex="-1"></a> array <span class="fu">vv</span>(<span class="sc">&amp;</span>Ntrt.);</span>
+<span id="cb4-183"><a href="#cb4-183" aria-hidden="true" tabindex="-1"></a> array <span class="fu">wfr</span>(<span class="sc">&amp;</span>Ntrt.);</span>
+<span id="cb4-184"><a href="#cb4-184" aria-hidden="true" tabindex="-1"></a> array <span class="fu">sw</span>(<span class="sc">&amp;</span>Ntrt.);</span>
+<span id="cb4-185"><a href="#cb4-185" aria-hidden="true" tabindex="-1"></a> ntrt<span class="ot">=</span><span class="er">&amp;</span>Ntrt.;</span>
+<span id="cb4-186"><a href="#cb4-186" aria-hidden="true" tabindex="-1"></a> <span class="sc">%do i=1 %</span>to <span class="sc">&amp;</span>Ntrt.;</span>
+<span id="cb4-187"><a href="#cb4-187" aria-hidden="true" tabindex="-1"></a>     ca<span class="sc">&amp;</span>i.<span class="ot">=</span><span class="er">&amp;&amp;</span>c<span class="sc">&amp;</span>i._0.;</span>
+<span id="cb4-188"><a href="#cb4-188" aria-hidden="true" tabindex="-1"></a>     cb<span class="sc">&amp;</span>i.<span class="ot">=</span><span class="er">&amp;&amp;</span>c<span class="sc">&amp;</span>i._1.;</span>
+<span id="cb4-189"><a href="#cb4-189" aria-hidden="true" tabindex="-1"></a>     na<span class="sc">&amp;</span>i.<span class="ot">=</span><span class="er">&amp;&amp;</span>n<span class="sc">&amp;</span>i._0.;</span>
+<span id="cb4-190"><a href="#cb4-190" aria-hidden="true" tabindex="-1"></a>     nb<span class="sc">&amp;</span>i.<span class="ot">=</span><span class="er">&amp;&amp;</span>n<span class="sc">&amp;</span>i._1.;</span>
+<span id="cb4-191"><a href="#cb4-191" aria-hidden="true" tabindex="-1"></a> %end;</span>
+<span id="cb4-192"><a href="#cb4-192" aria-hidden="true" tabindex="-1"></a> z<span class="ot">=</span><span class="fu">probit</span>(<span class="dv">1</span><span class="sc">-</span><span class="er">&amp;</span>alp.<span class="sc">/</span><span class="dv">2</span>);</span>
+<span id="cb4-193"><a href="#cb4-193" aria-hidden="true" tabindex="-1"></a> pi<span class="ot">=</span><span class="fu">constant</span>(<span class="st">"pi"</span>);</span>
+<span id="cb4-194"><a href="#cb4-194" aria-hidden="true" tabindex="-1"></a> do i<span class="ot">=</span><span class="dv">1</span> to ntrt;</span>
+<span id="cb4-195"><a href="#cb4-195" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pa</span>(i)<span class="ot">=</span><span class="fu">ca</span>(i)<span class="sc">/</span><span class="fu">na</span>(i);</span>
+<span id="cb4-196"><a href="#cb4-196" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pb</span>(i)<span class="ot">=</span><span class="fu">cb</span>(i)<span class="sc">/</span><span class="fu">nb</span>(i);</span>
+<span id="cb4-197"><a href="#cb4-197" aria-hidden="true" tabindex="-1"></a> end;</span>
+<span id="cb4-198"><a href="#cb4-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-199"><a href="#cb4-199" aria-hidden="true" tabindex="-1"></a> <span class="sc">/</span><span class="er">*</span>率差<span class="sc">*</span><span class="er">/</span></span>
+<span id="cb4-200"><a href="#cb4-200" aria-hidden="true" tabindex="-1"></a> ew<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-201"><a href="#cb4-201" aria-hidden="true" tabindex="-1"></a> do i<span class="ot">=</span><span class="dv">1</span> to ntrt;  </span>
+<span id="cb4-202"><a href="#cb4-202" aria-hidden="true" tabindex="-1"></a>    <span class="sc">%if &amp;wmethod.=1 %</span>then %do; </span>
+<span id="cb4-203"><a href="#cb4-203" aria-hidden="true" tabindex="-1"></a>        <span class="fu">wfr</span>(i)<span class="ot">=</span>(<span class="fu">na</span>(i)<span class="sc">+</span><span class="fu">nb</span>(i));</span>
+<span id="cb4-204"><a href="#cb4-204" aria-hidden="true" tabindex="-1"></a>    %end;</span>
+<span id="cb4-205"><a href="#cb4-205" aria-hidden="true" tabindex="-1"></a>    <span class="sc">%if &amp;wmethod.=2 %</span>then %do; </span>
+<span id="cb4-206"><a href="#cb4-206" aria-hidden="true" tabindex="-1"></a>        <span class="fu">wfr</span>(i)<span class="ot">=</span><span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span><span class="sc">/</span><span class="fu">na</span>(i)<span class="sc">+</span><span class="dv">1</span><span class="sc">/</span><span class="fu">nb</span>(i));</span>
+<span id="cb4-207"><a href="#cb4-207" aria-hidden="true" tabindex="-1"></a>    %end;</span>
+<span id="cb4-208"><a href="#cb4-208" aria-hidden="true" tabindex="-1"></a>    ew<span class="ot">=</span>ew<span class="sc">+</span><span class="fu">wfr</span>(i);</span>
+<span id="cb4-209"><a href="#cb4-209" aria-hidden="true" tabindex="-1"></a> end;</span>
+<span id="cb4-210"><a href="#cb4-210" aria-hidden="true" tabindex="-1"></a> rra<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-211"><a href="#cb4-211" aria-hidden="true" tabindex="-1"></a> rrb<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-212"><a href="#cb4-212" aria-hidden="true" tabindex="-1"></a> do i<span class="ot">=</span><span class="dv">1</span> to ntrt;</span>
+<span id="cb4-213"><a href="#cb4-213" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sw</span>(i)<span class="ot">=</span><span class="fu">wfr</span>(i)<span class="sc">/</span>ew;</span>
+<span id="cb4-214"><a href="#cb4-214" aria-hidden="true" tabindex="-1"></a>    rra<span class="ot">=</span>rra<span class="sc">+</span><span class="fu">sw</span>(i)<span class="sc">*</span><span class="fu">pa</span>(i);</span>
+<span id="cb4-215"><a href="#cb4-215" aria-hidden="true" tabindex="-1"></a>    rrb<span class="ot">=</span>rrb<span class="sc">+</span><span class="fu">sw</span>(i)<span class="sc">*</span><span class="fu">pb</span>(i);</span>
+<span id="cb4-216"><a href="#cb4-216" aria-hidden="true" tabindex="-1"></a> end;</span>
+<span id="cb4-217"><a href="#cb4-217" aria-hidden="true" tabindex="-1"></a> rankdiff<span class="ot">=</span>rrb<span class="sc">-</span>rra;</span>
+<span id="cb4-218"><a href="#cb4-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-219"><a href="#cb4-219" aria-hidden="true" tabindex="-1"></a> <span class="sc">/</span><span class="er">*</span>计算置信下限<span class="sc">*</span><span class="er">/</span></span>
+<span id="cb4-220"><a href="#cb4-220" aria-hidden="true" tabindex="-1"></a> str<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-221"><a href="#cb4-221" aria-hidden="true" tabindex="-1"></a> qxq<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-222"><a href="#cb4-222" aria-hidden="true" tabindex="-1"></a> do qcyc<span class="ot">=</span><span class="dv">1</span> to <span class="dv">3</span>;</span>
+<span id="cb4-223"><a href="#cb4-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-224"><a href="#cb4-224" aria-hidden="true" tabindex="-1"></a>    poit<span class="ot">=</span><span class="dv">10</span><span class="sc">**</span>(<span class="sc">-</span>qcyc<span class="sc">*</span><span class="dv">2</span>);</span>
+<span id="cb4-225"><a href="#cb4-225" aria-hidden="true" tabindex="-1"></a>    lmin<span class="ot">=</span><span class="dv">10</span>;</span>
+<span id="cb4-226"><a href="#cb4-226" aria-hidden="true" tabindex="-1"></a>    str<span class="ot">=</span>str<span class="sc">+</span>qxq<span class="sc">*</span>poit<span class="sc">*</span><span class="dv">100</span>;</span>
+<span id="cb4-227"><a href="#cb4-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-228"><a href="#cb4-228" aria-hidden="true" tabindex="-1"></a> do cyc<span class="ot">=</span><span class="sc">-</span><span class="dv">99</span> to <span class="dv">99</span>;</span>
+<span id="cb4-229"><a href="#cb4-229" aria-hidden="true" tabindex="-1"></a>    rdlx<span class="ot">=</span>str<span class="sc">+</span>cyc<span class="sc">*</span>poit;</span>
+<span id="cb4-230"><a href="#cb4-230" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-231"><a href="#cb4-231" aria-hidden="true" tabindex="-1"></a>    do i<span class="ot">=</span><span class="dv">1</span> to ntrt;</span>
+<span id="cb4-232"><a href="#cb4-232" aria-hidden="true" tabindex="-1"></a>       %<span class="fu">rrv</span>(<span class="fu">ca</span>(i),<span class="fu">cb</span>(i),<span class="fu">na</span>(i),<span class="fu">nb</span>(i),z,rdlx,<span class="fu">ra</span>(i),<span class="fu">rb</span>(i),<span class="fu">vv</span>(i));</span>
+<span id="cb4-233"><a href="#cb4-233" aria-hidden="true" tabindex="-1"></a>       <span class="cf">if</span> <span class="fu">abs</span>(<span class="fu">vv</span>(i))<span class="sc">&lt;</span><span class="dv">10</span><span class="sc">**</span>(<span class="sc">-</span><span class="dv">12</span>) then <span class="fu">vv</span>(i)<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-234"><a href="#cb4-234" aria-hidden="true" tabindex="-1"></a>    end;</span>
+<span id="cb4-235"><a href="#cb4-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-236"><a href="#cb4-236" aria-hidden="true" tabindex="-1"></a>    rra<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-237"><a href="#cb4-237" aria-hidden="true" tabindex="-1"></a>    rrb<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-238"><a href="#cb4-238" aria-hidden="true" tabindex="-1"></a>    vxv<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-239"><a href="#cb4-239" aria-hidden="true" tabindex="-1"></a>    do i<span class="ot">=</span><span class="dv">1</span> to ntrt;</span>
+<span id="cb4-240"><a href="#cb4-240" aria-hidden="true" tabindex="-1"></a>       rra<span class="ot">=</span>rra<span class="sc">+</span><span class="fu">sw</span>(i)<span class="sc">*</span><span class="fu">pa</span>(i);</span>
+<span id="cb4-241"><a href="#cb4-241" aria-hidden="true" tabindex="-1"></a>       rrb<span class="ot">=</span>rrb<span class="sc">+</span><span class="fu">sw</span>(i)<span class="sc">*</span><span class="fu">pb</span>(i);</span>
+<span id="cb4-242"><a href="#cb4-242" aria-hidden="true" tabindex="-1"></a>       vxv<span class="ot">=</span>vxv<span class="sc">+</span><span class="fu">vv</span>(i)<span class="sc">*</span><span class="fu">sw</span>(i)<span class="sc">*</span><span class="fu">sw</span>(i);</span>
+<span id="cb4-243"><a href="#cb4-243" aria-hidden="true" tabindex="-1"></a>    end;</span>
+<span id="cb4-244"><a href="#cb4-244" aria-hidden="true" tabindex="-1"></a>    rdx<span class="ot">=</span>rrb<span class="sc">-</span>rra<span class="sc">-</span>(z<span class="sc">*</span>z<span class="sc">*</span>vxv)<span class="sc">**</span><span class="fl">0.5</span>; <span class="sc">/</span><span class="er">*</span>置信下限<span class="sc">*</span><span class="er">/</span></span>
+<span id="cb4-245"><a href="#cb4-245" aria-hidden="true" tabindex="-1"></a>    diff<span class="ot">=</span><span class="fu">abs</span>(rdx<span class="sc">-</span>rdlx);</span>
+<span id="cb4-246"><a href="#cb4-246" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> diff<span class="sc">&lt;</span>lmin then do;</span>
+<span id="cb4-247"><a href="#cb4-247" aria-hidden="true" tabindex="-1"></a>       lmin<span class="ot">=</span>diff;</span>
+<span id="cb4-248"><a href="#cb4-248" aria-hidden="true" tabindex="-1"></a>       qxq<span class="ot">=</span>cyc;</span>
+<span id="cb4-249"><a href="#cb4-249" aria-hidden="true" tabindex="-1"></a>    end;</span>
+<span id="cb4-250"><a href="#cb4-250" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="sc">&amp;</span>all.<span class="ot">=</span><span class="dv">1</span> then output;</span>
+<span id="cb4-251"><a href="#cb4-251" aria-hidden="true" tabindex="-1"></a> end; </span>
+<span id="cb4-252"><a href="#cb4-252" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-253"><a href="#cb4-253" aria-hidden="true" tabindex="-1"></a> end;</span>
+<span id="cb4-254"><a href="#cb4-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-255"><a href="#cb4-255" aria-hidden="true" tabindex="-1"></a> rdl<span class="ot">=</span>str<span class="sc">+</span>qxq<span class="sc">*</span>poit;</span>
+<span id="cb4-256"><a href="#cb4-256" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-257"><a href="#cb4-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-258"><a href="#cb4-258" aria-hidden="true" tabindex="-1"></a> <span class="sc">/</span><span class="er">*</span>计算置信上限<span class="sc">*</span><span class="er">/</span></span>
+<span id="cb4-259"><a href="#cb4-259" aria-hidden="true" tabindex="-1"></a> str<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-260"><a href="#cb4-260" aria-hidden="true" tabindex="-1"></a> qxq<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-261"><a href="#cb4-261" aria-hidden="true" tabindex="-1"></a> do qcyc<span class="ot">=</span><span class="dv">1</span> to <span class="dv">3</span>;</span>
+<span id="cb4-262"><a href="#cb4-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-263"><a href="#cb4-263" aria-hidden="true" tabindex="-1"></a>    poit<span class="ot">=</span><span class="dv">10</span><span class="sc">**</span>(<span class="sc">-</span>qcyc<span class="sc">*</span><span class="dv">2</span>);</span>
+<span id="cb4-264"><a href="#cb4-264" aria-hidden="true" tabindex="-1"></a>    dmin<span class="ot">=</span><span class="dv">10</span>;</span>
+<span id="cb4-265"><a href="#cb4-265" aria-hidden="true" tabindex="-1"></a>    str<span class="ot">=</span>str<span class="sc">+</span>qxq<span class="sc">*</span>poit<span class="sc">*</span><span class="dv">100</span>;</span>
+<span id="cb4-266"><a href="#cb4-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-267"><a href="#cb4-267" aria-hidden="true" tabindex="-1"></a> do cyc<span class="ot">=</span><span class="sc">-</span><span class="dv">99</span> to <span class="dv">99</span>;</span>
+<span id="cb4-268"><a href="#cb4-268" aria-hidden="true" tabindex="-1"></a>    rdlx<span class="ot">=</span>str<span class="sc">+</span>cyc<span class="sc">*</span>poit;</span>
+<span id="cb4-269"><a href="#cb4-269" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-270"><a href="#cb4-270" aria-hidden="true" tabindex="-1"></a>    do i<span class="ot">=</span><span class="dv">1</span> to ntrt;</span>
+<span id="cb4-271"><a href="#cb4-271" aria-hidden="true" tabindex="-1"></a>       %<span class="fu">rrv</span>(<span class="fu">ca</span>(i),<span class="fu">cb</span>(i),<span class="fu">na</span>(i),<span class="fu">nb</span>(i),z,rdlx,<span class="fu">ra</span>(i),<span class="fu">rb</span>(i),<span class="fu">vv</span>(i));</span>
+<span id="cb4-272"><a href="#cb4-272" aria-hidden="true" tabindex="-1"></a>       <span class="cf">if</span> <span class="fu">abs</span>(<span class="fu">vv</span>(i))<span class="sc">&lt;</span><span class="dv">10</span><span class="sc">**</span>(<span class="sc">-</span><span class="dv">12</span>) then <span class="fu">vv</span>(i)<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-273"><a href="#cb4-273" aria-hidden="true" tabindex="-1"></a>    end;</span>
+<span id="cb4-274"><a href="#cb4-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-275"><a href="#cb4-275" aria-hidden="true" tabindex="-1"></a>    rra<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-276"><a href="#cb4-276" aria-hidden="true" tabindex="-1"></a>    rrb<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-277"><a href="#cb4-277" aria-hidden="true" tabindex="-1"></a>    vxv<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-278"><a href="#cb4-278" aria-hidden="true" tabindex="-1"></a>    do i<span class="ot">=</span><span class="dv">1</span> to ntrt;</span>
+<span id="cb4-279"><a href="#cb4-279" aria-hidden="true" tabindex="-1"></a>       rra<span class="ot">=</span>rra<span class="sc">+</span><span class="fu">sw</span>(i)<span class="sc">*</span><span class="fu">pa</span>(i);</span>
+<span id="cb4-280"><a href="#cb4-280" aria-hidden="true" tabindex="-1"></a>       rrb<span class="ot">=</span>rrb<span class="sc">+</span><span class="fu">sw</span>(i)<span class="sc">*</span><span class="fu">pb</span>(i);</span>
+<span id="cb4-281"><a href="#cb4-281" aria-hidden="true" tabindex="-1"></a>       vxv<span class="ot">=</span>vxv<span class="sc">+</span><span class="fu">vv</span>(i)<span class="sc">*</span><span class="fu">sw</span>(i)<span class="sc">*</span><span class="fu">sw</span>(i);</span>
+<span id="cb4-282"><a href="#cb4-282" aria-hidden="true" tabindex="-1"></a>    end;</span>
+<span id="cb4-283"><a href="#cb4-283" aria-hidden="true" tabindex="-1"></a>    rdx<span class="ot">=</span>rrb<span class="sc">-</span>rra<span class="sc">+</span>(z<span class="sc">*</span>z<span class="sc">*</span>vxv)<span class="sc">**</span><span class="fl">0.5</span>; <span class="sc">/</span><span class="er">*</span>置信上限<span class="sc">*</span><span class="er">/</span></span>
+<span id="cb4-284"><a href="#cb4-284" aria-hidden="true" tabindex="-1"></a>    diff<span class="ot">=</span><span class="fu">abs</span>(rdx<span class="sc">-</span>rdlx);</span>
+<span id="cb4-285"><a href="#cb4-285" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> diff<span class="sc">&lt;</span>dmin then do;</span>
+<span id="cb4-286"><a href="#cb4-286" aria-hidden="true" tabindex="-1"></a>       dmin<span class="ot">=</span>diff;</span>
+<span id="cb4-287"><a href="#cb4-287" aria-hidden="true" tabindex="-1"></a>       qxq<span class="ot">=</span>cyc;</span>
+<span id="cb4-288"><a href="#cb4-288" aria-hidden="true" tabindex="-1"></a>    end;</span>
+<span id="cb4-289"><a href="#cb4-289" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="sc">&amp;</span>all.<span class="ot">=</span><span class="dv">1</span> then output;</span>
+<span id="cb4-290"><a href="#cb4-290" aria-hidden="true" tabindex="-1"></a> end; </span>
+<span id="cb4-291"><a href="#cb4-291" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-292"><a href="#cb4-292" aria-hidden="true" tabindex="-1"></a> end;</span>
+<span id="cb4-293"><a href="#cb4-293" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-294"><a href="#cb4-294" aria-hidden="true" tabindex="-1"></a> rdu<span class="ot">=</span>str<span class="sc">+</span>qxq<span class="sc">*</span>poit;</span>
+<span id="cb4-295"><a href="#cb4-295" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb4-296"><a href="#cb4-296" aria-hidden="true" tabindex="-1"></a><span class="sc">/</span><span class="er">*</span>Z统计量<span class="sc">*</span><span class="er">/</span></span>
+<span id="cb4-297"><a href="#cb4-297" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-298"><a href="#cb4-298" aria-hidden="true" tabindex="-1"></a> rdlx<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-299"><a href="#cb4-299" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-300"><a href="#cb4-300" aria-hidden="true" tabindex="-1"></a> do i<span class="ot">=</span><span class="dv">1</span> to ntrt;</span>
+<span id="cb4-301"><a href="#cb4-301" aria-hidden="true" tabindex="-1"></a>    %<span class="fu">rrv</span>(<span class="fu">ca</span>(i),<span class="fu">cb</span>(i),<span class="fu">na</span>(i),<span class="fu">nb</span>(i),z,rdlx,<span class="fu">ra</span>(i),<span class="fu">rb</span>(i),<span class="fu">vv</span>(i));</span>
+<span id="cb4-302"><a href="#cb4-302" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="fu">abs</span>(<span class="fu">vv</span>(i))<span class="sc">&lt;</span><span class="dv">10</span><span class="sc">**</span>(<span class="sc">-</span><span class="dv">12</span>) then <span class="fu">vv</span>(i)<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-303"><a href="#cb4-303" aria-hidden="true" tabindex="-1"></a> end;</span>
+<span id="cb4-304"><a href="#cb4-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-305"><a href="#cb4-305" aria-hidden="true" tabindex="-1"></a> rra<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-306"><a href="#cb4-306" aria-hidden="true" tabindex="-1"></a> rrb<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-307"><a href="#cb4-307" aria-hidden="true" tabindex="-1"></a> vxv<span class="ot">=</span><span class="dv">0</span>;</span>
+<span id="cb4-308"><a href="#cb4-308" aria-hidden="true" tabindex="-1"></a> do i<span class="ot">=</span><span class="dv">1</span> to ntrt;</span>
+<span id="cb4-309"><a href="#cb4-309" aria-hidden="true" tabindex="-1"></a>    rra<span class="ot">=</span>rra<span class="sc">+</span><span class="fu">sw</span>(i)<span class="sc">*</span><span class="fu">pa</span>(i);</span>
+<span id="cb4-310"><a href="#cb4-310" aria-hidden="true" tabindex="-1"></a>    rrb<span class="ot">=</span>rrb<span class="sc">+</span><span class="fu">sw</span>(i)<span class="sc">*</span><span class="fu">pb</span>(i);</span>
+<span id="cb4-311"><a href="#cb4-311" aria-hidden="true" tabindex="-1"></a>    vxv<span class="ot">=</span>vxv<span class="sc">+</span><span class="fu">vv</span>(i)<span class="sc">*</span><span class="fu">sw</span>(i)<span class="sc">*</span><span class="fu">sw</span>(i);</span>
+<span id="cb4-312"><a href="#cb4-312" aria-hidden="true" tabindex="-1"></a> end;</span>
+<span id="cb4-313"><a href="#cb4-313" aria-hidden="true" tabindex="-1"></a> Zsc<span class="ot">=</span><span class="sc">-</span><span class="fu">abs</span>((rrb<span class="sc">-</span>rra)<span class="sc">/</span>vxv<span class="sc">**</span><span class="fl">0.5</span>);</span>
+<span id="cb4-314"><a href="#cb4-314" aria-hidden="true" tabindex="-1"></a> Pvalue<span class="ot">=</span><span class="fu">probnorm</span>(Zsc)<span class="sc">*</span><span class="dv">2</span>;</span>
+<span id="cb4-315"><a href="#cb4-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-316"><a href="#cb4-316" aria-hidden="true" tabindex="-1"></a> output;</span>
+<span id="cb4-317"><a href="#cb4-317" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-318"><a href="#cb4-318" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-319"><a href="#cb4-319" aria-hidden="true" tabindex="-1"></a> <span class="sc">%if &amp;all.=1 %</span>then %do;</span>
+<span id="cb4-320"><a href="#cb4-320" aria-hidden="true" tabindex="-1"></a>     keep diff rdx rdlx rdl rra rrb vxv ra<span class="sc">:</span> rb<span class="sc">:</span> rdl dmin;</span>
+<span id="cb4-321"><a href="#cb4-321" aria-hidden="true" tabindex="-1"></a> %end;</span>
+<span id="cb4-322"><a href="#cb4-322" aria-hidden="true" tabindex="-1"></a> <span class="sc">%else %</span>do;</span>
+<span id="cb4-323"><a href="#cb4-323" aria-hidden="true" tabindex="-1"></a>     keep rdl rdu dmin lmin Zsc Pvalue rankdiff ;</span>
+<span id="cb4-324"><a href="#cb4-324" aria-hidden="true" tabindex="-1"></a> %end;</span>
+<span id="cb4-325"><a href="#cb4-325" aria-hidden="true" tabindex="-1"></a>run;</span>
+<span id="cb4-326"><a href="#cb4-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-327"><a href="#cb4-327" aria-hidden="true" tabindex="-1"></a>%end;</span>
+<span id="cb4-328"><a href="#cb4-328" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-329"><a href="#cb4-329" aria-hidden="true" tabindex="-1"></a>data <span class="sc">&amp;</span>out.;</span>
+<span id="cb4-330"><a href="#cb4-330" aria-hidden="true" tabindex="-1"></a> set dat2;</span>
+<span id="cb4-331"><a href="#cb4-331" aria-hidden="true" tabindex="-1"></a> RateDiff<span class="ot">=</span>rankdiff;</span>
+<span id="cb4-332"><a href="#cb4-332" aria-hidden="true" tabindex="-1"></a> LowerCL<span class="ot">=</span>rdl;</span>
+<span id="cb4-333"><a href="#cb4-333" aria-hidden="true" tabindex="-1"></a> UpperCL<span class="ot">=</span>rdu;</span>
+<span id="cb4-334"><a href="#cb4-334" aria-hidden="true" tabindex="-1"></a> Z<span class="ot">=</span>Zsc;</span>
+<span id="cb4-335"><a href="#cb4-335" aria-hidden="true" tabindex="-1"></a> P<span class="ot">=</span>Pvalue;</span>
+<span id="cb4-336"><a href="#cb4-336" aria-hidden="true" tabindex="-1"></a> keep ratediff LowerCL UpperCL Z P;</span>
+<span id="cb4-337"><a href="#cb4-337" aria-hidden="true" tabindex="-1"></a>run;</span>
+<span id="cb4-338"><a href="#cb4-338" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-339"><a href="#cb4-339" aria-hidden="true" tabindex="-1"></a>%mend;</span>
+<span id="cb4-340"><a href="#cb4-340" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-341"><a href="#cb4-341" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-342"><a href="#cb4-342" aria-hidden="true" tabindex="-1"></a><span class="sc">/</span><span class="er">*</span>dat<span class="sc">:</span>输入的数据集文件名,stra<span class="sc">:</span>分层因素,trt<span class="sc">:</span>分组变量名,c<span class="sc">:</span>事件数的变量名,n<span class="sc">:</span>样本量的变量名,每一层的n都不能为0<span class="sc">*</span><span class="er">/</span></span>
+<span id="cb4-343"><a href="#cb4-343" aria-hidden="true" tabindex="-1"></a><span class="er">/*</span>Wmethod为权重计算方法,本次分析使用Wmethod<span class="ot">=</span><span class="dv">2</span><span class="sc">*</span><span class="er">/</span></span>
+<span id="cb4-344"><a href="#cb4-344" aria-hidden="true" tabindex="-1"></a><span class="er">/*</span>Wmethod<span class="ot">=</span><span class="dv">1</span><span class="sc">:</span> Wi<span class="ot">=</span>n0i<span class="sc">+</span>n1i<span class="sc">*</span><span class="er">/</span></span>
+<span id="cb4-345"><a href="#cb4-345" aria-hidden="true" tabindex="-1"></a><span class="er">/*</span>Wmethod<span class="ot">=</span><span class="dv">2</span><span class="sc">:</span> Wi<span class="ot">=</span><span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span><span class="sc">/</span>n0i<span class="sc">+</span><span class="dv">1</span><span class="sc">/</span>n1i)<span class="sc">*</span><span class="er">/</span></span>
+<span id="cb4-346"><a href="#cb4-346" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-347"><a href="#cb4-347" aria-hidden="true" tabindex="-1"></a><span class="er">/*</span>当stra设为0时,为不分层的MN方法<span class="sc">*</span><span class="er">/</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../stat/stat.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Statistics (统计学)</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../stat/survivalanalysis.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Surivival Analysis（生存分析）</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
