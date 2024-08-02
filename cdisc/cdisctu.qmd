@@ -1,0 +1,50 @@
+# TU Domain {.cdisc}
+
+Tumor/Lesion Identification，肿瘤/病灶标识
+
+病灶标识的信息存放在TU domain，检查结果在TR domain。
+
+![](images/Snipaste_2024-01-15_09-33-29.png)
+
+*tu.xpt*
+
+| TULINKID | TUTESTCD | TUTEST               | TUORRES    | VISIT  |
+|----------|----------|----------------------|------------|--------|
+| T01      | TUMIDENT | Tumor Identification | TARGET     | SCREEN |
+| T02      | TUMIDENT | Tumor Identification | TARGET     | SCREEN |
+| T03      | TUMIDENT | Tumor Identification | TARGET     | SCREEN |
+| T04      | TUMIDENT | Tumor Identification | TARGET     | SCREEN |
+| NT01     | TUMIDENT | Tumor Identification | NON-TARGET | SCREEN |
+| T02/T03  | TUMERG   | Tumor Merged         | TARGET     | WEEK 6 |
+| T04.1    | TUSPLIT  | Tumor Split          | TARGET     | WEEK 6 |
+| T04.2    | TUSPLIT  | Tumor Split          | TARGET     | WEEK 6 |
+| NEW01    | TUMIDENT | Tumor Identification | NEW        | WEEK 6 |
+
+*tr.xpt*
+
+| TRLNKGRP | TRLNKID | TRTESTCD | TRTEST      | TRORRES              | VISIT  |
+|----------|---------|----------|-------------|----------------------|--------|
+| A1       | T01     | DIAMETER | Diameter    | 20                   | SCREEN |
+| A1       | T02     | DIAMETER | Diameter    | 20                   | SCREEN |
+| A1       | T03     | DIAMETER | Diameter    | 15                   | SCREEN |
+| A1       | T04     | DIAMETER | Diameter    | 15                   | SCREEN |
+| A1       | NT01    | TUMSTATE | Tumor State | PRESENT              | SCREEN |
+| A2       | T01     | DIAMETER | Diameter    | TOO SMALL TO MERSURE | WEEK 6 |
+| A2       | T02/T03 | DIAMETER | Diameter    | 5                    | WEEK 6 |
+| A2       | T04.1   | DIAMETER | Diameter    | 5                    | WEEK 6 |
+| A2       | T04.2   | DIAMETER | Diameter    | 5                    | WEEK 6 |
+| A2       | NT01    | TUMSTATE | Tumor State | ABESENT              | WEEK 6 |
+| A2       | NEW01   | DIAMETER | Diameter    | 5                    | WEEK 6 |
+
+*relrec.xpt*
+
+| STUDYID | RDOMAIN | USUBJID | IDVAR   | IDVARVAL | RELTYPE | RELID |
+|---------|---------|---------|---------|----------|---------|-------|
+| STUDY1  | TU      |         | TULNKID |          | ONE     | TUTR  |
+| STUDY1  | TR      |         | TRLNKID |          | MANY    | TUTR  |
+
+| Variable | Comments                                                                 |
+|----------|--------------------------------------------------------------------------|
+| TULNKID  | 选取的病灶都有自己唯一的编号，即为TULINKID，每个病灶在TU里只有一条记录。 |
+|          |                                                                          |
+|          |                                                                          |

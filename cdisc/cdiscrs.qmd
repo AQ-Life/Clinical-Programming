@@ -1,0 +1,7 @@
+# RS Domain {.cdisc}
+
+Response Assessment
+
+| Variable | Comments                           |
+|----------|------------------------------------|
+| RSDTC    | 影像学检查日期而非疗效判断的日期。 |

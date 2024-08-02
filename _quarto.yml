@@ -7,21 +7,32 @@ book:
   date: "2024/1/8"
   chapters:
     - index.qmd
-    - part: sasprog.qmd
+    - part: sas\sasprog.qmd
       chapters: 
-        - sasprog_process.qmd
-    - part: intro.qmd
+        - sas\sasprog_process.qmd
+        - sas\sasprog_gtl.qmd
+    - part: stat\stat.qmd
       chapters: 
-        - intro.qmd
+        - stat\datamanage.qmd
+        - stat\freqanalysis.qmd
+        - stat\survivalanalysis.qmd
+        - stat\pkanalysis.qmd
+    - part: cdisc\cdisc.qmd
+      chapters: 
+        - cdisc\cdiscae.qmd
+        - cdisc\cdiscdm.qmd
+        - cdisc\cdiscrs.qmd
+        - cdisc\cdisctu.qmd
+        - cdisc\cdisctr.qmd
 
 
 bibliography: references.bib
 
 format:
   html:
-    theme: custom.scss
-  pdf:
-    documentclass: scrreprt
+    theme: 
+      - cosmo
+      - custom.scss
 
 editor: visual
 

@@ -1,0 +1,74 @@
+# Data Processing（数据处理） {.stat}
+
+# 数据标准化
+
+统计分析过程如果需要对其进行数据标准化，即每个变量都减去均值后再除以方差。
+
+``` sas
+proc stdize data=sashelp.class out=stdclass; var age weight height; run;
+```
+
+SAS 的 proc stdize 过程，本意用于数据的标化，不过，利用 missing选项，它还有一个妙用：连续变量缺失值的填补。可以设定用均值或者中位数填补，也可直接指定一个具体的值填补。
+
+``` sas
+proc stdize data=sashelp.heart  out=impheart missing=mean  reponly oprefix sprefix=imp_; var Cholesterol; run;
+```
+
+# 高斯秩变换（秩转换）
+
+变量的值按照从小到大的顺序排序，获得每个变量值的秩次，并用秩次代替原有变量值的过程。
+
+``` sas
+data a;
+value=45;output;
+value=25;output;
+value=94;output;
+value=96;output;
+value=40;output;
+value=45;output;
+value=25;output;
+value=94;output;
+value=96;output;
+value=40;output;
+run;
+
+data b;
+	set a;
+	if _n_<=5 then grp=1;
+	else grp=2;
+run;
+data b;
+	set b;
+	by grp;
+	if first.grp then _ord_=1;
+	else _ord_+1;
+run;
+
+proc sort;
+	by grp value;
+	run;
+
+data b;
+	set b;
+	by grp;
+	if first.grp then rank=0;
+	else rank+1;
+	proc sort;
+		by grp _ord_;
+run;
+
+proc sql noprint;
+	create table c as select *, max(rank) as max from b group by grp;
+quit;
+
+data c;
+	set c;
+	_rank_=(rank/max-0.5)*2;
+	epsilon=1e-6;
+	if _rank_=1 then _rank_=_rank_-epsilon;
+	else if _rank_=-1 then _rank_=_rank_+epsilon;
+	erf=erf(_rank_);
+	if _rank_ >= 0 then erfc=sqrt(cinv(abs(_rank_),1)/2);
+	else if _rank_ < 0 then erfc=-sqrt(cinv(abs(_rank_),1)/2);
+run;
+```

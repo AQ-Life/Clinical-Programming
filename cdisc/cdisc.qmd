@@ -1,0 +1,37 @@
+# CDISC {.unnumbered}
+
+## SDTM Standard
+
+### UNII（[Unique Ingredient Identifier (FDA)](http://m.shortof.com/suolueci/Unique-Ingredient-Identifier-28FDA29-UNII)）:
+
+<http://fdasis.nlm.nih.gov/srs/>
+
+### SNOMED:
+
+<http://browser.ihtsdotools.org/>?
+
+### MED-RT:
+
+<https://evs.nci.nih.gov/ftp1/MED-RT/>
+
+### SDTM CT:
+
+<https://evs.nci.nih.gov/ftp1/CDISC/SDTM/SDTM%20Terminology.html#top>
+
+## NMPA 递交
+
+-   define.xml （数据说明）
+
+-   aCRF.pdf （是递交的数据集XPT对应aCRF，不是EDC数据集的aCRF）
+
+-   csdrg.pdf/adrg.pdf （原始数据库审阅说明/分析数据库审阅说明）
+
+-   数据文件：
+
+    1.  XPT v5: SAS (proc copy)
+
+    2.  XPT v8: SAS macro ( <http://support.sas.com/kb/46/944.html>)
+
+    <font color=red>**SAS proc cport 生成的XPT不符合要求**</font>
+
+    3.  Encoding: 需要在审阅说明中说明 UTF-8

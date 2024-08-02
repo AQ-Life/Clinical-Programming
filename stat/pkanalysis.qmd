@@ -1,0 +1,58 @@
+# PK Analysis（PK分析） {.stat}
+
+基于power model评价PK参数
+
+$ln(y)=\alpha+\beta*ln(dose)$，其中$y$表示PK参数如$AUC_{0-inf}$,$C_{max}$等，$\alpha$ 代表截距项，$\beta$ 代表斜率。
+
+MIX model计算P值。
+
+``` sas
+data pp1;
+    set adpcp.adpp;
+    where PKPSFL="Y" AND paramcd="CMAX" AND PPGRPID="DAY 1, DOSE 1";
+    logaval=log(aval);
+    logdose=log(trtan);
+run;
+
+proc mixed data=pp1;
+    class subjid ;
+    model logaval=logdose/ddfm=kr;
+    random intercept logdose/subject= subjid type=un gcorr s;
+/*  lsmeans trtan / diff=control('R') alpha=0.1 cl;*/
+    estimate 'aa' logdose 1/ cl alpha=0.1;
+quit;
+```
+
+参考文章计算置信区间与判断区间。 [置信区间法用于线性药代动力学特征评价](doc/置信区间法用于线性药代动力学特征评价.pdf)
+
+``` sas
+data pkdata1;
+    set pkdata;
+    logaval=log(aval);
+    logdose=log(dose);
+run;
+
+proc means data=pkdata1;
+    by dose;
+    var aval;
+run;
+
+proc reg data=pkdata1;
+    model aval=dose;
+quit;
+
+**** 计算回归方程的斜率及其置信区间 ****;
+proc reg data=pkdata1;
+    model logaval=logdose/ clb alpha=0.1;
+quit;
+
+
+**** 判断区间 ****;
+data ecl;
+    le=0.8;
+    ue=1.25;
+    r=2.5/0.625;
+    lcl=1+log(0.8)/log(r);
+    ucl=1+log(1.25)/log(r);
+run;
+```

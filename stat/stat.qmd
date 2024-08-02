@@ -1,0 +1,149 @@
+# Statistics (统计学) {.unnumbered}
+
+# 置信区间
+
+## 均值求置信区间CI（连续性统计指标）
+
+``` sas
+proc means data=sashelp.class mean clm;
+    var age;
+run;
+```
+
+## 率（百分比）指标求置信区间CI
+
+``` sas
+proc freq data=sashelp.class; 
+   table sex/binomial(all);
+run;
+```
+
+如果是列联表，基于Clopper-Pearson exact method计算响应的受试者比例及其95%CI
+
+``` sas
+ods output  BinomialCLs=binomial;
+proc freq data=ci1 ;
+  by paramn avisitn trtan;
+  tables seq/ binomial(clopperpearson);
+  weight freq/zeros;
+run;
+
+** seq=0/1, 表示是否触发疗效相应 **
+```
+
+## 独立两样本t检验，计算2组间的均值的差值和差值的95% CI
+
+``` sas
+PROC TTEST DATA=ADEFF CI=EQUAL;
+    CLASS TRT01PN;
+    VAR PCHG;
+RUN;
+```
+
+# 卡方检验
+
+Cochran-Mantel-Haenszel（CHM）检验对两组之间阳转率的差异（率差95%CI）
+
+``` sas
+proc freq data=ratefreq2 order=data;
+   by /*cohort*/ paramn avisitn;
+   tables subgrp*trtan*seq / cmh commonriskdiff;   /***variables order: category*treatment*response***/
+   exact chisq;
+   weight freq/ zeros;
+   ods output CMH=CMH CommonPdiff=CommonPdiff ;
+run;
+
+** subgrp 为纳入模型的分层因素等，比如  subgrp=catx(',', PCV, WAMD, BBVCAGR1); BBVCAGR1 为基线BCVA分组（<55/≥55） **
+```
+
+# 方差分析
+
+## 协方差分析
+
+基线PASI评分（base）作为协变量，治疗分组（trt01an）和中心组别（siteid）作为固定效应，并考虑治疗分组与中心组别的交互效应
+
+``` sas
+proc glm data=adeff;
+    class trt01pn siteid;
+    model pchg = base trt01pn siteid trt01pn*siteid ;
+    estimate "a-b" trt01pn 1-1;
+    lsmeans trt01pn/stderr tdiff pdiff cl ;
+run;
+```
+
+协方差分析（ANOCVA）对48周BCVA较基线改善的平均字母数
+
+``` sas
+ods output lsmeans=lsmean tests3=tests  diffs=diffs; 
+proc mixed data=DATASET(where=(trtan in (2,1)));
+  by &subgrp paramn avisitn ;
+  class trtan(ref='1') &stra;
+  model CHG=BASE TRTAN PCV WAMD;
+  lsmeans trtan / cl pdiff; 
+run;
+** lsmeans, BCVA 第48 周的相对基线变化的最小二乘均值（LS Mean）以及对应的95%置信区间 **
+** diffs, 两组的最小二乘均值差（LS difference）以及相应的95%的置信区
+** tests3, 两组的双侧检验的P 值
+```
+
+# MMRM（混合效应模型）
+
+重复测量的MMRM model对两组的BCVA在第48周的相对基线变化进行比较
+
+-   MMRM模型**不对缺失值做填补**
+
+-   **MMRM模型的理论是将每个受试者的重复测量的观测值都看作是服从一个多元正态分布，而其分布的协方差矩阵则表述了不同病例间的相关性。**
+
+-   协方差矩阵描述了不同**病例**间的**相关性，协方差矩阵**的选择对模型结果产生影响，有些会产生不**收敛**的情况
+
+``` sas
+proc mixed=data;
+    class SUBJID TRTAN PCV WAMD AVISITN;
+    model CHG = TRTAN PCV WAMD AVISITN TRTPN*AVISITN BBCVA / solution;
+    repeated AVISITN / subject = SUBJID  type = UN;
+    estimate "SCT-RAN" TRTAN 1 -1;
+run;
+```
+
+最小二乘法计算两组间的差异，&sta是随机分层因素
+
+``` sas
+ods output lsmeans=lsmean_ tests3=tests2_&ff.  diffs=diffs2_&ff.; 
+proc mixed data=gmr1(where=(trtan in (2,1)));
+  by avisitn avisit ;
+  class trtan(ref='1') &stra;
+  model logaval=logbase trtan &stra;
+  lsmeans trtan / cl pdiff;  
+run;
+```
+
+# P value
+
+## adjusted P value（校正后的P值）
+
+校正后的P值是对P值进行了多重假设检验，能更多地控制假阳性率。
+
+``` sas
+proc multtest inpvalues=a holm hoc fdr;
+run;
+```
+
+# **logistic回归**
+
+逻辑回归中，OR值（Odds Ratio）表示分类变量之间的关系，又称优势比。
+
+-   OR = 1, X与Y没有相关性；
+
+-   OR \> 1, X促进Y；
+
+-   OR \< 1, X阻碍Y。
+
+``` sas
+********** Odds Ratio logistic model ********;
+ods output ParameterEstimates=estimate1 OddsRatios=oddratio1;
+proc logistic data=ana1 ;
+    where trtpn in (1 3);
+    class trtpn(ref='3') country DUROGR1 COMOGRC /*BCOVRES*/;
+    model cnsr=trtpn country DUROGR1 COMOGRC /*BCOVRES*/;
+run;
+```
