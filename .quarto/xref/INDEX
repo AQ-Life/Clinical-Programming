@@ -70,5 +70,8 @@
   },
   "stat/freqanalysis.qmd": {
     "freqanalysis.html": "57be5f93"
+  },
+  "stat/datamanage.qmd": {
+    "datamanage.html": "cc32c72a"
   }
 }

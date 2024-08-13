@@ -4,216 +4,373 @@
     "href": "index.html",
     "title": "Clinical Programming",
     "section": "",
-    "text": "Clinical Programming\n临床编程"
+    "text": "Clinical Programming\n临床编程",
+    "crumbs": [
+      "Clinical Programming"
+    ]
   },
   {
     "objectID": "sas/sasprog.html",
     "href": "sas/sasprog.html",
     "title": "SAS Skills",
     "section": "",
-    "text": "This is a Quarto book."
+    "text": "This is a Quarto book.",
+    "crumbs": [
+      "SAS Skills"
+    ]
   },
   {
     "objectID": "sas/sasprog_process.html",
     "href": "sas/sasprog_process.html",
     "title": "SAS运行机制",
     "section": "",
-    "text": "Data step 处理机制\nData step分为编码阶段和执行阶段。"
+    "text": "Data step 处理机制\nData step分为编码阶段和执行阶段。",
+    "crumbs": [
+      "SAS Skills",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>SAS运行机制</span>"
+    ]
   },
   {
     "objectID": "sas/sasprog_process.html#编译阶段",
     "href": "sas/sasprog_process.html#编译阶段",
     "title": "SAS运行机制",
     "section": "编译阶段",
-    "text": "编译阶段\n编译阶段会进行语法的检查（keywords缺失或错误，无效的变量名，标点符合的缺失或错误，无效的选项等等），且将SAS语句转换为可执行的机器代码，并创建以下内容：\n\ninput buffer\ninput buffer只会在SAS input语句读入数据时才会创建的一个逻辑空间，如果是SAS set语句，则会直接创建PDV。可以理解为input buffer只有一行的空间，读入数据时，也只能一行一行的读取。\n\n\n\n1\n2\n3\n4\n5\n6\n7\n8\n…\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nprogram data vector (PDV)\nPDV也是一个逻辑空间，同样理解为PDV只有一行的空间。会根据运行的SAS程序，创建SAS变量以及两个自动变量_N_,_ERROR_（自动变量最终不会写入到SAS数据集）。\n\n\n\n_N_\n_ERROR_\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ndataset attributesand variable attributes\n在编译阶段就已经确定了SAS数据集与变量的属性（Proc contents 的输出内容：数据集的名称，观测数，变量数，变量名称，变量属性等等）。"
+    "text": "编译阶段\n编译阶段会进行语法的检查（keywords缺失或错误，无效的变量名，标点符合的缺失或错误，无效的选项等等），且将SAS语句转换为可执行的机器代码，并创建以下内容：\n\ninput buffer\ninput buffer只会在SAS input语句读入数据时才会创建的一个逻辑空间，如果是SAS set语句，则会直接创建PDV。可以理解为input buffer只有一行的空间，读入数据时，也只能一行一行的读取。\n\n\n\n1\n2\n3\n4\n5\n6\n7\n8\n…\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nprogram data vector (PDV)\nPDV也是一个逻辑空间，同样理解为PDV只有一行的空间。会根据运行的SAS程序，创建SAS变量以及两个自动变量_N_,_ERROR_（自动变量最终不会写入到SAS数据集）。\n\n\n\n_N_\n_ERROR_\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\ndataset attributesand variable attributes\n在编译阶段就已经确定了SAS数据集与变量的属性（Proc contents 的输出内容：数据集的名称，观测数，变量数，变量名称，变量属性等等）。",
+    "crumbs": [
+      "SAS Skills",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>SAS运行机制</span>"
+    ]
   },
   {
     "objectID": "sas/sasprog_process.html#执行阶段",
     "href": "sas/sasprog_process.html#执行阶段",
     "title": "SAS运行机制",
     "section": "执行阶段",
-    "text": "执行阶段\n在编译阶段结束时，SAS数据集中是没有观测的。还没有开始执行阶段。执行阶段其实是多次迭代的过程，对数据一行一行的执行。\n\n初始化变量（假设读入的数据集有Var1,Var2,Var3三个变量，其中Var3是数值型变量，初始化为.），将变量设置为缺失值（除了自动变量）。\n\n\n\n_N_\n_ERROR_\nVar1\nVar2\nVar3\n\n\n1\n0\n\n\n.\n\n\n\ninput buffer存储第一行记录（仅针对input读入数据，否则跳过），这里还涉及指针（该指针不同于其他语言，是一种虚指），使用指针确当每一个变量的开始与结束。\n\n\n\n1\n2\n3\n4\n5\n6\n7\n8\n\n\nT\no\nm\n\nM\n\n1\n5\n\n\n\n在PDV中对变量进行赋值，如果涉及运算如Var4=Var3*10，也会进行处理。\n\n\n\n_N_\n_ERROR_\nVar1\nVar2\nVar3\n\n\n1\n0\nTom\nM\n15\n\n\n\nData step遇到run;或者proc xxx;等语句表明执行结束时。会将PDV中变量的值写入到SAS数据集中作为一条观测。_N_会被赋值为2（逐步迭代+1），并返回到Data step的开头。但是，这里需要注意，分为两种情况：\n如果是通过input语句读入raw data，则每一次迭代开始时，对变量初始化为缺失值。（如果程序中通过 RETAIN, SUM, _TEMPORARY_ array 创建的变量，当然也包括自动变量，则不会被初始化为缺失值。）\n\n\n\n_N_\n_ERROR_\nVar1\nVar2\nVar3\n\n\n2\n0\n\n\n.\n\n\n\n如果是通过set语句读入SAS数据集，数据集中的变量则只会在最开始的第一次迭代中对变量初始化为缺失值，后面的迭代中会保留上一次的值直到被替换掉。\n\n\n\n_N_\n_ERROR_\nVar1\nVar2\nVar3\n\n\n2\n0\nTom\nM\n15\n\n\n\n当没有更多的数据可以读入，或是SAS遇到end-of-file的标记，则结束执行阶段。并打印SAS log."
+    "text": "执行阶段\n在编译阶段结束时，SAS数据集中是没有观测的。还没有开始执行阶段。执行阶段其实是多次迭代的过程，对数据一行一行的执行。\n\n初始化变量（假设读入的数据集有Var1,Var2,Var3三个变量，其中Var3是数值型变量，初始化为.），将变量设置为缺失值（除了自动变量）。\n\n\n\n_N_\n_ERROR_\nVar1\nVar2\nVar3\n\n\n1\n0\n\n\n.\n\n\n\ninput buffer存储第一行记录（仅针对input读入数据，否则跳过），这里还涉及指针（该指针不同于其他语言，是一种虚指），使用指针确当每一个变量的开始与结束。\n\n\n\n1\n2\n3\n4\n5\n6\n7\n8\n\n\nT\no\nm\n\nM\n\n1\n5\n\n\n\n在PDV中对变量进行赋值，如果涉及运算如Var4=Var3*10，也会进行处理。\n\n\n\n_N_\n_ERROR_\nVar1\nVar2\nVar3\n\n\n1\n0\nTom\nM\n15\n\n\n\nData step遇到run;或者proc xxx;等语句表明执行结束时。会将PDV中变量的值写入到SAS数据集中作为一条观测。_N_会被赋值为2（逐步迭代+1），并返回到Data step的开头。但是，这里需要注意，分为两种情况：\n如果是通过input语句读入raw data，则每一次迭代开始时，对变量初始化为缺失值。（如果程序中通过 RETAIN, SUM, _TEMPORARY_ array 创建的变量，当然也包括自动变量，则不会被初始化为缺失值。）\n\n\n\n_N_\n_ERROR_\nVar1\nVar2\nVar3\n\n\n2\n0\n\n\n.\n\n\n\n如果是通过set语句读入SAS数据集，数据集中的变量则只会在最开始的第一次迭代中对变量初始化为缺失值，后面的迭代中会保留上一次的值直到被替换掉。\n\n\n\n_N_\n_ERROR_\nVar1\nVar2\nVar3\n\n\n2\n0\nTom\nM\n15\n\n\n\n当没有更多的数据可以读入，或是SAS遇到end-of-file的标记，则结束执行阶段。并打印SAS log.",
+    "crumbs": [
+      "SAS Skills",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>SAS运行机制</span>"
+    ]
   },
   {
     "objectID": "sas/sasprog_process.html#没有macro的sas语句运行机制",
     "href": "sas/sasprog_process.html#没有macro的sas语句运行机制",
     "title": "SAS运行机制",
     "section": "没有Macro的SAS语句运行机制",
-    "text": "没有Macro的SAS语句运行机制\n在了解macro如何处理SAS语句之前，先来了解一下如果没有macro，SAS如何处理这些命令语句。这里需要介绍两个概念：\n\ninput stack，存放输入的SAS语句\nword scanner，从input stack中提取token（token分为literal:引号引起来的字符；number：数字；name：不用引号引起来的字符；special：特殊符号）\n\n\n\n\n\n\n\n\nword scanner\ninput stack\n\n\n\n\n\ndata class(keep=name age);\nset sashelp.class;\nrun;\n\n\n\n从input stack中scan第一行的SAS语句，一共有8个token（4个name，4个special）。\ndata class(keep=name age);\n当word scanner识别到data这个token，会触发Data step编译器，开始data step 编译阶段，编译器会拉取这些tokens，直到识别到该step结束（如这里的run;），开始data step的执行阶段。"
+    "text": "没有Macro的SAS语句运行机制\n在了解macro如何处理SAS语句之前，先来了解一下如果没有macro，SAS如何处理这些命令语句。这里需要介绍两个概念：\n\ninput stack，存放输入的SAS语句\nword scanner，从input stack中提取token（token分为literal:引号引起来的字符；number：数字；name：不用引号引起来的字符；special：特殊符号）\n\n\n\n\n\n\n\n\nword scanner\ninput stack\n\n\n\n\n\ndata class(keep=name age);\nset sashelp.class;\nrun;\n\n\n\n从input stack中scan第一行的SAS语句，一共有8个token（4个name，4个special）。\ndata class(keep=name age);\n当word scanner识别到data这个token，会触发Data step编译器，开始data step 编译阶段，编译器会拉取这些tokens，直到识别到该step结束（如这里的run;），开始data step的执行阶段。",
+    "crumbs": [
+      "SAS Skills",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>SAS运行机制</span>"
+    ]
   },
   {
     "objectID": "sas/sasprog_process.html#具有macro的sas语句运行机制",
     "href": "sas/sasprog_process.html#具有macro的sas语句运行机制",
     "title": "SAS运行机制",
     "section": "具有Macro的SAS语句运行机制",
-    "text": "具有Macro的SAS语句运行机制\nMacro有macro variable 和 macro statement。\n针对macro variable有一个symbol table，用来存储宏变量的对应信息，包括自动宏变量（如系统内置的宏变量）和全局宏变量。\n\n\n\n\n\n\n\n\n\ncompiler\ninput stack\nmacro processor\nsymbol table\n\n\n\n\n\n%let text=“aa”;\ndata class;\nset sashelp.class;\ntext=&text;\nrun;\n\nsysday Monday\n\n\n\n当word scanner识别到&或%这两种token，会触发Macro processor，对第一行的定义宏变量的语句进行处理。\n%let text=\"aa\";\n\n\n\n\n\n\n\n\n\ncompiler\ninput stack\nmacro processor\nsymbol table\n\n\n\n\n\ndata class;\nset sashelp.class;\ntext=&text;\nrun;\n\nsysday Monday\ntext “aa”\n\n\n\n在macro processor运行的时候，data step是没有动作的，只有当macro processor处理结束后，word scanner 会继续读取SAS语句。而后识别到data class;中data这个token，会触发data step编译器。\ndata class; \n\n\n\n\n\n\n\n\n\ncompiler\ninput stack\nmacro processor\nsymbol table\n\n\n\n\ndata class;\nset sashelp.class;\ntext=&text;\nrun;\n\nsysday Monday\ntext “aa”\n\n\n\ncompiler会继续从input stack拉取tokens。当word scanner又识别到&或%token的时候，再次触发macro processor，识别到在symbol table中存在该宏变量，并用 symbol table中的值替换input stack中的macro variable。\n\n\n\n\n\n\n\n\n\n\ncompiler\nword scanner\ninput stack\nmacro processor\nsymbol table\n\n\n\n\ndata class;\nset sashelp.class;\ntext=\n“aa”;\nrun;\n\nsysday Monday\ntext “aa”\n\n\n\n而后compiler继续拉取tokens，当word scanner识别&或%token时，继续触发macro processor，如上述操作，直到识别到该step结束（如这里的run;），开始data step的执行阶段。"
+    "text": "具有Macro的SAS语句运行机制\nMacro有macro variable 和 macro statement。\n针对macro variable有一个symbol table，用来存储宏变量的对应信息，包括自动宏变量（如系统内置的宏变量）和全局宏变量。\n\n\n\n\n\n\n\n\n\ncompiler\ninput stack\nmacro processor\nsymbol table\n\n\n\n\n\n%let text=“aa”;\ndata class;\nset sashelp.class;\ntext=&text;\nrun;\n\nsysday Monday\n\n\n\n当word scanner识别到&或%这两种token，会触发Macro processor，对第一行的定义宏变量的语句进行处理。\n%let text=\"aa\";\n\n\n\n\n\n\n\n\n\ncompiler\ninput stack\nmacro processor\nsymbol table\n\n\n\n\n\ndata class;\nset sashelp.class;\ntext=&text;\nrun;\n\nsysday Monday\ntext “aa”\n\n\n\n在macro processor运行的时候，data step是没有动作的，只有当macro processor处理结束后，word scanner 会继续读取SAS语句。而后识别到data class;中data这个token，会触发data step编译器。\ndata class; \n\n\n\n\n\n\n\n\n\ncompiler\ninput stack\nmacro processor\nsymbol table\n\n\n\n\ndata class;\nset sashelp.class;\ntext=&text;\nrun;\n\nsysday Monday\ntext “aa”\n\n\n\ncompiler会继续从input stack拉取tokens。当word scanner又识别到&或%token的时候，再次触发macro processor，识别到在symbol table中存在该宏变量，并用 symbol table中的值替换input stack中的macro variable。\n\n\n\n\n\n\n\n\n\n\ncompiler\nword scanner\ninput stack\nmacro processor\nsymbol table\n\n\n\n\ndata class;\nset sashelp.class;\ntext=\n“aa”;\nrun;\n\nsysday Monday\ntext “aa”\n\n\n\n而后compiler继续拉取tokens，当word scanner识别&或%token时，继续触发macro processor，如上述操作，直到识别到该step结束（如这里的run;），开始data step的执行阶段。",
+    "crumbs": [
+      "SAS Skills",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>SAS运行机制</span>"
+    ]
   },
   {
     "objectID": "sas/sasprog_gtl.html",
     "href": "sas/sasprog_gtl.html",
     "title": "GTL",
     "section": "",
-    "text": "GTL(Graph Template Language)"
+    "text": "GTL(Graph Template Language)",
+    "crumbs": [
+      "SAS Skills",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>GTL</span>"
+    ]
   },
   {
     "objectID": "sas/sasprog_gtl.html#proc-template无法更新",
     "href": "sas/sasprog_gtl.html#proc-template无法更新",
     "title": "GTL",
     "section": "proc template无法更新",
-    "text": "proc template无法更新\nods path(prepend) work.templat(update);"
+    "text": "proc template无法更新\nods path(prepend) work.templat(update);",
+    "crumbs": [
+      "SAS Skills",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>GTL</span>"
+    ]
   },
   {
     "objectID": "sas/sasprog_gtl.html#gtl控制分组属性",
     "href": "sas/sasprog_gtl.html#gtl控制分组属性",
     "title": "GTL",
     "section": "GTL控制分组属性",
-    "text": "GTL控制分组属性\n\n通过discreteattrmap预定义分组属性\n\n   discreteattrmap name=\"backcolor\";\n      value \"1\"/ fillattrs=(color=gray ) markerattrs=(color=gray symbol=circlefilled)  lineattrs=(color=gray);\n      value \"2\"/ fillattrs=(color=blue ) markerattrs=(color=blue symbol=circlefilled)  lineattrs=(color=blue);\n   enddiscreteattrmap;\n   discreteattrvar attrvar=backgroup var=grp attrmap=\"backcolor\";\n并在后续代码中调用该属性，如group=backgroup选项：\nscatterplot x=xp1 y=aval / name='scatter' markerattrs=( size=3 ) group=backgroup;\n\n\n通过proc template修改style重定义属性\n使用discreteattrmap无法分组实现带有画线的属性，如下图：\n\n使用proc template修改style，可以设置多个GraphData1-GraphDataN为多个分组设置不同属性，其中的fillpattern可以设置柱状图中的划线。另外GTL默认输出的图形的坐标轴往往是灰色的线条，而sgplot中默认的是黑色实线，可设置 contrastcolor=black改成黑色实线。\nproc template;\n define style tlout;\n parent=styles.htmlblue;\n  style graphwalls from graphwalls /\n   frameborder=on\n   linestyle=1\n   linethickness=1px\n   backgroundcolor=GraphColors(\"gwalls\")\n   contrastcolor= white;\n\n style graphaxislines from graphaxislines /\n   linestyle=1\n   linethickness=1px\n   contrastcolor=black;\n\n    replace GraphFonts                                                        \n         \"Fonts used in graph styles\" /                                       \n         'NodeDetailFont' = (\"Arial\",7pt,bold)              \n         'NodeLinkLabelFont' = (\"Arial\",9pt,bold)           \n         'NodeInputLabelFont' = (\"Arial\",9pt,bold)          \n         'NodeLabelFont' = (\"Arial\",9pt,bold)               \n         'NodeTitleFont' = (\"Arial\",9pt,bold)               \n         'GraphDataFont' = (\"Arial\",7pt,bold)               \n         'GraphUnicodeFont' = (\"Arial\",9pt,bold)                  \n         'GraphValueFont' = (\"Arial\",9pt,bold)              \n         'GraphLabel2Font' = (\"Arial\",10pt,bold)            \n         'GraphLabelFont' = (\"Arial\",10pt,bold)        \n         'GraphFootnoteFont' = (\"Arial\",10pt,bold)          \n         'GraphTitleFont' = (\"Arial\",11pt,bold)        \n         'GraphTitle1Font' = (\"Arial\",14pt,bold)       \n         'GraphAnnoFont' = (\"Arial\",10pt,bold);    \n\n   replace GraphData1 /                                                      \n         fillpattern = \"R1\"   \n         color = grey\n         contrastcolor = grey\n         ;  \n   replace GraphData2 /                                                      \n         fillpattern = \"NA\"  \n         color = grey\n         contrastcolor = grey\n         ;  \n   replace GraphData3 /                                                      \n         fillpattern = \"R1\"   \n         color = blue \n         contrastcolor = blue\n         ;  \n   replace GraphData4 /                                                      \n         fillpattern = \"NA\"   \n         color = blue  \n         contrastcolor = blue\n         ;  \n   replace GraphData5 /                                                      \n         fillpattern = \"R1\"       \n         color = red  \n         contrastcolor = red\n         ;  \n   replace GraphData6 /                                                      \n         fillpattern = \"NA\"   \n         color = red \n         contrastcolor = red \n         ;  \n   end;\nrun;"
+    "text": "GTL控制分组属性\n\n通过discreteattrmap预定义分组属性\n\n   discreteattrmap name=\"backcolor\";\n      value \"1\"/ fillattrs=(color=gray ) markerattrs=(color=gray symbol=circlefilled)  lineattrs=(color=gray);\n      value \"2\"/ fillattrs=(color=blue ) markerattrs=(color=blue symbol=circlefilled)  lineattrs=(color=blue);\n   enddiscreteattrmap;\n   discreteattrvar attrvar=backgroup var=grp attrmap=\"backcolor\";\n并在后续代码中调用该属性，如group=backgroup选项：\nscatterplot x=xp1 y=aval / name='scatter' markerattrs=( size=3 ) group=backgroup;\n\n\n通过proc template修改style重定义属性\n使用discreteattrmap无法分组实现带有画线的属性，如下图：\n\n使用proc template修改style，可以设置多个GraphData1-GraphDataN为多个分组设置不同属性，其中的fillpattern可以设置柱状图中的划线。另外GTL默认输出的图形的坐标轴往往是灰色的线条，而sgplot中默认的是黑色实线，可设置 contrastcolor=black改成黑色实线。\nproc template;\n define style tlout;\n parent=styles.htmlblue;\n  style graphwalls from graphwalls /\n   frameborder=on\n   linestyle=1\n   linethickness=1px\n   backgroundcolor=GraphColors(\"gwalls\")\n   contrastcolor= white;\n\n style graphaxislines from graphaxislines /\n   linestyle=1\n   linethickness=1px\n   contrastcolor=black;\n\n    replace GraphFonts                                                        \n         \"Fonts used in graph styles\" /                                       \n         'NodeDetailFont' = (\"Arial\",7pt,bold)              \n         'NodeLinkLabelFont' = (\"Arial\",9pt,bold)           \n         'NodeInputLabelFont' = (\"Arial\",9pt,bold)          \n         'NodeLabelFont' = (\"Arial\",9pt,bold)               \n         'NodeTitleFont' = (\"Arial\",9pt,bold)               \n         'GraphDataFont' = (\"Arial\",7pt,bold)               \n         'GraphUnicodeFont' = (\"Arial\",9pt,bold)                  \n         'GraphValueFont' = (\"Arial\",9pt,bold)              \n         'GraphLabel2Font' = (\"Arial\",10pt,bold)            \n         'GraphLabelFont' = (\"Arial\",10pt,bold)        \n         'GraphFootnoteFont' = (\"Arial\",10pt,bold)          \n         'GraphTitleFont' = (\"Arial\",11pt,bold)        \n         'GraphTitle1Font' = (\"Arial\",14pt,bold)       \n         'GraphAnnoFont' = (\"Arial\",10pt,bold);    \n\n   replace GraphData1 /                                                      \n         fillpattern = \"R1\"   \n         color = grey\n         contrastcolor = grey\n         ;  \n   replace GraphData2 /                                                      \n         fillpattern = \"NA\"  \n         color = grey\n         contrastcolor = grey\n         ;  \n   replace GraphData3 /                                                      \n         fillpattern = \"R1\"   \n         color = blue \n         contrastcolor = blue\n         ;  \n   replace GraphData4 /                                                      \n         fillpattern = \"NA\"   \n         color = blue  \n         contrastcolor = blue\n         ;  \n   replace GraphData5 /                                                      \n         fillpattern = \"R1\"       \n         color = red  \n         contrastcolor = red\n         ;  \n   replace GraphData6 /                                                      \n         fillpattern = \"NA\"   \n         color = red \n         contrastcolor = red \n         ;  \n   end;\nrun;",
+    "crumbs": [
+      "SAS Skills",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>GTL</span>"
+    ]
   },
   {
     "objectID": "sas/sasprog_gtl.html#gtl控制xy轴属性",
     "href": "sas/sasprog_gtl.html#gtl控制xy轴属性",
     "title": "GTL",
     "section": "GTL控制X,Y轴属性",
-    "text": "GTL控制X,Y轴属性\n\nY轴实现101, 102 ,103 …\n首先定义这一类数字在10的右肩上的format\nproc format;\n  value yfmt\n  1=\"10(*ESC*){Unicode '2070'x}\"\n    10=\"10(*ESC*){Unicode '00B9'x}\"\n    100=\"10(*ESC*){Unicode '00B2'x}\"\n    1000=\"10(*ESC*){Unicode '00B3'x}\"\n    10000=\"10(*ESC*){Unicode '2074'x}\"\n    100000=\"10(*ESC*){Unicode '2075'x}\"\n    ;\nrun;\n并在yaxisopts语句中定义刻度值的属性字体为Arial Unicode MS，最终呈现结果如GTL控制分组属性中的图所示。\nyaxisopts=(offsetmax=0 offsetmin=0 display=( LINE ticks tickvalues)  type=log \n                logopts=( viewmin=1 viewmax= 10000 base=10 tickintervalstyle=logexpand minorticks=true tickvalueformat=yfmt.) \n                labelattrs=( size=9 color = black weight=bold) tickvalueattrs=(size=10pt weight=bold family='Arial Unicode MS'));"
+    "text": "GTL控制X,Y轴属性\n\nY轴实现101, 102 ,103 …\n首先定义这一类数字在10的右肩上的format\nproc format;\n  value yfmt\n  1=\"10(*ESC*){Unicode '2070'x}\"\n    10=\"10(*ESC*){Unicode '00B9'x}\"\n    100=\"10(*ESC*){Unicode '00B2'x}\"\n    1000=\"10(*ESC*){Unicode '00B3'x}\"\n    10000=\"10(*ESC*){Unicode '2074'x}\"\n    100000=\"10(*ESC*){Unicode '2075'x}\"\n    ;\nrun;\n并在yaxisopts语句中定义刻度值的属性字体为Arial Unicode MS，最终呈现结果如GTL控制分组属性中的图所示。\nyaxisopts=(offsetmax=0 offsetmin=0 display=( LINE ticks tickvalues)  type=log \n                logopts=( viewmin=1 viewmax= 10000 base=10 tickintervalstyle=logexpand minorticks=true tickvalueformat=yfmt.) \n                labelattrs=( size=9 color = black weight=bold) tickvalueattrs=(size=10pt weight=bold family='Arial Unicode MS'));",
+    "crumbs": [
+      "SAS Skills",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>GTL</span>"
+    ]
   },
   {
     "objectID": "sas/sasprog_gtl.html#gtl绘制折线图",
     "href": "sas/sasprog_gtl.html#gtl绘制折线图",
     "title": "GTL",
     "section": "GTL绘制折线图",
-    "text": "GTL绘制折线图\nseriesplot plot绘制折线图，groupdisplay=cluster可以控制折线在访视点左右散开，以及设置clusterwidth控制左右散开的程度。\n\nproc template;\ndefine statgraph sgdesign;\nbegingraph;\n      layout overlay / walldisplay=(FILL) \n        xaxisopts=( label=('访视') labelattrs=(size=12 family = \"楷体\" weight=bold)\n                    discreteopts=(tickvaluefitpolicy=splitrotate) offsetmin=0.04 offsetmax=0.04\n                    tickvalueattrs=(size=10pt weight=bold family='楷体')\n                    display=(label LINE TICKVALUES ))\n        yaxisopts=( label=('PASI较基线改善情况') labelattrs=(size=12 family = \"楷体\" weight=bold)\n                    linearopts=(viewmin=0 tickvaluesequence=( start=0 end=100 increment=10))\n                    tickvalueattrs=(size=10pt weight=bold family='Arial Unicode MS')\n                    display=(label LINE ticks tickvalues));\n           seriesplot x=avisit y=mean / group=anagrpn name='series' yerrorlower=lmean yerrorupper=umean groupdisplay=cluster clusterwidth=0.3 connectorder=xaxis display=(markers) lineattrs=(pattern=SOLID );\n\n            discretelegend 'series' / opaque=false border=false halign=right valign=bottom displayclipped=true across=1 order=rowmajor location=inside;\n      endlayout;\n\nendgraph;\nend;\nrun;"
+    "text": "GTL绘制折线图\nseriesplot plot绘制折线图，groupdisplay=cluster可以控制折线在访视点左右散开，以及设置clusterwidth控制左右散开的程度。\n\nproc template;\ndefine statgraph sgdesign;\nbegingraph;\n      layout overlay / walldisplay=(FILL) \n        xaxisopts=( label=('访视') labelattrs=(size=12 family = \"楷体\" weight=bold)\n                    discreteopts=(tickvaluefitpolicy=splitrotate) offsetmin=0.04 offsetmax=0.04\n                    tickvalueattrs=(size=10pt weight=bold family='楷体')\n                    display=(label LINE TICKVALUES ))\n        yaxisopts=( label=('PASI较基线改善情况') labelattrs=(size=12 family = \"楷体\" weight=bold)\n                    linearopts=(viewmin=0 tickvaluesequence=( start=0 end=100 increment=10))\n                    tickvalueattrs=(size=10pt weight=bold family='Arial Unicode MS')\n                    display=(label LINE ticks tickvalues));\n           seriesplot x=avisit y=mean / group=anagrpn name='series' yerrorlower=lmean yerrorupper=umean groupdisplay=cluster clusterwidth=0.3 connectorder=xaxis display=(markers) lineattrs=(pattern=SOLID );\n\n            discretelegend 'series' / opaque=false border=false halign=right valign=bottom displayclipped=true across=1 order=rowmajor location=inside;\n      endlayout;\n\nendgraph;\nend;\nrun;",
+    "crumbs": [
+      "SAS Skills",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>GTL</span>"
+    ]
   },
   {
     "objectID": "sas/sasprog_gtl.html#gtl绘制柱状图",
     "href": "sas/sasprog_gtl.html#gtl绘制柱状图",
     "title": "GTL",
     "section": "GTL绘制柱状图",
-    "text": "GTL绘制柱状图\nbarchart plot绘制柱状图，groupdisplay=Stack设置为堆积图\n\nproc template;\ndefine statgraph sgdesign;\nbegingraph/ pad=(left=30);;\n\n   discreteattrmap name=\"barcolor\";\n      value \"1\"/ fillattrs=(color=gray )  ;\n      value \"2\"/ fillattrs=(color=blue )  ;\n      value \"3\"/ fillattrs=(color=red  )  ;\n   enddiscreteattrmap;\n   discreteattrvar attrvar=bargroup var=atoxgrn attrmap=\"barcolor\";\n\n  legenditem type=fill name=\"fill1\" / fillattrs=(color=gray) filldisplay=(fill) label=\"Grade 1\";\n  legenditem type=fill name=\"fill2\" / fillattrs=(color=blue) filldisplay=(fill) label=\"Grade 2\";\n  legenditem type=fill name=\"fill3\" / fillattrs=(color=red) filldisplay=(fill)  label=\"&gt;=Grade 3\";\n\n      layout overlay / walldisplay=(FILL) \n                xaxisopts=( discreteopts=( tickvaluefitpolicy=ROTATE tickvaluerotation=diagonal2 tickvalueformat=$xfmt. /*tickvaluefitpolicy=rotatealways tickvaluerotation= vertical*/)\n                      tickvalueattrs=(size=10pt weight=bold) display=( LINE TICKVALUES ))\n                yaxisopts=(offsetmax=0 offsetmin=0 display=( LINE ticks tickvalues) labelattrs=(size=14 weight=bold) labelfitpolicy=SPLITALWAYS labelsplitchar=\"@\" \n                    tickvalueattrs=(color=black size=10pt weight=bold family='Arial')\n                    linearopts=( viewmin=0.0 viewmax=100.0 tickvaluesequence=(start=0 end=100 increment=10.0) )         \n                    );\n         \n         barchart category=order response=pct / group=bargroup name='bar' display=(fill) stat=mean barwidth=0.85 groupdisplay=Stack clusterwidth=1.0 grouporder=data ;\n\n         discretelegend  'fill3' 'fill2' 'fill1'/ opaque=true border=false halign=left valign=top displayclipped=true across=1 order=rowmajor location=inside valueattrs=(size=12pt);\n\n         annotate;\n      endlayout;\nendgraph;\nend;\nrun;"
+    "text": "GTL绘制柱状图\nbarchart plot绘制柱状图，groupdisplay=Stack设置为堆积图\n\nproc template;\ndefine statgraph sgdesign;\nbegingraph/ pad=(left=30);;\n\n   discreteattrmap name=\"barcolor\";\n      value \"1\"/ fillattrs=(color=gray )  ;\n      value \"2\"/ fillattrs=(color=blue )  ;\n      value \"3\"/ fillattrs=(color=red  )  ;\n   enddiscreteattrmap;\n   discreteattrvar attrvar=bargroup var=atoxgrn attrmap=\"barcolor\";\n\n  legenditem type=fill name=\"fill1\" / fillattrs=(color=gray) filldisplay=(fill) label=\"Grade 1\";\n  legenditem type=fill name=\"fill2\" / fillattrs=(color=blue) filldisplay=(fill) label=\"Grade 2\";\n  legenditem type=fill name=\"fill3\" / fillattrs=(color=red) filldisplay=(fill)  label=\"&gt;=Grade 3\";\n\n      layout overlay / walldisplay=(FILL) \n                xaxisopts=( discreteopts=( tickvaluefitpolicy=ROTATE tickvaluerotation=diagonal2 tickvalueformat=$xfmt. /*tickvaluefitpolicy=rotatealways tickvaluerotation= vertical*/)\n                      tickvalueattrs=(size=10pt weight=bold) display=( LINE TICKVALUES ))\n                yaxisopts=(offsetmax=0 offsetmin=0 display=( LINE ticks tickvalues) labelattrs=(size=14 weight=bold) labelfitpolicy=SPLITALWAYS labelsplitchar=\"@\" \n                    tickvalueattrs=(color=black size=10pt weight=bold family='Arial')\n                    linearopts=( viewmin=0.0 viewmax=100.0 tickvaluesequence=(start=0 end=100 increment=10.0) )         \n                    );\n         \n         barchart category=order response=pct / group=bargroup name='bar' display=(fill) stat=mean barwidth=0.85 groupdisplay=Stack clusterwidth=1.0 grouporder=data ;\n\n         discretelegend  'fill3' 'fill2' 'fill1'/ opaque=true border=false halign=left valign=top displayclipped=true across=1 order=rowmajor location=inside valueattrs=(size=12pt);\n\n         annotate;\n      endlayout;\nendgraph;\nend;\nrun;",
+    "crumbs": [
+      "SAS Skills",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>GTL</span>"
+    ]
   },
   {
     "objectID": "sas/sasprog_gtl.html#gtl绘制森林图",
     "href": "sas/sasprog_gtl.html#gtl绘制森林图",
     "title": "GTL",
     "section": "GTL绘制森林图",
-    "text": "GTL绘制森林图\nforest plot绘制森林图，其他的所有label通过annotation实现。\n\nproc template;\ndefine statgraph sgdesign;\nbegingraph / pad=(top=40 bottom=5);\n\n      layout overlay / walldisplay=(FILL) \n            yaxisopts=(display=NONE  reverse=true offsetmax=0.01 offsetmin=0.01 linearopts=( viewmin=0 \n                      viewmax=23\n            ))\n\n            xaxisopts=(offsetmin=0.4 offsetmax=0.2 display=(TICKS TICKVALUES)  type=log logopts=( viewmin=0.1 viewmax= 10\n                base=10 tickintervalstyle=logexpand minorticks=true tickvalueformat=xfmt.) tickvalueattrs=(size=12pt weight=bold family='Arial Unicode MS'));\n         \n         scatterplot x=means y=yord / xerrorupper=yerru xerrorlower=yerrl markerattrs=(size=5 symbol=circlefilled color=black) errorbarattrs=(color=black thickness=1);\n         referenceline x=1 /datatransparency=0.4;\n\n        annotate;\n      endlayout;\n\nendgraph;\nend;\nrun;\n如果想要间隔一行加一条浅色的背景色块，可以通过referenceline y=ref /datatransparency=0.8 lineattrs=(thickness=20 color=grey);实现。\n\nproc template;\ndefine statgraph sgdesign;\nbegingraph / pad=(top=40 bottom=5);\n\n      layout overlay / walldisplay=(FILL) \n            yaxisopts=(display=NONE  reverse=true offsetmax=0.01 offsetmin=0.01 linearopts=( viewmin=0 \n                      viewmax=23\n            ))\n\n            xaxisopts=(offsetmin=0.4 offsetmax=0.2 display=(TICKS TICKVALUES)  type=log logopts=( viewmin=0.1 viewmax= 10\n                base=10 tickintervalstyle=logexpand minorticks=true tickvalueformat=xfmt.) tickvalueattrs=(size=12pt weight=bold family='Arial Unicode MS'));\n         \n         scatterplot x=means y=yord / xerrorupper=yerru xerrorlower=yerrl markerattrs=(size=5 symbol=circlefilled color=black) errorbarattrs=(color=black thickness=1);\n         referenceline x=1 /datatransparency=0.4;\n         referenceline y=ref /datatransparency=0.8 lineattrs=(thickness=20 color=grey);\n\n        annotate;\n      endlayout;\n\nendgraph;\nend;\nrun;"
+    "text": "GTL绘制森林图\nforest plot绘制森林图，其他的所有label通过annotation实现。\n\nproc template;\ndefine statgraph sgdesign;\nbegingraph / pad=(top=40 bottom=5);\n\n      layout overlay / walldisplay=(FILL) \n            yaxisopts=(display=NONE  reverse=true offsetmax=0.01 offsetmin=0.01 linearopts=( viewmin=0 \n                      viewmax=23\n            ))\n\n            xaxisopts=(offsetmin=0.4 offsetmax=0.2 display=(TICKS TICKVALUES)  type=log logopts=( viewmin=0.1 viewmax= 10\n                base=10 tickintervalstyle=logexpand minorticks=true tickvalueformat=xfmt.) tickvalueattrs=(size=12pt weight=bold family='Arial Unicode MS'));\n         \n         scatterplot x=means y=yord / xerrorupper=yerru xerrorlower=yerrl markerattrs=(size=5 symbol=circlefilled color=black) errorbarattrs=(color=black thickness=1);\n         referenceline x=1 /datatransparency=0.4;\n\n        annotate;\n      endlayout;\n\nendgraph;\nend;\nrun;\n如果想要间隔一行加一条浅色的背景色块，可以通过referenceline y=ref /datatransparency=0.8 lineattrs=(thickness=20 color=grey);实现。\n\nproc template;\ndefine statgraph sgdesign;\nbegingraph / pad=(top=40 bottom=5);\n\n      layout overlay / walldisplay=(FILL) \n            yaxisopts=(display=NONE  reverse=true offsetmax=0.01 offsetmin=0.01 linearopts=( viewmin=0 \n                      viewmax=23\n            ))\n\n            xaxisopts=(offsetmin=0.4 offsetmax=0.2 display=(TICKS TICKVALUES)  type=log logopts=( viewmin=0.1 viewmax= 10\n                base=10 tickintervalstyle=logexpand minorticks=true tickvalueformat=xfmt.) tickvalueattrs=(size=12pt weight=bold family='Arial Unicode MS'));\n         \n         scatterplot x=means y=yord / xerrorupper=yerru xerrorlower=yerrl markerattrs=(size=5 symbol=circlefilled color=black) errorbarattrs=(color=black thickness=1);\n         referenceline x=1 /datatransparency=0.4;\n         referenceline y=ref /datatransparency=0.8 lineattrs=(thickness=20 color=grey);\n\n        annotate;\n      endlayout;\n\nendgraph;\nend;\nrun;",
+    "crumbs": [
+      "SAS Skills",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>GTL</span>"
+    ]
   },
   {
     "objectID": "stat/stat.html",
     "href": "stat/stat.html",
     "title": "Statistics (统计学)",
     "section": "",
-    "text": "置信区间\nCochran-Mantel-Haenszel（CHM）检验对两组之间阳转率的差异（率差95%CI）\n重复测量的MMRM model对两组的BCVA在第48周的相对基线变化进行比较\n最小二乘法计算两组间的差异，&sta是随机分层因素\n统计分析过程如果需要对其进行数据标准化，即每个变量都减去均值后再除以方差。\nSAS 的 proc stdize 过程，本意用于数据的标化，不过，利用 missing选项，它还有一个妙用：连续变量缺失值的填补。可以设定用均值或者中位数填补，也可直接指定一个具体的值填补。\n逻辑回归中，OR值（Odds Ratio）表示分类变量之间的关系，又称优势比。"
+    "text": "置信区间",
+    "crumbs": [
+      "Statistics (统计学)"
+    ]
   },
   {
     "objectID": "stat/stat.html#均值求置信区间ci连续性统计指标",
     "href": "stat/stat.html#均值求置信区间ci连续性统计指标",
     "title": "Statistics (统计学)",
     "section": "均值求置信区间CI（连续性统计指标）",
-    "text": "均值求置信区间CI（连续性统计指标）\nproc means data=sashelp.class mean clm;\n    var age;\nrun;"
+    "text": "均值求置信区间CI（连续性统计指标）\nproc means data=sashelp.class mean clm;\n    var age;\nrun;",
+    "crumbs": [
+      "Statistics (统计学)"
+    ]
   },
   {
     "objectID": "stat/stat.html#率百分比指标求置信区间ci",
     "href": "stat/stat.html#率百分比指标求置信区间ci",
     "title": "Statistics (统计学)",
     "section": "率（百分比）指标求置信区间CI",
-    "text": "率（百分比）指标求置信区间CI\nproc freq data=sashelp.class; \n   table sex/binomial(all);\nrun;\n如果是列联表，基于Clopper-Pearson exact method计算响应的受试者比例及其95%CI\nods output  BinomialCLs=binomial;\nproc freq data=ci1 ;\n  by paramn avisitn trtan;\n  tables seq/ binomial(clopperpearson);\n  weight freq/zeros;\nrun;\n\n** seq=0/1, 表示是否触发疗效相应 **"
+    "text": "率（百分比）指标求置信区间CI\nproc freq data=sashelp.class; \n   table sex/binomial(all);\nrun;\n如果是列联表，基于Clopper-Pearson exact method计算响应的受试者比例及其95%CI\nods output  BinomialCLs=binomial;\nproc freq data=ci1 ;\n  by paramn avisitn trtan;\n  tables seq/ binomial(clopperpearson);\n  weight freq/zeros;\nrun;\n\n** seq=0/1, 表示是否触发疗效相应 **",
+    "crumbs": [
+      "Statistics (统计学)"
+    ]
   },
   {
     "objectID": "stat/stat.html#独立两样本t检验计算2组间的均值的差值和差值的95-ci",
     "href": "stat/stat.html#独立两样本t检验计算2组间的均值的差值和差值的95-ci",
     "title": "Statistics (统计学)",
     "section": "独立两样本t检验，计算2组间的均值的差值和差值的95% CI",
-    "text": "独立两样本t检验，计算2组间的均值的差值和差值的95% CI\nPROC TTEST DATA=ADEFF CI=EQUAL;\n    CLASS TRT01PN;\n    VAR PCHG;\nRUN;"
+    "text": "独立两样本t检验，计算2组间的均值的差值和差值的95% CI\nPROC TTEST DATA=ADEFF CI=EQUAL;\n    CLASS TRT01PN;\n    VAR PCHG;\nRUN;",
+    "crumbs": [
+      "Statistics (统计学)"
+    ]
   },
   {
     "objectID": "stat/stat.html#协方差分析",
     "href": "stat/stat.html#协方差分析",
     "title": "Statistics (统计学)",
     "section": "协方差分析",
-    "text": "协方差分析\n基线PASI评分（base）作为协变量，治疗分组（trt01an）和中心组别（siteid）作为固定效应，并考虑治疗分组与中心组别的交互效应\nproc glm data=adeff;\n    class trt01pn siteid;\n    model pchg = base trt01pn siteid trt01pn*siteid ;\n    estimate \"a-b\" trt01pn 1-1;\n    lsmeans trt01pn/stderr tdiff pdiff cl ;\nrun;\n协方差分析（ANOCVA）对48周BCVA较基线改善的平均字母数\nods output lsmeans=lsmean tests3=tests  diffs=diffs; \nproc mixed data=DATASET(where=(trtan in (2,1)));\n  by &subgrp paramn avisitn ;\n  class trtan(ref='1') &stra;\n  model CHG=BASE TRTAN PCV WAMD;\n  lsmeans trtan / cl pdiff; \nrun;\n** lsmeans, BCVA 第48 周的相对基线变化的最小二乘均值（LS Mean）以及对应的95%置信区间 **\n** diffs, 两组的最小二乘均值差（LS difference）以及相应的95%的置信区\n** tests3, 两组的双侧检验的P 值"
+    "text": "协方差分析\n基线PASI评分（base）作为协变量，治疗分组（trt01an）和中心组别（siteid）作为固定效应，并考虑治疗分组与中心组别的交互效应\nproc glm data=adeff;\n    class trt01pn siteid;\n    model pchg = base trt01pn siteid trt01pn*siteid ;\n    estimate \"a-b\" trt01pn 1-1;\n    lsmeans trt01pn/stderr tdiff pdiff cl ;\nrun;\n协方差分析（ANOCVA）对48周BCVA较基线改善的平均字母数\nods output lsmeans=lsmean tests3=tests  diffs=diffs; \nproc mixed data=DATASET(where=(trtan in (2,1)));\n  by &subgrp paramn avisitn ;\n  class trtan(ref='1') &stra;\n  model CHG=BASE TRTAN PCV WAMD;\n  lsmeans trtan / cl pdiff; \nrun;\n** lsmeans, BCVA 第48 周的相对基线变化的最小二乘均值（LS Mean）以及对应的95%置信区间 **\n** diffs, 两组的最小二乘均值差（LS difference）以及相应的95%的置信区\n** tests3, 两组的双侧检验的P 值",
+    "crumbs": [
+      "Statistics (统计学)"
+    ]
   },
   {
     "objectID": "stat/stat.html#adjusted-p-value校正后的p值",
     "href": "stat/stat.html#adjusted-p-value校正后的p值",
     "title": "Statistics (统计学)",
     "section": "adjusted P value（校正后的P值）",
-    "text": "adjusted P value（校正后的P值）\n校正后的P值是对P值进行了多重假设检验，能更多地控制假阳性率。\nproc multtest inpvalues=a holm hoc fdr;\nrun;"
+    "text": "adjusted P value（校正后的P值）\n校正后的P值是对P值进行了多重假设检验，能更多地控制假阳性率。\nproc multtest inpvalues=a holm hoc fdr;\nrun;",
+    "crumbs": [
+      "Statistics (统计学)"
+    ]
+  },
+  {
+    "objectID": "stat/datamanage.html",
+    "href": "stat/datamanage.html",
+    "title": "Data Processing（数据处理）",
+    "section": "",
+    "text": "数据标准化\n统计分析过程如果需要对其进行数据标准化，即每个变量都减去均值后再除以方差。\nproc stdize data=sashelp.class out=stdclass; var age weight height; run;\nSAS 的 proc stdize 过程，本意用于数据的标化，不过，利用 missing选项，它还有一个妙用：连续变量缺失值的填补。可以设定用均值或者中位数填补，也可直接指定一个具体的值填补。\nproc stdize data=sashelp.heart  out=impheart missing=mean  reponly oprefix sprefix=imp_; var Cholesterol; run;\n\n\n高斯秩变换（秩转换）\n变量的值按照从小到大的顺序排序，获得每个变量值的秩次，并用秩次代替原有变量值的过程。\ndata a;\nvalue=45;output;\nvalue=25;output;\nvalue=94;output;\nvalue=96;output;\nvalue=40;output;\nvalue=45;output;\nvalue=25;output;\nvalue=94;output;\nvalue=96;output;\nvalue=40;output;\nrun;\n\ndata b;\n    set a;\n    if _n_&lt;=5 then grp=1;\n    else grp=2;\nrun;\ndata b;\n    set b;\n    by grp;\n    if first.grp then _ord_=1;\n    else _ord_+1;\nrun;\n\nproc sort;\n    by grp value;\n    run;\n\ndata b;\n    set b;\n    by grp;\n    if first.grp then rank=0;\n    else rank+1;\n    proc sort;\n        by grp _ord_;\nrun;\n\nproc sql noprint;\n    create table c as select *, max(rank) as max from b group by grp;\nquit;\n\ndata c;\n    set c;\n    _rank_=(rank/max-0.5)*2;\n    epsilon=1e-6;\n    if _rank_=1 then _rank_=_rank_-epsilon;\n    else if _rank_=-1 then _rank_=_rank_+epsilon;\n    erf=erf(_rank_);\n    if _rank_ &gt;= 0 then erfc=sqrt(cinv(abs(_rank_),1)/2);\n    else if _rank_ &lt; 0 then erfc=-sqrt(cinv(abs(_rank_),1)/2);\nrun;",
+    "crumbs": [
+      "Statistics (统计学)",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Data Processing（数据处理）</span>"
+    ]
+  },
+  {
+    "objectID": "stat/freqanalysis.html",
+    "href": "stat/freqanalysis.html",
+    "title": "列联表分析",
+    "section": "",
+    "text": "率差\n假设样本均值等于总体均值，其置信区间以均值为中心分布在其两侧。方法：正态近似法。\n假设样本均值不等于总体均值，样本出现在总体分布的置信区间内。方法：Miettinen and Nurminen.",
+    "crumbs": [
+      "Statistics (统计学)",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>列联表分析</span>"
+    ]
   },
   {
     "objectID": "stat/freqanalysis.html#率差",
     "href": "stat/freqanalysis.html#率差",
     "title": "列联表分析",
-    "section": "率差",
-    "text": "率差\n假设样本均值等于总体均值，其置信区间以均值为中心分布在其两侧。方法：正态近似法。\n\ndata test1;\n    gp=\"A\";r=0;n=13;output;\n    gp=\"A\";r=1;n=48;output;\n    gp=\"B\";r=0;n=8;output;\n    gp=\"B\";r=1;n=56;output;\nrun;\n\n\n**** Method 1 ****;\nproc freq data=test1;\n    tables gp*r/ riskdiff(cl=exact);\n    exact riskdiff;\n    weight n/ zeros;\nrun;\n假设样本均值不等于总体均值，样本出现在总体分布的置信区间内。方法：Miettinen and Nurminen.\n\n\n试验组与对照组的比率不是都为100%或0%（MN方法）\ndata test1;\n    gp=\"A\";r=0;n=13;output;\n    gp=\"A\";r=1;n=48;output;\n    gp=\"B\";r=0;n=8;output;\n    gp=\"B\";r=1;n=56;output;\nrun;\n\n\n**** Method 1 ****;\nproc freq data=test1;\n    tables gp*r/ riskdiff(cl=mn);\n    weight n/ zeros;\n    ods output pdiffcls=mn;\nrun;\n\n\n试验组与对照组的比率都为100%或0%（MN方法）\n%macro ratediff(n1=,n1_event=,n2=,n2_event=,alpha=,side=);\ndata mienur;\nn1=&n1.;\na1=&n1_event.;\na2=n1-a1;\np1=a1/n1;\nn2=&n2.;\na3=&n2_event.;\na4=n2-a3;\np2=a3/n2;\nz=probit(1-&alpha./&side.);\nd=p1-p2;\n**率差置信区间下限;\n**率差置信区间上限;\nl_diff=-(z**2*(a1+a3)/((a1+a3-1)*a1))/((z**2*(a1+a3)/((a1+a3-1)*a1))+1);\nu_diff= (z**2*(a1+a3)/((a1+a3-1)*a3))/((z**2*(a1+a3)/((a1+a3-1)*a3))+1);\nrun;\n%mend ratediff;\n\n%ratediff(n1=100,n1_event=100,n2=100,n2_event=100,alpha=0.05,side=2);\n\n\n分层的Miettinen-Nurminen方法计算率差与P值\n%macro rrv(c0,c1,s0,s1,z,rd,ra,rb,vv);/*根据rd计算r0和r1*/\n c0=&c0.;\n c1=&c1.;\n s0=&s0.;\n s1=&s1.;\n c=c1+c0;\n s=s1+s0;\n p1=c1/s1;\n p0=c0/s0;\n z2=&z.**2;\n rd=&rd.;\n\n l3=s;\n l2=(s1+2*s0)*rd-s-c;\n l1=(s0*rd-s-2*c0)*rd+c;\n l0=c0*rd*(1-rd);\n\n q=l2**3/(3*l3)**3-l1*l2/(6*l3**2)+l0/(2*l3);\n p=sign(q)*(l2**2/(3*l3)**2-l1/(3*l3))**0.5;\n if p=0 then aa=0; \n else aa=q/p**3;\n if abs(aa)&gt;1 then aa=1;\n a=1/3*(pi+arcos(aa));\n r0=2*p*cos(a)-l2/(3*l3);\n\n r1=r0+rd;\n v=(r1*(1-r1)/s1+r0*(1-r0)/s0)*s/(s-1);\n &ra.=r0;\n &rb.=r1;\n &vv.=v;\n%mend;\n\n%macro stra_mn(dat=,stra=,trt=,c=,n=,alp=,Wmethod=2,all=0,out=);\n\n%if &stra.=0 %then %do;\n\nproc sort data=&dat. out=dat1;\n by &trt.;\nrun;\n\ndata dat1x;\n set dat1 nobs=nob;\n by &trt.;\n array ccc(2);\n array nnn(2);\n retain ccc: nnn:;\n if first.&trt. then do;\n    i+1;\n    ccc(i)=&c.;\n    nnn(i)=&n.;\n end;\n if _N_=nob then do;\n    ca=ccc(1);\n    cb=ccc(2);\n    na=nnn(1);\n    nb=nnn(2);\n    output;\n end;\n keep ca cb na nb;\nrun;\n\ndata dat2;\n set dat1x;\n z=probit(1-&alp./2);\n pi=constant(\"pi\");\n pa=ca/na;\n pb=cb/nb;\n\n/*计算置信下限*/\n\n str=0;\n qxq=0;\n do qcyc=1 to 3;\n\n    poit=10**(-qcyc*2);\n    lmin=10;\n    str=str+qxq*poit*100;\n\n do cyc=-99 to 99;\n    rdlx=str+cyc*poit;\n    %rrv(ca,cb,na,nb,z,rdlx,ra,rb,vv);\n    if abs(vv)&lt;10**(-12) then vv=0;\n    rdx=pb-pa-(z*z*vv)**0.5; /*置信下限*/\n    if vv^=0 then diff=abs(rdx-rdlx);\n    if diff&lt;lmin then do;\n       lmin=diff;\n       qxq=cyc;\n    end;\n    if &all.=1 then output;\n end; \n\n end;\n rdl=str+qxq*poit;\n\n /*计算置信上限*/\n str=0;\n qxq=0;\n do qcyc=1 to 3;\n\n    poit=10**(-qcyc*2);\n    dmin=10;\n    str=str+qxq*poit*100;\n\n do cyc=-99 to 99;\n    rdlx=str+cyc*poit;\n    %rrv(ca,cb,na,nb,z,rdlx,ra,rb,vv);\n    if abs(vv)&lt;10**(-12) then vv=0;\n    rdx=pb-pa+(z*z*vv)**0.5; /*置信上限*/\n    if vv^=0 then diff=abs(rdx-rdlx);\n    if diff&lt;dmin then do;\n       dmin=diff;\n       qxq=cyc;\n    end;\n    if &all.=1 then output;\n end; \n\n end;\n rdu=str+qxq*poit;\n \n/*Z统计量*/\n\n rdlx=0;\n %rrv(ca,cb,na,nb,z,rdlx,ra,rb,vv);\n if abs(vv)&lt;10**(-16) then Zsc=0;\n else Zsc=-abs((pb-pa)/vv**0.5);\n Pvalue=probnorm(Zsc)*2;\n\n /*率差*/\n rankdiff=pb-pa;\n output;\n\n %if &all.=1 %then %do;\n     keep diff rdx rdlx rdl ra rb vv rdl dmin rdu lmin str qxq;\n %end;\n %else %do;\n     keep rdl rdu dmin lmin Zsc Pvalue rankdiff ;\n %end;\nrun;\n\n%end;\n\n\n\n/**************************************************/\n/*分层MN*/\n%else %do;\n\nproc sort data=&dat. out=dat1;\n by &stra. &trt.;\nrun;\n\ndata _NULL_;\n set dat1 nobs=nob;\n array cc(99);\n array nn(99);\n retain cc: nn:;\n by &stra. &trt.;\n x+1;\n cc(x)=&c.;\n nn(x)=&n.;\n if _N_=nob then do;\n    grp=x/2;\n    do i=1 to grp;\n       call symputx(\"c\"||strip(put(i,best.))||\"_0\",strip(put(cc(i*2-1),best.)));\n       call symputx(\"c\"||strip(put(i,best.))||\"_1\",strip(put(cc(i*2),best.)));\n       call symputx(\"n\"||strip(put(i,best.))||\"_0\",strip(put(nn(i*2-1),best.)));\n       call symputx(\"n\"||strip(put(i,best.))||\"_1\",strip(put(nn(i*2),best.)));\n    end;\n    call symputx(\"Ntrt\",strip(put(x/2,best.)));\n end;\nrun;\n\ndata dat2;\n array ca(&Ntrt.);\n array cb(&Ntrt.);\n array na(&Ntrt.);\n array nb(&Ntrt.);\n array pa(&Ntrt.);\n array pb(&Ntrt.);\n array ra(&Ntrt.);\n array rb(&Ntrt.);\n array vv(&Ntrt.);\n array wfr(&Ntrt.);\n array sw(&Ntrt.);\n ntrt=&Ntrt.;\n %do i=1 %to &Ntrt.;\n     ca&i.=&&c&i._0.;\n     cb&i.=&&c&i._1.;\n     na&i.=&&n&i._0.;\n     nb&i.=&&n&i._1.;\n %end;\n z=probit(1-&alp./2);\n pi=constant(\"pi\");\n do i=1 to ntrt;\n    pa(i)=ca(i)/na(i);\n    pb(i)=cb(i)/nb(i);\n end;\n\n /*率差*/\n ew=0;\n do i=1 to ntrt;  \n    %if &wmethod.=1 %then %do; \n        wfr(i)=(na(i)+nb(i));\n    %end;\n    %if &wmethod.=2 %then %do; \n        wfr(i)=1/(1/na(i)+1/nb(i));\n    %end;\n    ew=ew+wfr(i);\n end;\n rra=0;\n rrb=0;\n do i=1 to ntrt;\n    sw(i)=wfr(i)/ew;\n    rra=rra+sw(i)*pa(i);\n    rrb=rrb+sw(i)*pb(i);\n end;\n rankdiff=rrb-rra;\n\n /*计算置信下限*/\n str=0;\n qxq=0;\n do qcyc=1 to 3;\n\n    poit=10**(-qcyc*2);\n    lmin=10;\n    str=str+qxq*poit*100;\n\n do cyc=-99 to 99;\n    rdlx=str+cyc*poit;\n  \n    do i=1 to ntrt;\n       %rrv(ca(i),cb(i),na(i),nb(i),z,rdlx,ra(i),rb(i),vv(i));\n       if abs(vv(i))&lt;10**(-12) then vv(i)=0;\n    end;\n\n    rra=0;\n    rrb=0;\n    vxv=0;\n    do i=1 to ntrt;\n       rra=rra+sw(i)*pa(i);\n       rrb=rrb+sw(i)*pb(i);\n       vxv=vxv+vv(i)*sw(i)*sw(i);\n    end;\n    rdx=rrb-rra-(z*z*vxv)**0.5; /*置信下限*/\n    diff=abs(rdx-rdlx);\n    if diff&lt;lmin then do;\n       lmin=diff;\n       qxq=cyc;\n    end;\n    if &all.=1 then output;\n end; \n\n end;\n\n rdl=str+qxq*poit;\n\n\n /*计算置信上限*/\n str=0;\n qxq=0;\n do qcyc=1 to 3;\n\n    poit=10**(-qcyc*2);\n    dmin=10;\n    str=str+qxq*poit*100;\n\n do cyc=-99 to 99;\n    rdlx=str+cyc*poit;\n  \n    do i=1 to ntrt;\n       %rrv(ca(i),cb(i),na(i),nb(i),z,rdlx,ra(i),rb(i),vv(i));\n       if abs(vv(i))&lt;10**(-12) then vv(i)=0;\n    end;\n\n    rra=0;\n    rrb=0;\n    vxv=0;\n    do i=1 to ntrt;\n       rra=rra+sw(i)*pa(i);\n       rrb=rrb+sw(i)*pb(i);\n       vxv=vxv+vv(i)*sw(i)*sw(i);\n    end;\n    rdx=rrb-rra+(z*z*vxv)**0.5; /*置信上限*/\n    diff=abs(rdx-rdlx);\n    if diff&lt;dmin then do;\n       dmin=diff;\n       qxq=cyc;\n    end;\n    if &all.=1 then output;\n end; \n\n end;\n\n rdu=str+qxq*poit;\n \n/*Z统计量*/\n\n rdlx=0;\n  \n do i=1 to ntrt;\n    %rrv(ca(i),cb(i),na(i),nb(i),z,rdlx,ra(i),rb(i),vv(i));\n    if abs(vv(i))&lt;10**(-12) then vv(i)=0;\n end;\n\n rra=0;\n rrb=0;\n vxv=0;\n do i=1 to ntrt;\n    rra=rra+sw(i)*pa(i);\n    rrb=rrb+sw(i)*pb(i);\n    vxv=vxv+vv(i)*sw(i)*sw(i);\n end;\n Zsc=-abs((rrb-rra)/vxv**0.5);\n Pvalue=probnorm(Zsc)*2;\n\n output;\n\n\n %if &all.=1 %then %do;\n     keep diff rdx rdlx rdl rra rrb vxv ra: rb: rdl dmin;\n %end;\n %else %do;\n     keep rdl rdu dmin lmin Zsc Pvalue rankdiff ;\n %end;\nrun;\n\n%end;\n\ndata &out.;\n set dat2;\n RateDiff=rankdiff;\n LowerCL=rdl;\n UpperCL=rdu;\n Z=Zsc;\n P=Pvalue;\n keep ratediff LowerCL UpperCL Z P;\nrun;\n\n%mend;\n\n\n/*dat:输入的数据集文件名,stra:分层因素,trt:分组变量名,c:事件数的变量名,n:样本量的变量名,每一层的n都不能为0*/\n/*Wmethod为权重计算方法,本次分析使用Wmethod=2*/\n/*Wmethod=1: Wi=n0i+n1i*/\n/*Wmethod=2: Wi=1/(1/n0i+1/n1i)*/\n\n/*当stra设为0时,为不分层的MN方法*/"
+    "section": "",
+    "text": "data test1;\n    gp=\"A\";r=0;n=13;output;\n    gp=\"A\";r=1;n=48;output;\n    gp=\"B\";r=0;n=8;output;\n    gp=\"B\";r=1;n=56;output;\nrun;\n\n\n**** Method 1 ****;\nproc freq data=test1;\n    tables gp*r/ riskdiff(cl=exact);\n    exact riskdiff;\n    weight n/ zeros;\nrun;\n\n\n\n试验组与对照组的比率不是都为100%或0%（MN方法）\ndata test1;\n    gp=\"A\";r=0;n=13;output;\n    gp=\"A\";r=1;n=48;output;\n    gp=\"B\";r=0;n=8;output;\n    gp=\"B\";r=1;n=56;output;\nrun;\n\n\n**** Method 1 ****;\nproc freq data=test1;\n    tables gp*r/ riskdiff(cl=mn);\n    weight n/ zeros;\n    ods output pdiffcls=mn;\nrun;\n\n\n试验组与对照组的比率都为100%或0%（MN方法）\n%macro ratediff(n1=,n1_event=,n2=,n2_event=,alpha=,side=);\ndata mienur;\nn1=&n1.;\na1=&n1_event.;\na2=n1-a1;\np1=a1/n1;\nn2=&n2.;\na3=&n2_event.;\na4=n2-a3;\np2=a3/n2;\nz=probit(1-&alpha./&side.);\nd=p1-p2;\n**率差置信区间下限;\n**率差置信区间上限;\nl_diff=-(z**2*(a1+a3)/((a1+a3-1)*a1))/((z**2*(a1+a3)/((a1+a3-1)*a1))+1);\nu_diff= (z**2*(a1+a3)/((a1+a3-1)*a3))/((z**2*(a1+a3)/((a1+a3-1)*a3))+1);\nrun;\n%mend ratediff;\n\n%ratediff(n1=100,n1_event=100,n2=100,n2_event=100,alpha=0.05,side=2);\n\n\n分层的Miettinen-Nurminen方法计算率差与P值\n%macro rrv(c0,c1,s0,s1,z,rd,ra,rb,vv);/*根据rd计算r0和r1*/\n c0=&c0.;\n c1=&c1.;\n s0=&s0.;\n s1=&s1.;\n c=c1+c0;\n s=s1+s0;\n p1=c1/s1;\n p0=c0/s0;\n z2=&z.**2;\n rd=&rd.;\n\n l3=s;\n l2=(s1+2*s0)*rd-s-c;\n l1=(s0*rd-s-2*c0)*rd+c;\n l0=c0*rd*(1-rd);\n\n q=l2**3/(3*l3)**3-l1*l2/(6*l3**2)+l0/(2*l3);\n p=sign(q)*(l2**2/(3*l3)**2-l1/(3*l3))**0.5;\n if p=0 then aa=0; \n else aa=q/p**3;\n if abs(aa)&gt;1 then aa=1;\n a=1/3*(pi+arcos(aa));\n r0=2*p*cos(a)-l2/(3*l3);\n\n r1=r0+rd;\n v=(r1*(1-r1)/s1+r0*(1-r0)/s0)*s/(s-1);\n &ra.=r0;\n &rb.=r1;\n &vv.=v;\n%mend;\n\n%macro stra_mn(dat=,stra=,trt=,c=,n=,alp=,Wmethod=2,all=0,out=);\n\n%if &stra.=0 %then %do;\n\nproc sort data=&dat. out=dat1;\n by &trt.;\nrun;\n\ndata dat1x;\n set dat1 nobs=nob;\n by &trt.;\n array ccc(2);\n array nnn(2);\n retain ccc: nnn:;\n if first.&trt. then do;\n    i+1;\n    ccc(i)=&c.;\n    nnn(i)=&n.;\n end;\n if _N_=nob then do;\n    ca=ccc(1);\n    cb=ccc(2);\n    na=nnn(1);\n    nb=nnn(2);\n    output;\n end;\n keep ca cb na nb;\nrun;\n\ndata dat2;\n set dat1x;\n z=probit(1-&alp./2);\n pi=constant(\"pi\");\n pa=ca/na;\n pb=cb/nb;\n\n/*计算置信下限*/\n\n str=0;\n qxq=0;\n do qcyc=1 to 3;\n\n    poit=10**(-qcyc*2);\n    lmin=10;\n    str=str+qxq*poit*100;\n\n do cyc=-99 to 99;\n    rdlx=str+cyc*poit;\n    %rrv(ca,cb,na,nb,z,rdlx,ra,rb,vv);\n    if abs(vv)&lt;10**(-12) then vv=0;\n    rdx=pb-pa-(z*z*vv)**0.5; /*置信下限*/\n    if vv^=0 then diff=abs(rdx-rdlx);\n    if diff&lt;lmin then do;\n       lmin=diff;\n       qxq=cyc;\n    end;\n    if &all.=1 then output;\n end; \n\n end;\n rdl=str+qxq*poit;\n\n /*计算置信上限*/\n str=0;\n qxq=0;\n do qcyc=1 to 3;\n\n    poit=10**(-qcyc*2);\n    dmin=10;\n    str=str+qxq*poit*100;\n\n do cyc=-99 to 99;\n    rdlx=str+cyc*poit;\n    %rrv(ca,cb,na,nb,z,rdlx,ra,rb,vv);\n    if abs(vv)&lt;10**(-12) then vv=0;\n    rdx=pb-pa+(z*z*vv)**0.5; /*置信上限*/\n    if vv^=0 then diff=abs(rdx-rdlx);\n    if diff&lt;dmin then do;\n       dmin=diff;\n       qxq=cyc;\n    end;\n    if &all.=1 then output;\n end; \n\n end;\n rdu=str+qxq*poit;\n \n/*Z统计量*/\n\n rdlx=0;\n %rrv(ca,cb,na,nb,z,rdlx,ra,rb,vv);\n if abs(vv)&lt;10**(-16) then Zsc=0;\n else Zsc=-abs((pb-pa)/vv**0.5);\n Pvalue=probnorm(Zsc)*2;\n\n /*率差*/\n rankdiff=pb-pa;\n output;\n\n %if &all.=1 %then %do;\n     keep diff rdx rdlx rdl ra rb vv rdl dmin rdu lmin str qxq;\n %end;\n %else %do;\n     keep rdl rdu dmin lmin Zsc Pvalue rankdiff ;\n %end;\nrun;\n\n%end;\n\n\n\n/**************************************************/\n/*分层MN*/\n%else %do;\n\nproc sort data=&dat. out=dat1;\n by &stra. &trt.;\nrun;\n\ndata _NULL_;\n set dat1 nobs=nob;\n array cc(99);\n array nn(99);\n retain cc: nn:;\n by &stra. &trt.;\n x+1;\n cc(x)=&c.;\n nn(x)=&n.;\n if _N_=nob then do;\n    grp=x/2;\n    do i=1 to grp;\n       call symputx(\"c\"||strip(put(i,best.))||\"_0\",strip(put(cc(i*2-1),best.)));\n       call symputx(\"c\"||strip(put(i,best.))||\"_1\",strip(put(cc(i*2),best.)));\n       call symputx(\"n\"||strip(put(i,best.))||\"_0\",strip(put(nn(i*2-1),best.)));\n       call symputx(\"n\"||strip(put(i,best.))||\"_1\",strip(put(nn(i*2),best.)));\n    end;\n    call symputx(\"Ntrt\",strip(put(x/2,best.)));\n end;\nrun;\n\ndata dat2;\n array ca(&Ntrt.);\n array cb(&Ntrt.);\n array na(&Ntrt.);\n array nb(&Ntrt.);\n array pa(&Ntrt.);\n array pb(&Ntrt.);\n array ra(&Ntrt.);\n array rb(&Ntrt.);\n array vv(&Ntrt.);\n array wfr(&Ntrt.);\n array sw(&Ntrt.);\n ntrt=&Ntrt.;\n %do i=1 %to &Ntrt.;\n     ca&i.=&&c&i._0.;\n     cb&i.=&&c&i._1.;\n     na&i.=&&n&i._0.;\n     nb&i.=&&n&i._1.;\n %end;\n z=probit(1-&alp./2);\n pi=constant(\"pi\");\n do i=1 to ntrt;\n    pa(i)=ca(i)/na(i);\n    pb(i)=cb(i)/nb(i);\n end;\n\n /*率差*/\n ew=0;\n do i=1 to ntrt;  \n    %if &wmethod.=1 %then %do; \n        wfr(i)=(na(i)+nb(i));\n    %end;\n    %if &wmethod.=2 %then %do; \n        wfr(i)=1/(1/na(i)+1/nb(i));\n    %end;\n    ew=ew+wfr(i);\n end;\n rra=0;\n rrb=0;\n do i=1 to ntrt;\n    sw(i)=wfr(i)/ew;\n    rra=rra+sw(i)*pa(i);\n    rrb=rrb+sw(i)*pb(i);\n end;\n rankdiff=rrb-rra;\n\n /*计算置信下限*/\n str=0;\n qxq=0;\n do qcyc=1 to 3;\n\n    poit=10**(-qcyc*2);\n    lmin=10;\n    str=str+qxq*poit*100;\n\n do cyc=-99 to 99;\n    rdlx=str+cyc*poit;\n  \n    do i=1 to ntrt;\n       %rrv(ca(i),cb(i),na(i),nb(i),z,rdlx,ra(i),rb(i),vv(i));\n       if abs(vv(i))&lt;10**(-12) then vv(i)=0;\n    end;\n\n    rra=0;\n    rrb=0;\n    vxv=0;\n    do i=1 to ntrt;\n       rra=rra+sw(i)*pa(i);\n       rrb=rrb+sw(i)*pb(i);\n       vxv=vxv+vv(i)*sw(i)*sw(i);\n    end;\n    rdx=rrb-rra-(z*z*vxv)**0.5; /*置信下限*/\n    diff=abs(rdx-rdlx);\n    if diff&lt;lmin then do;\n       lmin=diff;\n       qxq=cyc;\n    end;\n    if &all.=1 then output;\n end; \n\n end;\n\n rdl=str+qxq*poit;\n\n\n /*计算置信上限*/\n str=0;\n qxq=0;\n do qcyc=1 to 3;\n\n    poit=10**(-qcyc*2);\n    dmin=10;\n    str=str+qxq*poit*100;\n\n do cyc=-99 to 99;\n    rdlx=str+cyc*poit;\n  \n    do i=1 to ntrt;\n       %rrv(ca(i),cb(i),na(i),nb(i),z,rdlx,ra(i),rb(i),vv(i));\n       if abs(vv(i))&lt;10**(-12) then vv(i)=0;\n    end;\n\n    rra=0;\n    rrb=0;\n    vxv=0;\n    do i=1 to ntrt;\n       rra=rra+sw(i)*pa(i);\n       rrb=rrb+sw(i)*pb(i);\n       vxv=vxv+vv(i)*sw(i)*sw(i);\n    end;\n    rdx=rrb-rra+(z*z*vxv)**0.5; /*置信上限*/\n    diff=abs(rdx-rdlx);\n    if diff&lt;dmin then do;\n       dmin=diff;\n       qxq=cyc;\n    end;\n    if &all.=1 then output;\n end; \n\n end;\n\n rdu=str+qxq*poit;\n \n/*Z统计量*/\n\n rdlx=0;\n  \n do i=1 to ntrt;\n    %rrv(ca(i),cb(i),na(i),nb(i),z,rdlx,ra(i),rb(i),vv(i));\n    if abs(vv(i))&lt;10**(-12) then vv(i)=0;\n end;\n\n rra=0;\n rrb=0;\n vxv=0;\n do i=1 to ntrt;\n    rra=rra+sw(i)*pa(i);\n    rrb=rrb+sw(i)*pb(i);\n    vxv=vxv+vv(i)*sw(i)*sw(i);\n end;\n Zsc=-abs((rrb-rra)/vxv**0.5);\n Pvalue=probnorm(Zsc)*2;\n\n output;\n\n\n %if &all.=1 %then %do;\n     keep diff rdx rdlx rdl rra rrb vxv ra: rb: rdl dmin;\n %end;\n %else %do;\n     keep rdl rdu dmin lmin Zsc Pvalue rankdiff ;\n %end;\nrun;\n\n%end;\n\ndata &out.;\n set dat2;\n RateDiff=rankdiff;\n LowerCL=rdl;\n UpperCL=rdu;\n Z=Zsc;\n P=Pvalue;\n keep ratediff LowerCL UpperCL Z P;\nrun;\n\n%mend;\n\n\n/*dat:输入的数据集文件名,stra:分层因素,trt:分组变量名,c:事件数的变量名,n:样本量的变量名,每一层的n都不能为0*/\n/*Wmethod为权重计算方法,本次分析使用Wmethod=2*/\n/*Wmethod=1: Wi=n0i+n1i*/\n/*Wmethod=2: Wi=1/(1/n0i+1/n1i)*/\n\n/*当stra设为0时,为不分层的MN方法*/",
+    "crumbs": [
+      "Statistics (统计学)",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>列联表分析</span>"
+    ]
+  },
+  {
+    "objectID": "stat/survivalanalysis.html",
+    "href": "stat/survivalanalysis.html",
+    "title": "Surivival Analysis（生存分析）",
+    "section": "",
+    "text": "Cox 模型中基于殃残差的比例风险判定\nCox 模型中的比例风险假定判定的方法和软件操作，推荐 UCLA 的 IDRE 官方网页：\nhttps://stats.idre.ucla.edu/other/examples/asa2/testing-the-proportional-hazard-assumption-in-cox-models/\nCox 模型中基于殃残差的比例风险判定，在SAS的 phreg 过程步中有一个非常方便的实现方法，那就是经常被大家忽略的 assess 语句。",
+    "crumbs": [
+      "Statistics (统计学)",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Surivival Analysis（生存分析）</span>"
+    ]
   },
   {
     "objectID": "stat/survivalanalysis.html#cox-模型中基于殃残差的比例风险判定",
     "href": "stat/survivalanalysis.html#cox-模型中基于殃残差的比例风险判定",
     "title": "Surivival Analysis（生存分析）",
-    "section": "Cox 模型中基于殃残差的比例风险判定",
-    "text": "Cox 模型中基于殃残差的比例风险判定\nCox 模型中的比例风险假定判定的方法和软件操作，推荐 UCLA 的 IDRE 官方网页：\nhttps://stats.idre.ucla.edu/other/examples/asa2/testing-the-proportional-hazard-assumption-in-cox-models/\nCox 模型中基于殃残差的比例风险判定，在SAS的 phreg 过程步中有一个非常方便的实现方法，那就是经常被大家忽略的 assess 语句。\n\nproc phreg data=sashelp.bmt;\n  class group;\n     model T * Status(0)=group /rl ;\n  assess ph;\nrun;"
+    "section": "",
+    "text": "proc phreg data=sashelp.bmt;\n  class group;\n     model T * Status(0)=group /rl ;\n  assess ph;\nrun;",
+    "crumbs": [
+      "Statistics (统计学)",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Surivival Analysis（生存分析）</span>"
+    ]
   },
   {
     "objectID": "stat/survivalanalysis.html#生存曲线的校正",
     "href": "stat/survivalanalysis.html#生存曲线的校正",
     "title": "Surivival Analysis（生存分析）",
     "section": "生存曲线的校正",
-    "text": "生存曲线的校正\n对于生存数据，单因素分析时，通常绘制K-M曲线，多因素分析时，则通过 Cox 模型计算校正的HR。其实，如果能够同时展示校正的K-M曲线，那结果将会更加生动。如何做校正的K-M，分享一篇小综述。\n生存分析中，当有多个结局事件时，且某结局事件的发生会影响甚至阻止其它结局事件的发生，此时就会存在竞争风险。针对竞争分析，常用三种分析策略: (1) 复合终点; (2) 原因别风险; (3) Fine-Gray模型。三种分析策略的总结见下表：\n\n\n\n\n\n\n\n\n处理策略\n具体方法\n解读\n\n\n复合终点\n- K-M估计曲线\n- Log-rank检验\n- Cox比例风险函数\n- 联合事件不一定 具有临床意义，可解释性差\n- 无法精细分析 各成分事件，造成信息损失\n\n\n原因别风险\n- Nelson-Aalen累积风险曲线\n- Gray’s检验\n- 原因别风险函数\n- 将其它事件视为删失，分别对每个事件采用传统Cox回归\n- 适合病因学问题\n- 相对作用\n\n\nFine-Gray模型\n- Nelson-Aalen累积风险曲线\n- Gray’s检验\n- 次分布风险函数\n- 发生其它事件的研究对象仍纳入风险集，估计关注事件的CIF\n- 适合预测预后问题\n- 绝对效应\n\n\n\n生存率，标准误，置信区间的算法：\nhttps://blog.csdn.net/xiaohukun/article/details/77936022\n关于lifetest 如果不加conftype=linear 默认的是loglog的方法，我以前做的经常是用conftype=linear是线性拟合的方法，其实结果相差不是很多，双方统一就行，针对敏感性分析有可能会有些区别，但是在常规分析中，我感觉都可以\nods output quartiles=quar /*25/50/75th percentile (95% C.I.)*/\n        homtests=logrank;\nproc lifetest data=dsin timelist=12 18 24 outsurv=outsurv reduceout conftype=loglog method=km;\n  time T*starus(1);*1=conserved,0=event*;\n  strata var1 var2 var3/group=trtn test=logrank;\nrun;\n*注意T代表时间，这里时间单位是月，要进行天到月的转换，status代表删失，删失括号里的数字要尤其注意*;\n*outsurv: output dataset that contains the survival estimates*;\n*reduceout: Lists only TIMELIST= observations in the OUTSURV= data set**;\n*conftype=loglog:default,the log-log transformation for confidence intervals *;\n*method=km:default*;\n*算P值额外用一个proc lifetest语句，只有算p值需要放var1-var3分层变量校正，基于log-rank检验*;"
+    "text": "生存曲线的校正\n对于生存数据，单因素分析时，通常绘制K-M曲线，多因素分析时，则通过 Cox 模型计算校正的HR。其实，如果能够同时展示校正的K-M曲线，那结果将会更加生动。如何做校正的K-M，分享一篇小综述。\n生存分析中，当有多个结局事件时，且某结局事件的发生会影响甚至阻止其它结局事件的发生，此时就会存在竞争风险。针对竞争分析，常用三种分析策略: (1) 复合终点; (2) 原因别风险; (3) Fine-Gray模型。三种分析策略的总结见下表：\n\n\n\n\n\n\n\n\n处理策略\n具体方法\n解读\n\n\n复合终点\n- K-M估计曲线\n- Log-rank检验\n- Cox比例风险函数\n- 联合事件不一定 具有临床意义，可解释性差\n- 无法精细分析 各成分事件，造成信息损失\n\n\n原因别风险\n- Nelson-Aalen累积风险曲线\n- Gray’s检验\n- 原因别风险函数\n- 将其它事件视为删失，分别对每个事件采用传统Cox回归\n- 适合病因学问题\n- 相对作用\n\n\nFine-Gray模型\n- Nelson-Aalen累积风险曲线\n- Gray’s检验\n- 次分布风险函数\n- 发生其它事件的研究对象仍纳入风险集，估计关注事件的CIF\n- 适合预测预后问题\n- 绝对效应\n\n\n\n生存率，标准误，置信区间的算法：\nhttps://blog.csdn.net/xiaohukun/article/details/77936022\n关于lifetest 如果不加conftype=linear 默认的是loglog的方法，我以前做的经常是用conftype=linear是线性拟合的方法，其实结果相差不是很多，双方统一就行，针对敏感性分析有可能会有些区别，但是在常规分析中，我感觉都可以\nods output quartiles=quar /*25/50/75th percentile (95% C.I.)*/\n        homtests=logrank;\nproc lifetest data=dsin timelist=12 18 24 outsurv=outsurv reduceout conftype=loglog method=km;\n  time T*starus(1);*1=conserved,0=event*;\n  strata var1 var2 var3/group=trtn test=logrank;\nrun;\n*注意T代表时间，这里时间单位是月，要进行天到月的转换，status代表删失，删失括号里的数字要尤其注意*;\n*outsurv: output dataset that contains the survival estimates*;\n*reduceout: Lists only TIMELIST= observations in the OUTSURV= data set**;\n*conftype=loglog:default,the log-log transformation for confidence intervals *;\n*method=km:default*;\n*算P值额外用一个proc lifetest语句，只有算p值需要放var1-var3分层变量校正，基于log-rank检验*;",
+    "crumbs": [
+      "Statistics (统计学)",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Surivival Analysis（生存分析）</span>"
+    ]
   },
   {
     "objectID": "stat/pkanalysis.html",
     "href": "stat/pkanalysis.html",
     "title": "PK Analysis（PK分析）",
     "section": "",
-    "text": "基于power model评价PK参数\n\\(ln(y)=\\alpha+\\beta*ln(dose)\\)，其中\\(y\\)表示PK参数如\\(AUC_{0-inf}\\),\\(C_{max}\\)等，\\(\\alpha\\) 代表截距项，\\(\\beta\\) 代表斜率。\nMIX model计算P值。\ndata pp1;\n    set adpcp.adpp;\n    where PKPSFL=\"Y\" AND paramcd=\"CMAX\" AND PPGRPID=\"DAY 1, DOSE 1\";\n    logaval=log(aval);\n    logdose=log(trtan);\nrun;\n\nproc mixed data=pp1;\n    class subjid ;\n    model logaval=logdose/ddfm=kr;\n    random intercept logdose/subject= subjid type=un gcorr s;\n/*  lsmeans trtan / diff=control('R') alpha=0.1 cl;*/\n    estimate 'aa' logdose 1/ cl alpha=0.1;\nquit;\n参考文章计算置信区间与判断区间。 置信区间法用于线性药代动力学特征评价\ndata pkdata1;\n    set pkdata;\n    logaval=log(aval);\n    logdose=log(dose);\nrun;\n\nproc means data=pkdata1;\n    by dose;\n    var aval;\nrun;\n\nproc reg data=pkdata1;\n    model aval=dose;\nquit;\n\n**** 计算回归方程的斜率及其置信区间 ****;\nproc reg data=pkdata1;\n    model logaval=logdose/ clb alpha=0.1;\nquit;\n\n\n**** 判断区间 ****;\ndata ecl;\n    le=0.8;\n    ue=1.25;\n    r=2.5/0.625;\n    lcl=1+log(0.8)/log(r);\n    ucl=1+log(1.25)/log(r);\nrun;"
+    "text": "基于power model评价PK参数\n\\(ln(y)=\\alpha+\\beta*ln(dose)\\)，其中\\(y\\)表示PK参数如\\(AUC_{0-inf}\\),\\(C_{max}\\)等，\\(\\alpha\\) 代表截距项，\\(\\beta\\) 代表斜率。\nMIX model计算P值。\ndata pp1;\n    set adpcp.adpp;\n    where PKPSFL=\"Y\" AND paramcd=\"CMAX\" AND PPGRPID=\"DAY 1, DOSE 1\";\n    logaval=log(aval);\n    logdose=log(trtan);\nrun;\n\nproc mixed data=pp1;\n    class subjid ;\n    model logaval=logdose/ddfm=kr;\n    random intercept logdose/subject= subjid type=un gcorr s;\n/*  lsmeans trtan / diff=control('R') alpha=0.1 cl;*/\n    estimate 'aa' logdose 1/ cl alpha=0.1;\nquit;\n参考文章计算置信区间与判断区间。 置信区间法用于线性药代动力学特征评价\ndata pkdata1;\n    set pkdata;\n    logaval=log(aval);\n    logdose=log(dose);\nrun;\n\nproc means data=pkdata1;\n    by dose;\n    var aval;\nrun;\n\nproc reg data=pkdata1;\n    model aval=dose;\nquit;\n\n**** 计算回归方程的斜率及其置信区间 ****;\nproc reg data=pkdata1;\n    model logaval=logdose/ clb alpha=0.1;\nquit;\n\n\n**** 判断区间 ****;\ndata ecl;\n    le=0.8;\n    ue=1.25;\n    r=2.5/0.625;\n    lcl=1+log(0.8)/log(r);\n    ucl=1+log(1.25)/log(r);\nrun;",
+    "crumbs": [
+      "Statistics (统计学)",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>PK Analysis（PK分析）</span>"
+    ]
+  },
+  {
+    "objectID": "cdisc/cdisc.html",
+    "href": "cdisc/cdisc.html",
+    "title": "CDISC",
+    "section": "",
+    "text": "SDTM Standard",
+    "crumbs": [
+      "CDISC"
+    ]
   },
   {
     "objectID": "cdisc/cdisc.html#sdtm-standard",
     "href": "cdisc/cdisc.html#sdtm-standard",
     "title": "CDISC",
-    "section": "SDTM Standard",
-    "text": "SDTM Standard\n\nUNII（Unique Ingredient Identifier (FDA)）:\nhttp://fdasis.nlm.nih.gov/srs/\n\n\nSNOMED:\nhttp://browser.ihtsdotools.org/?\n\n\nMED-RT:\nhttps://evs.nci.nih.gov/ftp1/MED-RT/\n\n\nSDTM CT:\nhttps://evs.nci.nih.gov/ftp1/CDISC/SDTM/SDTM%20Terminology.html#top"
+    "section": "",
+    "text": "UNII（Unique Ingredient Identifier (FDA)）:\nhttp://fdasis.nlm.nih.gov/srs/\n\n\nSNOMED:\nhttp://browser.ihtsdotools.org/?\n\n\nMED-RT:\nhttps://evs.nci.nih.gov/ftp1/MED-RT/\n\n\nSDTM CT:\nhttps://evs.nci.nih.gov/ftp1/CDISC/SDTM/SDTM%20Terminology.html#top",
+    "crumbs": [
+      "CDISC"
+    ]
   },
   {
     "objectID": "cdisc/cdisc.html#nmpa-递交",
     "href": "cdisc/cdisc.html#nmpa-递交",
     "title": "CDISC",
     "section": "NMPA 递交",
-    "text": "NMPA 递交\n\ndefine.xml （数据说明）\naCRF.pdf （是递交的数据集XPT对应aCRF，不是EDC数据集的aCRF）\ncsdrg.pdf/adrg.pdf （原始数据库审阅说明/分析数据库审阅说明）\n数据文件：\n\nXPT v5: SAS (proc copy)\nXPT v8: SAS macro ( http://support.sas.com/kb/46/944.html)\n\nSAS proc cport 生成的XPT不符合要求\n\nEncoding: 需要在审阅说明中说明 UTF-8"
+    "text": "NMPA 递交\n\ndefine.xml （数据说明）\naCRF.pdf （是递交的数据集XPT对应aCRF，不是EDC数据集的aCRF）\ncsdrg.pdf/adrg.pdf （原始数据库审阅说明/分析数据库审阅说明）\n数据文件：\n\nXPT v5: SAS (proc copy)\nXPT v8: SAS macro ( http://support.sas.com/kb/46/944.html)\n\nSAS proc cport 生成的XPT不符合要求\n\nEncoding: 需要在审阅说明中说明 UTF-8",
+    "crumbs": [
+      "CDISC"
+    ]
   },
   {
     "objectID": "cdisc/cdiscae.html",
     "href": "cdisc/cdiscae.html",
     "title": "AE Domain",
     "section": "",
-    "text": "AE的定义\n“any untoward medical occurrence in a patient or clinical investigation subject administered a pharmaceutical product and which does not necessarily have to have a causal relationship with this treatment” (ICH E2A). 节选自ICH的话，可以看出AE指发生的任何不良医疗事件，不一定与治疗有因果关系。\n\nAE: adverse event 不良事件\nADR: adverse drug reaction 不良药品反应\nSAE/SAR: serious adverse event/reaction 严重不良事件/反应\nside effect: 副作用\n\n\n\n\n\n\n\nVariable\nComments\n\n\n\n\nAEREFID\n如可以放SAE编号\n\n\nAETERM\ntopic变量；req变量；\nAE domain仅展示真实发生了的AE,所以不存在–OCCUR, –STAT,–REASND等变量；\nAE的记录：一般是当AE发生了任何变化（严重程度，相关性，采取的措施，转归等），都需要重新记录一条AE\n\n\nAEPRESP\nCRF预设了一些关注的AE，设置AEPRESP=Y；\n由于AE只能放真实发生的AE，当这些被关注的AE是否发生都想保留这部分信息，可在FA Domain中展示\n\n\n\nFAOBJ\nFATESTCD\nFAORRES\n\n\n\n\nXXXAE\nOCCUR\nY/N\n\n\n\n\n\nAEBODSYS\nAESOC\nAE采用MedDRA编码，其中SOC是primary SOC，AE编码可以根据发病原因，也可以根据发病部位或目的进行编码，根据需要决定primary SOC。而AEBODSYS根据sponsor需求决定，并不一定是AESOC。\n\n\nAETOXGR\n根据CTCAE收集的严重程度，设置成级别中的数，如 GRADE 2，则 AETOXGR = 2.\n\n\nAEOUT\n不良事件应随访至事件解决或恢复都基线时的状态或稳定。\n失访受试者：应填写失访前最后一次获得信息而非”未知”；当AE发生后没有检查或访视才记录为”未知”。\n死亡受试者：死亡本身不应作为一个AETERM，死亡是结局，导致死亡的原因才是AETERM。只有当该AE导致的死亡才记录结局为”死亡”。\n\n\nAESTDTC\n症状，体征或检查异常的发生时间，而非诊断时间（有一定滞后）\nAE的采集从签署知情同意书就开始\nSAE的开始日期时间应该为该AE的开始日期时间而非达到SAE标准的时间，如发生了AE（时间1），然后选择去住院（时间2）（达到SAE标准），应选择前者时间1。\n\n\nAEACN\n针对该AE采取的措施。有对应的CT[ACN]，1. 无变化，2. 剂量增加，3. 给药速率降低，4. 剂量减少，5. 暂停给药，6. 停药，7. 不适用。\ncase1: 给药延迟（dose delay）应属于暂停用药（DRUG INTERRUPTED）。\ncase2: 受试者发生3级AE而后恢复正常。研究者考虑上一次AE较为严重，下一次研究用药剂量减少，针对该3级AE的AEACN应记录为”无变化”。采取的措施是预防，避免再次发生SAE，而不是针对该AE的措施。\ncase3: 如果连续的采取了多个措施，比如先研究用药减量，然后速率降低，后来暂停用药，一般取最后一次采取的措施。\n\n\nAEENDTC\n痊愈或痊愈有后遗症的日期\nAE导致死亡的死亡日期\n好转或未好转，AE未结束，置空AEENDTC，此时可通过AEENRTPT,AEENTPT结合使用来描述这类信息。"
+    "text": "AE的定义\n“any untoward medical occurrence in a patient or clinical investigation subject administered a pharmaceutical product and which does not necessarily have to have a causal relationship with this treatment” (ICH E2A). 节选自ICH的话，可以看出AE指发生的任何不良医疗事件，不一定与治疗有因果关系。\n\nAE: adverse event 不良事件\nADR: adverse drug reaction 不良药品反应\nSAE/SAR: serious adverse event/reaction 严重不良事件/反应\nside effect: 副作用\n\n\n\n\n\n\n\nVariable\nComments\n\n\n\n\nAEREFID\n如可以放SAE编号\n\n\nAETERM\ntopic变量；req变量；\nAE domain仅展示真实发生了的AE,所以不存在–OCCUR, –STAT,–REASND等变量；\nAE的记录：一般是当AE发生了任何变化（严重程度，相关性，采取的措施，转归等），都需要重新记录一条AE\n\n\nAEPRESP\nCRF预设了一些关注的AE，设置AEPRESP=Y；\n由于AE只能放真实发生的AE，当这些被关注的AE是否发生都想保留这部分信息，可在FA Domain中展示\n\n\n\nFAOBJ\nFATESTCD\nFAORRES\n\n\n\n\nXXXAE\nOCCUR\nY/N\n\n\n\n\n\nAEBODSYS\nAESOC\nAE采用MedDRA编码，其中SOC是primary SOC，AE编码可以根据发病原因，也可以根据发病部位或目的进行编码，根据需要决定primary SOC。而AEBODSYS根据sponsor需求决定，并不一定是AESOC。\n\n\nAETOXGR\n根据CTCAE收集的严重程度，设置成级别中的数，如 GRADE 2，则 AETOXGR = 2.\n\n\nAEOUT\n不良事件应随访至事件解决或恢复都基线时的状态或稳定。\n失访受试者：应填写失访前最后一次获得信息而非”未知”；当AE发生后没有检查或访视才记录为”未知”。\n死亡受试者：死亡本身不应作为一个AETERM，死亡是结局，导致死亡的原因才是AETERM。只有当该AE导致的死亡才记录结局为”死亡”。\n\n\nAESTDTC\n症状，体征或检查异常的发生时间，而非诊断时间（有一定滞后）\nAE的采集从签署知情同意书就开始\nSAE的开始日期时间应该为该AE的开始日期时间而非达到SAE标准的时间，如发生了AE（时间1），然后选择去住院（时间2）（达到SAE标准），应选择前者时间1。\n\n\nAEACN\n针对该AE采取的措施。有对应的CT[ACN]，1. 无变化，2. 剂量增加，3. 给药速率降低，4. 剂量减少，5. 暂停给药，6. 停药，7. 不适用。\ncase1: 给药延迟（dose delay）应属于暂停用药（DRUG INTERRUPTED）。\ncase2: 受试者发生3级AE而后恢复正常。研究者考虑上一次AE较为严重，下一次研究用药剂量减少，针对该3级AE的AEACN应记录为”无变化”。采取的措施是预防，避免再次发生SAE，而不是针对该AE的措施。\ncase3: 如果连续的采取了多个措施，比如先研究用药减量，然后速率降低，后来暂停用药，一般取最后一次采取的措施。\n\n\nAEENDTC\n痊愈或痊愈有后遗症的日期\nAE导致死亡的死亡日期\n好转或未好转，AE未结束，置空AEENDTC，此时可通过AEENRTPT,AEENTPT结合使用来描述这类信息。",
+    "crumbs": [
+      "CDISC",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>AE Domain</span>"
+    ]
   },
   {
     "objectID": "cdisc/cdiscdm.html",
     "href": "cdisc/cdiscdm.html",
     "title": "DM Domain",
     "section": "",
-    "text": "Variable\nComments\n\n\n\n\nRFXSTDTC\n首次给药日期/时间，如为多周期试验，为第一周期的首次给药日期\n\n\nRFXENDTC\n末次给药日期/时间，如为多周期试验，为最后一周期的末次给药日期\n\n\nRFICDTC\n知情同意日期/时间，如有多次知情同意，取最早的知情同意日期\n\n\nRFPENDTC\n受试者在研究中的最晚日期/时间。如果受试者最后状态时失访，应取失访前的受试者仍在试验的最晚日期。\n\n\nRFSTDTC\n由sponsor确定，通常为首次给药日期，也可以时随机日期，或者无治疗性的研究，登记日期也可被定义为RFSTDTC。\n\n\nRFENDTC\n由sponsor确定，通常为末次给药日期，也可以根据药代动力学特征和半衰期定义一个xx天，RFENDTC=RFXENDTC+XX。\n\n\nARM\nARMCD\nACTARM\nACTARMCD\nARM/ARMCD必须和TA Domain中相同。\n受试者随机且接受用药且计划实际相同：ARM=ACTARM\n受试者随机且接受用药但计划于实际不同：ARM为随机化分配组别，ACTARM为实际用药组别\n受试者随机化但未接受用药：ARM/ARMCD为随机化组别，ACTARM/ACTARMCD置空\n受试者未随机：ARM/ACTARM置空\n\n\nARMNRS\nACTARMUD\n受试者筛选失败：ARMNRS = SCREEN FAILURE\n受试者筛选成功但未随机：ARMNRS = NOT ASSIGNED\n受试者随机化但未接受用药：ARMNRS = ASSIGNED, NOT TREATED\n受试者接受试验用药不是计划的（TA中指定的）：ARMNRS = UNPLANNED TREATMENT，ACTARMUD = 具体的非计划试验用药\n\n\nCOUNTRY\n研究中心所在的国家代码，如果外国友人在中国参加clinical trials，COUNTRY依旧时中国，他具体的国籍信息放到SC Domain。通常使用ISO3166-1 Alpha-3代码。"
+    "text": "Variable\nComments\n\n\n\n\nRFXSTDTC\n首次给药日期/时间，如为多周期试验，为第一周期的首次给药日期\n\n\nRFXENDTC\n末次给药日期/时间，如为多周期试验，为最后一周期的末次给药日期\n\n\nRFICDTC\n知情同意日期/时间，如有多次知情同意，取最早的知情同意日期\n\n\nRFPENDTC\n受试者在研究中的最晚日期/时间。如果受试者最后状态时失访，应取失访前的受试者仍在试验的最晚日期。\n\n\nRFSTDTC\n由sponsor确定，通常为首次给药日期，也可以时随机日期，或者无治疗性的研究，登记日期也可被定义为RFSTDTC。\n\n\nRFENDTC\n由sponsor确定，通常为末次给药日期，也可以根据药代动力学特征和半衰期定义一个xx天，RFENDTC=RFXENDTC+XX。\n\n\nARM\nARMCD\nACTARM\nACTARMCD\nARM/ARMCD必须和TA Domain中相同。\n受试者随机且接受用药且计划实际相同：ARM=ACTARM\n受试者随机且接受用药但计划于实际不同：ARM为随机化分配组别，ACTARM为实际用药组别\n受试者随机化但未接受用药：ARM/ARMCD为随机化组别，ACTARM/ACTARMCD置空\n受试者未随机：ARM/ACTARM置空\n\n\nARMNRS\nACTARMUD\n受试者筛选失败：ARMNRS = SCREEN FAILURE\n受试者筛选成功但未随机：ARMNRS = NOT ASSIGNED\n受试者随机化但未接受用药：ARMNRS = ASSIGNED, NOT TREATED\n受试者接受试验用药不是计划的（TA中指定的）：ARMNRS = UNPLANNED TREATMENT，ACTARMUD = 具体的非计划试验用药\n\n\nCOUNTRY\n研究中心所在的国家代码，如果外国友人在中国参加clinical trials，COUNTRY依旧时中国，他具体的国籍信息放到SC Domain。通常使用ISO3166-1 Alpha-3代码。",
+    "crumbs": [
+      "CDISC",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>DM Domain</span>"
+    ]
   },
   {
     "objectID": "cdisc/cdiscrs.html",
     "href": "cdisc/cdiscrs.html",
     "title": "RS Domain",
     "section": "",
-    "text": "Response Assessment\n\n\n\nVariable\nComments\n\n\n\n\nRSDTC\n影像学检查日期而非疗效判断的日期。"
+    "text": "Response Assessment\n\n\n\nVariable\nComments\n\n\n\n\nRSDTC\n影像学检查日期而非疗效判断的日期。",
+    "crumbs": [
+      "CDISC",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>RS Domain</span>"
+    ]
   },
   {
     "objectID": "cdisc/cdisctu.html",
     "href": "cdisc/cdisctu.html",
     "title": "TU Domain",
     "section": "",
-    "text": "Tumor/Lesion Identification，肿瘤/病灶标识\n病灶标识的信息存放在TU domain，检查结果在TR domain。\n\ntu.xpt\n\n\n\nTULINKID\nTUTESTCD\nTUTEST\nTUORRES\nVISIT\n\n\n\n\nT01\nTUMIDENT\nTumor Identification\nTARGET\nSCREEN\n\n\nT02\nTUMIDENT\nTumor Identification\nTARGET\nSCREEN\n\n\nT03\nTUMIDENT\nTumor Identification\nTARGET\nSCREEN\n\n\nT04\nTUMIDENT\nTumor Identification\nTARGET\nSCREEN\n\n\nNT01\nTUMIDENT\nTumor Identification\nNON-TARGET\nSCREEN\n\n\nT02/T03\nTUMERG\nTumor Merged\nTARGET\nWEEK 6\n\n\nT04.1\nTUSPLIT\nTumor Split\nTARGET\nWEEK 6\n\n\nT04.2\nTUSPLIT\nTumor Split\nTARGET\nWEEK 6\n\n\nNEW01\nTUMIDENT\nTumor Identification\nNEW\nWEEK 6\n\n\n\ntr.xpt\n\n\n\n\n\n\n\n\n\n\n\nTRLNKGRP\nTRLNKID\nTRTESTCD\nTRTEST\nTRORRES\nVISIT\n\n\n\n\nA1\nT01\nDIAMETER\nDiameter\n20\nSCREEN\n\n\nA1\nT02\nDIAMETER\nDiameter\n20\nSCREEN\n\n\nA1\nT03\nDIAMETER\nDiameter\n15\nSCREEN\n\n\nA1\nT04\nDIAMETER\nDiameter\n15\nSCREEN\n\n\nA1\nNT01\nTUMSTATE\nTumor State\nPRESENT\nSCREEN\n\n\nA2\nT01\nDIAMETER\nDiameter\nTOO SMALL TO MERSURE\nWEEK 6\n\n\nA2\nT02/T03\nDIAMETER\nDiameter\n5\nWEEK 6\n\n\nA2\nT04.1\nDIAMETER\nDiameter\n5\nWEEK 6\n\n\nA2\nT04.2\nDIAMETER\nDiameter\n5\nWEEK 6\n\n\nA2\nNT01\nTUMSTATE\nTumor State\nABESENT\nWEEK 6\n\n\nA2\nNEW01\nDIAMETER\nDiameter\n5\nWEEK 6\n\n\n\nrelrec.xpt\n\n\n\nSTUDYID\nRDOMAIN\nUSUBJID\nIDVAR\nIDVARVAL\nRELTYPE\nRELID\n\n\n\n\nSTUDY1\nTU\n\nTULNKID\n\nONE\nTUTR\n\n\nSTUDY1\nTR\n\nTRLNKID\n\nMANY\nTUTR\n\n\n\n\n\n\n\n\n\n\nVariable\nComments\n\n\n\n\nTULNKID\n选取的病灶都有自己唯一的编号，即为TULINKID，每个病灶在TU里只有一条记录。"
+    "text": "Tumor/Lesion Identification，肿瘤/病灶标识\n病灶标识的信息存放在TU domain，检查结果在TR domain。\n\ntu.xpt\n\n\n\nTULINKID\nTUTESTCD\nTUTEST\nTUORRES\nVISIT\n\n\n\n\nT01\nTUMIDENT\nTumor Identification\nTARGET\nSCREEN\n\n\nT02\nTUMIDENT\nTumor Identification\nTARGET\nSCREEN\n\n\nT03\nTUMIDENT\nTumor Identification\nTARGET\nSCREEN\n\n\nT04\nTUMIDENT\nTumor Identification\nTARGET\nSCREEN\n\n\nNT01\nTUMIDENT\nTumor Identification\nNON-TARGET\nSCREEN\n\n\nT02/T03\nTUMERG\nTumor Merged\nTARGET\nWEEK 6\n\n\nT04.1\nTUSPLIT\nTumor Split\nTARGET\nWEEK 6\n\n\nT04.2\nTUSPLIT\nTumor Split\nTARGET\nWEEK 6\n\n\nNEW01\nTUMIDENT\nTumor Identification\nNEW\nWEEK 6\n\n\n\ntr.xpt\n\n\n\n\n\n\n\n\n\n\n\nTRLNKGRP\nTRLNKID\nTRTESTCD\nTRTEST\nTRORRES\nVISIT\n\n\n\n\nA1\nT01\nDIAMETER\nDiameter\n20\nSCREEN\n\n\nA1\nT02\nDIAMETER\nDiameter\n20\nSCREEN\n\n\nA1\nT03\nDIAMETER\nDiameter\n15\nSCREEN\n\n\nA1\nT04\nDIAMETER\nDiameter\n15\nSCREEN\n\n\nA1\nNT01\nTUMSTATE\nTumor State\nPRESENT\nSCREEN\n\n\nA2\nT01\nDIAMETER\nDiameter\nTOO SMALL TO MERSURE\nWEEK 6\n\n\nA2\nT02/T03\nDIAMETER\nDiameter\n5\nWEEK 6\n\n\nA2\nT04.1\nDIAMETER\nDiameter\n5\nWEEK 6\n\n\nA2\nT04.2\nDIAMETER\nDiameter\n5\nWEEK 6\n\n\nA2\nNT01\nTUMSTATE\nTumor State\nABESENT\nWEEK 6\n\n\nA2\nNEW01\nDIAMETER\nDiameter\n5\nWEEK 6\n\n\n\nrelrec.xpt\n\n\n\nSTUDYID\nRDOMAIN\nUSUBJID\nIDVAR\nIDVARVAL\nRELTYPE\nRELID\n\n\n\n\nSTUDY1\nTU\n\nTULNKID\n\nONE\nTUTR\n\n\nSTUDY1\nTR\n\nTRLNKID\n\nMANY\nTUTR\n\n\n\n\n\n\n\n\n\n\nVariable\nComments\n\n\n\n\nTULNKID\n选取的病灶都有自己唯一的编号，即为TULINKID，每个病灶在TU里只有一条记录。",
+    "crumbs": [
+      "CDISC",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>TU Domain</span>"
+    ]
   },
   {
     "objectID": "cdisc/cdisctr.html",
     "href": "cdisc/cdisctr.html",
     "title": "TR Domain",
     "section": "",
-    "text": "Variable\nComments\n\n\n\n\nTRORRES\n“无法评价”是由于影像质量差无法评价。\n如果认为病灶消失，应记录为0mm；如果因为太小无法定义准确的数值结果，则记录为”太小而无法测量”。"
+    "text": "Variable\nComments\n\n\n\n\nTRORRES\n“无法评价”是由于影像质量差无法评价。\n如果认为病灶消失，应记录为0mm；如果因为太小无法定义准确的数值结果，则记录为”太小而无法测量”。",
+    "crumbs": [
+      "CDISC",
+      "<span class='chapter-number'>11</span>  <span class='chapter-title'>TR Domain</span>"
+    ]
   }
 ]
