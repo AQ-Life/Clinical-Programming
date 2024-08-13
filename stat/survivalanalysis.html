@@ -69,6 +69,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -221,7 +250,11 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#cox-模型中基于殃残差的比例风险判定" id="toc-cox-模型中基于殃残差的比例风险判定" class="nav-link active" data-scroll-target="#cox-模型中基于殃残差的比例风险判定">Cox 模型中基于殃残差的比例风险判定</a></li>
+  <li><a href="#生存函数" id="toc-生存函数" class="nav-link active" data-scroll-target="#生存函数">生存函数</a></li>
+  <li><a href="#生存函数的估计" id="toc-生存函数的估计" class="nav-link" data-scroll-target="#生存函数的估计">生存函数的估计</a></li>
+  <li><a href="#生存数据案例分析" id="toc-生存数据案例分析" class="nav-link" data-scroll-target="#生存数据案例分析">生存数据案例分析</a></li>
+  <li><a href="#log-rank检验" id="toc-log-rank检验" class="nav-link" data-scroll-target="#log-rank检验">Log-Rank检验</a></li>
+  <li><a href="#cox-模型中基于殃残差的比例风险判定" id="toc-cox-模型中基于殃残差的比例风险判定" class="nav-link" data-scroll-target="#cox-模型中基于殃残差的比例风险判定">Cox 模型中基于殃残差的比例风险判定</a></li>
   <li><a href="#生存曲线的校正" id="toc-生存曲线的校正" class="nav-link" data-scroll-target="#生存曲线的校正">生存曲线的校正</a></li>
   </ul>
 </nav>
@@ -248,12 +281,36 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="生存函数" class="level2">
+<h2 class="anchored" data-anchor-id="生存函数">生存函数</h2>
+<p>生存数据也被称为Time-to-Event数据，主要有2个变量，一个是时间，一个是事件状态（事件发生与删失）。</p>
+<p>生存函数<span class="math inline">\(S(t)\)</span>, 定义为样本生存时间大于t的概率，即<span class="math inline">\(S(t)=P(T&gt;t)\)</span>, 时间为0时，生存概率为1，时间趋于无穷时，生存概率为0。</p>
+<p>生存函数<span class="math inline">\(S(t)\)</span>也是累积生存率，绘制出来就是生存曲线。</p>
+<p>中位生存时间表示当50%的样本生存的时间，即当<span class="math inline">\(S(t)=0.5\)</span>时所对应的时间t。其中生存时间的分布通常为偏态分布，使用均值生存时间不太准确，所以用中位数生存时间。</p>
+</section>
+<section id="生存函数的估计" class="level2">
+<h2 class="anchored" data-anchor-id="生存函数的估计">生存函数的估计</h2>
+<p>估计生存函数的非参数方法一般是乘积-极限法，生存函数的Kaplan-Meier估计为各个时段<strong>生存率</strong>的乘积。</p>
+<p><strong>生存率</strong>=生存的受试者数 / 该时段处于风险中的受试者数</p>
+<p><strong>处于风险中的受试者</strong>=上一时段生存且没有删失并进入该时段的受试者</p>
+</section>
+<section id="生存数据案例分析" class="level2">
+<h2 class="anchored" data-anchor-id="生存数据案例分析">生存数据案例分析</h2>
+<p>以一项试验为例，10个受试者的生存时间为（+表示删失）：<br>
+24+，16+，8，19，10，8+，5，17，20，10</p>
+<p><span class="math display">\[当t=0时，N_{AtRisk}=10, N_{death}=0, N_{censor}=0, 生存率=(10-0)/10=1, KM估计=1，则S(t=0)=1.\]</span> <span class="math display">\[当t=5时，N_{AtRisk}=10, N_{death}=1, N_{censor}=0, 生存率=(10-1)/10=0.9, KM估计=1*0.9=0.9，则S(t=5)=0.9.\]</span> <span class="math display">\[当t=8时，N_{AtRisk}=9, N_{death}=1, N_{censor}=1, 生存率=(9-1)/9=0.89, KM估计=1*0.9*0.89=0.80，则S(t=5)=0.80.\]</span> <span class="math display">\[当t=10时，N_{AtRisk}=7, N_{death}=2, N_{censor}=0, 生存率=(7-2)/7=0.71, KM估计=1*0.9*0.89*0.71=0.57，则S(t=5)=0.57.\]</span></p>
+</section>
+<section id="log-rank检验" class="level2">
+<h2 class="anchored" data-anchor-id="log-rank检验">Log-Rank检验</h2>
+<p>两组生存数据的比较，即两组生存数据的生存函数是否有统计学差异。含有删失数据时，常使用log-rank检验。</p>
+<p>在具体的时间点上，事件发生数服从超几何分布（一种离散概率分布，如不放回抽样事件发生的概率），根据中心极限定理（大量独立同分布的随机变量渐进服从正态分布，即使这些随机变量本身不服从正态分布），构建了服从正态分布的log-rank检验统计量。</p>
 <p>关于phreg中参考值的选择， 你可以在程序中加ref, 比如下面的例子</p>
 <pre class="sas"><code>ods output ParameterEstimates=HarzedRatio;
 proc phreg data = ads.adtte;
   class cat(ref='A组');
   model aval * CNSR(1 2 3) = cat trt / risklimits ties = exact  alpha=0.05;
 run;</code></pre>
+</section>
 <section id="cox-模型中基于殃残差的比例风险判定" class="level2">
 <h2 class="anchored" data-anchor-id="cox-模型中基于殃残差的比例风险判定">Cox 模型中基于殃残差的比例风险判定</h2>
 <p>Cox 模型中的比例风险假定判定的方法和软件操作，推荐 UCLA 的 IDRE 官方网页：</p>
@@ -312,7 +369,7 @@ run;</code></pre>
 </table>
 <p>生存率，标准误，置信区间的算法：</p>
 <p><a href="https://blog.csdn.net/xiaohukun/article/details/77936022" class="uri">https://blog.csdn.net/xiaohukun/article/details/77936022</a></p>
-<p>关于lifetest 如果不加conftype=linear 默认的是loglog的方法，我以前做的经常是用conftype=linear是线性拟合的方法，其实结果相差不是很多，双方统一就行，针对敏感性分析有可能会有些区别，但是在常规分析中，我感觉都可以</p>
+<p>关于lifetest 如果不加conftype=linear 默认的是loglog的方法，有时候是用conftype=linear是线性拟合的方法，其实结果相差不是很多，双方统一就行，针对敏感性分析有可能会有些区别，但是在常规分析中，感觉都可以。</p>
 <pre class="sas"><code>ods output quartiles=quar /*25/50/75th percentile (95% C.I.)*/
         homtests=logrank;
 proc lifetest data=dsin timelist=12 18 24 outsurv=outsurv reduceout conftype=loglog method=km;

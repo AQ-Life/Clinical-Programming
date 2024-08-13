@@ -249,7 +249,40 @@
     "href": "stat/survivalanalysis.html",
     "title": "Surivival Analysis（生存分析）",
     "section": "",
-    "text": "Cox 模型中基于殃残差的比例风险判定\nCox 模型中的比例风险假定判定的方法和软件操作，推荐 UCLA 的 IDRE 官方网页：\nhttps://stats.idre.ucla.edu/other/examples/asa2/testing-the-proportional-hazard-assumption-in-cox-models/\nCox 模型中基于殃残差的比例风险判定，在SAS的 phreg 过程步中有一个非常方便的实现方法，那就是经常被大家忽略的 assess 语句。",
+    "text": "生存函数\n生存数据也被称为Time-to-Event数据，主要有2个变量，一个是时间，一个是事件状态（事件发生与删失）。\n生存函数\\(S(t)\\), 定义为样本生存时间大于t的概率，即\\(S(t)=P(T&gt;t)\\), 时间为0时，生存概率为1，时间趋于无穷时，生存概率为0。\n生存函数\\(S(t)\\)也是累积生存率，绘制出来就是生存曲线。\n中位生存时间表示当50%的样本生存的时间，即当\\(S(t)=0.5\\)时所对应的时间t。其中生存时间的分布通常为偏态分布，使用均值生存时间不太准确，所以用中位数生存时间。",
+    "crumbs": [
+      "Statistics (统计学)",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Surivival Analysis（生存分析）</span>"
+    ]
+  },
+  {
+    "objectID": "stat/survivalanalysis.html#生存函数的估计",
+    "href": "stat/survivalanalysis.html#生存函数的估计",
+    "title": "Surivival Analysis（生存分析）",
+    "section": "生存函数的估计",
+    "text": "生存函数的估计\n估计生存函数的非参数方法一般是乘积-极限法，生存函数的Kaplan-Meier估计为各个时段生存率的乘积。\n生存率=生存的受试者数 / 该时段处于风险中的受试者数\n处于风险中的受试者=上一时段生存且没有删失并进入该时段的受试者",
+    "crumbs": [
+      "Statistics (统计学)",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Surivival Analysis（生存分析）</span>"
+    ]
+  },
+  {
+    "objectID": "stat/survivalanalysis.html#生存数据案例分析",
+    "href": "stat/survivalanalysis.html#生存数据案例分析",
+    "title": "Surivival Analysis（生存分析）",
+    "section": "生存数据案例分析",
+    "text": "生存数据案例分析\n以一项试验为例，10个受试者的生存时间为（+表示删失）：\n24+，16+，8，19，10，8+，5，17，20，10\n\\[当t=0时，N_{AtRisk}=10, N_{death}=0, N_{censor}=0, 生存率=(10-0)/10=1, KM估计=1，则S(t=0)=1.\\] \\[当t=5时，N_{AtRisk}=10, N_{death}=1, N_{censor}=0, 生存率=(10-1)/10=0.9, KM估计=1*0.9=0.9，则S(t=5)=0.9.\\] \\[当t=8时，N_{AtRisk}=9, N_{death}=1, N_{censor}=1, 生存率=(9-1)/9=0.89, KM估计=1*0.9*0.89=0.80，则S(t=5)=0.80.\\] \\[当t=10时，N_{AtRisk}=7, N_{death}=2, N_{censor}=0, 生存率=(7-2)/7=0.71, KM估计=1*0.9*0.89*0.71=0.57，则S(t=5)=0.57.\\]",
+    "crumbs": [
+      "Statistics (统计学)",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Surivival Analysis（生存分析）</span>"
+    ]
+  },
+  {
+    "objectID": "stat/survivalanalysis.html#log-rank检验",
+    "href": "stat/survivalanalysis.html#log-rank检验",
+    "title": "Surivival Analysis（生存分析）",
+    "section": "Log-Rank检验",
+    "text": "Log-Rank检验\n两组生存数据的比较，即两组生存数据的生存函数是否有统计学差异。含有删失数据时，常使用log-rank检验。\n在具体的时间点上，事件发生数服从超几何分布（一种离散概率分布，如不放回抽样事件发生的概率），根据中心极限定理（大量独立同分布的随机变量渐进服从正态分布，即使这些随机变量本身不服从正态分布），构建了服从正态分布的log-rank检验统计量。\n关于phreg中参考值的选择， 你可以在程序中加ref, 比如下面的例子\nods output ParameterEstimates=HarzedRatio;\nproc phreg data = ads.adtte;\n  class cat(ref='A组');\n  model aval * CNSR(1 2 3) = cat trt / risklimits ties = exact  alpha=0.05;\nrun;",
     "crumbs": [
       "Statistics (统计学)",
       "<span class='chapter-number'>5</span>  <span class='chapter-title'>Surivival Analysis（生存分析）</span>"
@@ -259,8 +292,8 @@
     "objectID": "stat/survivalanalysis.html#cox-模型中基于殃残差的比例风险判定",
     "href": "stat/survivalanalysis.html#cox-模型中基于殃残差的比例风险判定",
     "title": "Surivival Analysis（生存分析）",
-    "section": "",
-    "text": "proc phreg data=sashelp.bmt;\n  class group;\n     model T * Status(0)=group /rl ;\n  assess ph;\nrun;",
+    "section": "Cox 模型中基于殃残差的比例风险判定",
+    "text": "Cox 模型中基于殃残差的比例风险判定\nCox 模型中的比例风险假定判定的方法和软件操作，推荐 UCLA 的 IDRE 官方网页：\nhttps://stats.idre.ucla.edu/other/examples/asa2/testing-the-proportional-hazard-assumption-in-cox-models/\nCox 模型中基于殃残差的比例风险判定，在SAS的 phreg 过程步中有一个非常方便的实现方法，那就是经常被大家忽略的 assess 语句。\n\nproc phreg data=sashelp.bmt;\n  class group;\n     model T * Status(0)=group /rl ;\n  assess ph;\nrun;",
     "crumbs": [
       "Statistics (统计学)",
       "<span class='chapter-number'>5</span>  <span class='chapter-title'>Surivival Analysis（生存分析）</span>"
@@ -271,7 +304,7 @@
     "href": "stat/survivalanalysis.html#生存曲线的校正",
     "title": "Surivival Analysis（生存分析）",
     "section": "生存曲线的校正",
-    "text": "生存曲线的校正\n对于生存数据，单因素分析时，通常绘制K-M曲线，多因素分析时，则通过 Cox 模型计算校正的HR。其实，如果能够同时展示校正的K-M曲线，那结果将会更加生动。如何做校正的K-M，分享一篇小综述。\n生存分析中，当有多个结局事件时，且某结局事件的发生会影响甚至阻止其它结局事件的发生，此时就会存在竞争风险。针对竞争分析，常用三种分析策略: (1) 复合终点; (2) 原因别风险; (3) Fine-Gray模型。三种分析策略的总结见下表：\n\n\n\n\n\n\n\n\n处理策略\n具体方法\n解读\n\n\n复合终点\n- K-M估计曲线\n- Log-rank检验\n- Cox比例风险函数\n- 联合事件不一定 具有临床意义，可解释性差\n- 无法精细分析 各成分事件，造成信息损失\n\n\n原因别风险\n- Nelson-Aalen累积风险曲线\n- Gray’s检验\n- 原因别风险函数\n- 将其它事件视为删失，分别对每个事件采用传统Cox回归\n- 适合病因学问题\n- 相对作用\n\n\nFine-Gray模型\n- Nelson-Aalen累积风险曲线\n- Gray’s检验\n- 次分布风险函数\n- 发生其它事件的研究对象仍纳入风险集，估计关注事件的CIF\n- 适合预测预后问题\n- 绝对效应\n\n\n\n生存率，标准误，置信区间的算法：\nhttps://blog.csdn.net/xiaohukun/article/details/77936022\n关于lifetest 如果不加conftype=linear 默认的是loglog的方法，我以前做的经常是用conftype=linear是线性拟合的方法，其实结果相差不是很多，双方统一就行，针对敏感性分析有可能会有些区别，但是在常规分析中，我感觉都可以\nods output quartiles=quar /*25/50/75th percentile (95% C.I.)*/\n        homtests=logrank;\nproc lifetest data=dsin timelist=12 18 24 outsurv=outsurv reduceout conftype=loglog method=km;\n  time T*starus(1);*1=conserved,0=event*;\n  strata var1 var2 var3/group=trtn test=logrank;\nrun;\n*注意T代表时间，这里时间单位是月，要进行天到月的转换，status代表删失，删失括号里的数字要尤其注意*;\n*outsurv: output dataset that contains the survival estimates*;\n*reduceout: Lists only TIMELIST= observations in the OUTSURV= data set**;\n*conftype=loglog:default,the log-log transformation for confidence intervals *;\n*method=km:default*;\n*算P值额外用一个proc lifetest语句，只有算p值需要放var1-var3分层变量校正，基于log-rank检验*;",
+    "text": "生存曲线的校正\n对于生存数据，单因素分析时，通常绘制K-M曲线，多因素分析时，则通过 Cox 模型计算校正的HR。其实，如果能够同时展示校正的K-M曲线，那结果将会更加生动。如何做校正的K-M，分享一篇小综述。\n生存分析中，当有多个结局事件时，且某结局事件的发生会影响甚至阻止其它结局事件的发生，此时就会存在竞争风险。针对竞争分析，常用三种分析策略: (1) 复合终点; (2) 原因别风险; (3) Fine-Gray模型。三种分析策略的总结见下表：\n\n\n\n\n\n\n\n\n处理策略\n具体方法\n解读\n\n\n复合终点\n- K-M估计曲线\n- Log-rank检验\n- Cox比例风险函数\n- 联合事件不一定 具有临床意义，可解释性差\n- 无法精细分析 各成分事件，造成信息损失\n\n\n原因别风险\n- Nelson-Aalen累积风险曲线\n- Gray’s检验\n- 原因别风险函数\n- 将其它事件视为删失，分别对每个事件采用传统Cox回归\n- 适合病因学问题\n- 相对作用\n\n\nFine-Gray模型\n- Nelson-Aalen累积风险曲线\n- Gray’s检验\n- 次分布风险函数\n- 发生其它事件的研究对象仍纳入风险集，估计关注事件的CIF\n- 适合预测预后问题\n- 绝对效应\n\n\n\n生存率，标准误，置信区间的算法：\nhttps://blog.csdn.net/xiaohukun/article/details/77936022\n关于lifetest 如果不加conftype=linear 默认的是loglog的方法，有时候是用conftype=linear是线性拟合的方法，其实结果相差不是很多，双方统一就行，针对敏感性分析有可能会有些区别，但是在常规分析中，感觉都可以。\nods output quartiles=quar /*25/50/75th percentile (95% C.I.)*/\n        homtests=logrank;\nproc lifetest data=dsin timelist=12 18 24 outsurv=outsurv reduceout conftype=loglog method=km;\n  time T*starus(1);*1=conserved,0=event*;\n  strata var1 var2 var3/group=trtn test=logrank;\nrun;\n*注意T代表时间，这里时间单位是月，要进行天到月的转换，status代表删失，删失括号里的数字要尤其注意*;\n*outsurv: output dataset that contains the survival estimates*;\n*reduceout: Lists only TIMELIST= observations in the OUTSURV= data set**;\n*conftype=loglog:default,the log-log transformation for confidence intervals *;\n*method=km:default*;\n*算P值额外用一个proc lifetest语句，只有算p值需要放var1-var3分层变量校正，基于log-rank检验*;",
     "crumbs": [
       "Statistics (统计学)",
       "<span class='chapter-number'>5</span>  <span class='chapter-title'>Surivival Analysis（生存分析）</span>"
