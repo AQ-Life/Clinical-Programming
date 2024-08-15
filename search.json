@@ -282,7 +282,40 @@
     "href": "stat/survivalanalysis.html#log-rank检验",
     "title": "Surivival Analysis（生存分析）",
     "section": "Log-Rank检验",
-    "text": "Log-Rank检验\n两组生存数据的比较，即两组生存数据的生存函数是否有统计学差异。含有删失数据时，常使用log-rank检验。\n在具体的时间点上，事件发生数服从超几何分布（一种离散概率分布，如不放回抽样事件发生的概率），根据中心极限定理（大量独立同分布的随机变量渐进服从正态分布，即使这些随机变量本身不服从正态分布），构建了服从正态分布的log-rank检验统计量。\n关于phreg中参考值的选择， 你可以在程序中加ref, 比如下面的例子\nods output ParameterEstimates=HarzedRatio;\nproc phreg data = ads.adtte;\n  class cat(ref='A组');\n  model aval * CNSR(1 2 3) = cat trt / risklimits ties = exact  alpha=0.05;\nrun;",
+    "text": "Log-Rank检验\n两组生存数据的比较，即两组生存数据的生存函数是否有统计学差异。含有删失数据时，常使用log-rank检验。\n在具体的时间点上，事件发生数服从超几何分布（一种离散概率分布，如不放回抽样事件发生的概率），根据中心极限定理（大量独立同分布的随机变量渐进服从正态分布，即使这些随机变量本身不服从正态分布），构建了服从正态分布的log-rank检验统计量。",
+    "crumbs": [
+      "Statistics (统计学)",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Surivival Analysis（生存分析）</span>"
+    ]
+  },
+  {
+    "objectID": "stat/survivalanalysis.html#cox比例风险回归模型",
+    "href": "stat/survivalanalysis.html#cox比例风险回归模型",
+    "title": "Surivival Analysis（生存分析）",
+    "section": "COX比例风险回归模型",
+    "text": "COX比例风险回归模型\nKaplan-Meier曲线和log-rank检验是针对研究中的一个影响因素描述生存情况，且要求该影响因素为分类变量（试验组别）。而COX比例风险回归模型可以适用于定量和分类变量，可以同时评估多种影响因素对生存时间的影响。\n对比上面提到的生存函数\\(S(t)\\)，可以构建风险函数\\(h(t)\\), 定义为在时间\\(t\\)被观察到发生事件的概率。\n\\(h(t)=h_{0}(t)\\times e^{b_1x_1+b_2x_2+...+b_px_p}\\)\n其中，\n\nt表示生存时间\n\\(h(t)\\)表示由p个协变量确定的风险函数\n系数（\\(b_1,b_2,...,b_p\\)）表示衡量协变量的影响大小\n\\(h_0(t)\\)表示基线风险，当所有系数都为0时，对应的风险值\n\n可以看出风险函数\\(h(t)\\)的前半部分\\(h_0(t)\\)是非参数模型（不需要服从特定的分布），后半部分是参数模型，故COX回归模型是一种半参数模型。",
+    "crumbs": [
+      "Statistics (统计学)",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Surivival Analysis（生存分析）</span>"
+    ]
+  },
+  {
+    "objectID": "stat/survivalanalysis.html#hrharzed-ratio风险比",
+    "href": "stat/survivalanalysis.html#hrharzed-ratio风险比",
+    "title": "Surivival Analysis（生存分析）",
+    "section": "HR（Harzed Ratio）风险比",
+    "text": "HR（Harzed Ratio）风险比\n根据上面提到的风险函数\\(h(t)\\)的定义，固定时间\\(t\\)，取风险函数\\(h(t)\\)和基线风险\\(h_0(t)\\)之比就得到该时刻下的风险比HR，该HR值是自变量x的函数，不再依赖时间t。\n当协变量的系数&gt;0时，即HR&gt;1，风险增加，该协变量被称为不良影响因素。",
+    "crumbs": [
+      "Statistics (统计学)",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Surivival Analysis（生存分析）</span>"
+    ]
+  },
+  {
+    "objectID": "stat/survivalanalysis.html#sas实现cox比例风险回归模型",
+    "href": "stat/survivalanalysis.html#sas实现cox比例风险回归模型",
+    "title": "Surivival Analysis（生存分析）",
+    "section": "SAS实现COX比例风险回归模型",
+    "text": "SAS实现COX比例风险回归模型\n关于phreg中参考值的选择， 你可以在程序中加ref, 比如下面的例子\nods output ParameterEstimates=HarzedRatio;\nproc phreg data = adtte;\n  class trtn(ref='1');\n  model aval * CNSR(1) = trtn / risklimits ties = exact alpha=0.05;\n  strata strata1 strata2 strata3; *** 分层因素 ***;\nrun;",
     "crumbs": [
       "Statistics (统计学)",
       "<span class='chapter-number'>5</span>  <span class='chapter-title'>Surivival Analysis（生存分析）</span>"
