@@ -306,6 +306,7 @@ window.Quarto = {
   <li><a href="#试验组与对照组的比率不是都为100或0mn方法" id="toc-试验组与对照组的比率不是都为100或0mn方法" class="nav-link" data-scroll-target="#试验组与对照组的比率不是都为100或0mn方法">试验组与对照组的比率不是都为100%或0%（MN方法）</a></li>
   <li><a href="#试验组与对照组的比率都为100或0mn方法" id="toc-试验组与对照组的比率都为100或0mn方法" class="nav-link" data-scroll-target="#试验组与对照组的比率都为100或0mn方法">试验组与对照组的比率都为100%或0%（MN方法）</a></li>
   <li><a href="#分层的miettinen-nurminen方法计算率差与p值" id="toc-分层的miettinen-nurminen方法计算率差与p值" class="nav-link" data-scroll-target="#分层的miettinen-nurminen方法计算率差与p值">分层的Miettinen-Nurminen方法计算率差与P值</a></li>
+  <li><a href="#r语言计算rd-or-rr" id="toc-r语言计算rd-or-rr" class="nav-link" data-scroll-target="#r语言计算rd-or-rr">R语言计算RD, OR, RR</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -768,6 +769,38 @@ run;
 <span id="cb4-345"><a href="#cb4-345" aria-hidden="true" tabindex="-1"></a><span class="er">/*</span>Wmethod<span class="ot">=</span><span class="dv">2</span><span class="sc">:</span> Wi<span class="ot">=</span><span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span><span class="sc">/</span>n0i<span class="sc">+</span><span class="dv">1</span><span class="sc">/</span>n1i)<span class="sc">*</span><span class="er">/</span></span>
 <span id="cb4-346"><a href="#cb4-346" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-347"><a href="#cb4-347" aria-hidden="true" tabindex="-1"></a><span class="er">/*</span>当stra设为0时,为不分层的MN方法<span class="sc">*</span><span class="er">/</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="r语言计算rd-or-rr" class="level3">
+<h3 class="anchored" data-anchor-id="r语言计算rd-or-rr">R语言计算RD, OR, RR</h3>
+<p>R语言sasLM package（<a href="https://cran.r-project.org/web/packages/sasLM/sasLM.pdf" class="uri">https://cran.r-project.org/web/packages/sasLM/sasLM.pdf</a>）可以用于计算率差（RD），率比（RR），优势比（OR）</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sasLM)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="do">###计算几何均值</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">geoMean</span>(mtcars<span class="sc">$</span>mpg)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">geoCV</span>(mtcars<span class="sc">$</span>mpg)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="do">###无连续性校正</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">RD</span>(<span class="at">y1=</span><span class="dv">55</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>   <span class="at">n1=</span><span class="dv">67</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>   <span class="at">y2=</span><span class="dv">43</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>   <span class="at">n2=</span><span class="dv">51</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="do">###分层的MN方法计算率差</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>y1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">12</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>n1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">30</span>, <span class="dv">50</span>)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>y2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">43</span>, <span class="dv">55</span>)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>n2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">90</span>, <span class="dv">80</span>)</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>d0 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(y1, n1, y2, n2)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="fu">RDmn</span>(d0, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="do">###没有分层的MN方法计算率差</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="fu">RDmn1</span>(<span class="at">y1=</span><span class="dv">55</span>,</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>   <span class="at">n1=</span><span class="dv">67</span>,</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>   <span class="at">y2=</span><span class="dv">43</span>,</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>   <span class="at">n2=</span><span class="dv">51</span>)</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="do">###逆方差法（inverse variance method）计算率差</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="fu">RDinv</span>(d0, <span class="at">conf.level =</span> <span class="fl">0.95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
 </section>
