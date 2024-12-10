@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.553">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Clinical Programming - Data Processing（数据处理）</title>
+<title>Data Processing（数据处理） – Clinical Programming</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -78,13 +78,13 @@ ul.task-list li input[type="checkbox"] {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
         <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../stat/stat.html">Statistics (统计学)</a></li><li class="breadcrumb-item"><a href="../stat/datamanage.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Data Processing（数据处理）</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -116,7 +116,7 @@ ul.task-list li input[type="checkbox"] {
       <div class="sidebar-item-container"> 
             <a href="../sas/sasprog.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">SAS Skills</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -139,7 +139,7 @@ ul.task-list li input[type="checkbox"] {
       <div class="sidebar-item-container"> 
             <a href="../stat/stat.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Statistics (统计学)</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -172,13 +172,30 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../cdisc/cdisc.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">CDISC</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <a href="../clinical/clinical.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clinical Trial</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../clinical/clinical_dose.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">剂量选择设计</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../cdisc/cdisc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CDISC</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../cdisc/cdiscae.html" class="sidebar-item-text sidebar-link">
@@ -223,6 +240,11 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#数据标准化" id="toc-数据标准化" class="nav-link active" data-scroll-target="#数据标准化">数据标准化</a></li>
   <li><a href="#高斯秩变换秩转换" id="toc-高斯秩变换秩转换" class="nav-link" data-scroll-target="#高斯秩变换秩转换">高斯秩变换（秩转换）</a></li>
+  <li><a href="#缺失数据多重插补" id="toc-缺失数据多重插补" class="nav-link" data-scroll-target="#缺失数据多重插补">缺失数据多重插补</a>
+  <ul class="collapse">
+  <li><a href="#缺失数据类型" id="toc-缺失数据类型" class="nav-link" data-scroll-target="#缺失数据类型">缺失数据类型</a></li>
+  <li><a href="#多重插补" id="toc-多重插补" class="nav-link" data-scroll-target="#多重插补">多重插补</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -310,8 +332,50 @@ data c;
     if _rank_ &gt;= 0 then erfc=sqrt(cinv(abs(_rank_),1)/2);
     else if _rank_ &lt; 0 then erfc=-sqrt(cinv(abs(_rank_),1)/2);
 run;</code></pre>
+</section>
+<section id="缺失数据多重插补" class="level1">
+<h1>缺失数据多重插补</h1>
+<section id="缺失数据类型" class="level2">
+<h2 class="anchored" data-anchor-id="缺失数据类型">缺失数据类型</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 69%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>缺失数据类型</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>完全随机缺失（MCAR）</td>
+<td>缺失与已有观测值和其他缺失值无关，只是由于偶然性</td>
+</tr>
+<tr class="even">
+<td>随机缺失（MAR）</td>
+<td>缺失与已有观测有关，与其他缺失值无关</td>
+</tr>
+<tr class="odd">
+<td>非随机缺失（MNAR）</td>
+<td>缺失与已有观测和其他缺失值有关</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="多重插补" class="level2">
+<h2 class="anchored" data-anchor-id="多重插补">多重插补</h2>
+<p>处理缺失数据的一种策略是单次插补，为每个缺失值替换一个值。比如用其他非缺失值的平均值填补，用上一个非缺失值填补等等，这种策略不能反映缺失值预测的不确定性，由此产生的参数估计的估计方差趋向于0.</p>
+<p>而多重插补从其分布中抽取缺失值的随机样本，此过程会产生有效的统计推断，这些推断可以反映由于缺失值导致的不确定性。进行多重插补的三个步骤：</p>
+<ol type="1">
+<li>对缺失数据进行m次填充，以生成m个完整的数据集</li>
+<li>m个完整的数据集使用统计方法进行分析</li>
+<li>将m个完整数据集的结果合并得出推断结果</li>
+</ol>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -350,18 +414,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -393,7 +446,29 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
       var filterRegex = new RegExp('/' + window.location.host + '/');
@@ -401,7 +476,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
     // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
     for (var i=0; i<links.length; i++) {
       const link = links[i];
       if (!isInternal(link.href)) {
