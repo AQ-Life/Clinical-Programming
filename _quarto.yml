@@ -17,6 +17,9 @@ book:
         - stat\freqanalysis.qmd
         - stat\survivalanalysis.qmd
         - stat\pkanalysis.qmd
+    - part: clinical\clinical.qmd
+      chapters: 
+        - clinical\clinical_dose.qmd
     - part: cdisc\cdisc.qmd
       chapters: 
         - cdisc\cdiscae.qmd

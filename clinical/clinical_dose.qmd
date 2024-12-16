@@ -1,0 +1,100 @@
+# 剂量选择设计 {.unnumbered}
+
+创新药首次人体试验（FIH）的剂量选择的设计常见的有算法设计（如3+3设计），模型辅助设计（如BOIN设计）。
+
+## 3+3设计案例：
+
+480ug入组3例受试者未观察到DLT；随后剂量递增到600ug剂量组，入组3例受试者，发生1例DLT，再入组3例受试者，又发生1例DLT。由此确定MTD为480ug。进入剂量扩展阶段，入组30例受试者；而最终480ug剂量组的70%的受试者因剂量调整至240ug剂量组。
+
+该案例中未能准确判断MTD，导致大量受试者暴露在过高的药物剂量下。
+
+|                  | 120ug | 240ug | 480ug（MTD） | 600ug |
+|------------------|-------|-------|--------------|-------|
+| 剂量递增: N =    | 3     | 3     | 3            | 6     |
+| DLT: N=          | 0     | 0     | 0            | 2     |
+| 剂量扩展: N =    |       |       | 30           |       |
+| 延长给药实际剂量 |       |       | 70% 240ug    |       |
+|                  |       |       |              |       |
+
+## BOIN（Bayesian Optimal Interval）设计：
+
+找出“最优”区间（$\lambda$e和$\lambda$d）的设置以最小化受试者被分配到不恰当剂量上的概率为目标，那么这一组阀值让我们做出错误决策（应提升剂量时实际却维持或降低剂量；应维持剂量时实际却升高或降低剂量；应降低剂量时实际却维持或升高了剂量）的概率最小，即“最优”。
+
+贝叶斯框架下，利用无信息先验概率，得到最优区间的表达式只与目标毒性概率$\phi$有关，而$\phi$由申办方，研究者等根据药物特点在方案中指定，统计师据此计算出边界值$\lambda$e和$\lambda$d，研究者根据当前剂量组的剂量限制毒性（DLT）发生率（DLT发生率=当前剂量水平发生DLT的受试者数/当前剂量水平的可评估受试者数）决定下一个剂量水平。
+
+| Boundaries | 0.15  | 0.2   | 0.25  | 0.3   | 0.35  | 0.4   |
+|------------|-------|-------|-------|-------|-------|-------|
+| $\lambda$e | 0.118 | 0.157 | 0.197 | 0.236 | 0.276 | 0.316 |
+| $\lambda$d | 0.179 | 0.238 | 0.298 | 0.359 | 0.419 | 0.480 |
+
+BOIN设计小程序：<https://trialdesign.org/one-page-shell.html#BOIN>
+
+BOIN设计R package：library(BOIN)
+
+``` r
+library(BOIN)
+#######################################
+#   剂量BOIN设计剂量升降决策表
+#   get.boundary()
+#######################################
+
+bound <- get.boundary(target = 0.3,
+             ncohort = 12,
+             cohortsize = 3
+             )
+
+summary(bound)
+plot(bound)
+
+#######################################
+#   模拟BOIN设计的统计性能
+#   get.oc()
+#######################################
+# remove(list=ls())
+#----------- 1. initialization ---------------
+target <- 0.3
+ncohort <- 12
+cohortsize <- 3
+n.earlystop <- 9
+#
+p.true <- matrix(0, 6, 6)
+# dose          100    300    800    1200    1600
+p.true[1,] <- c(0.30, 0.44, 0.50, 0.55, 0.60, 0.65)
+p.true[2,] <- c(0.15, 0.30, 0.45, 0.51, 0.58, 0.64)
+p.true[3,] <- c(0.04, 0.12, 0.30, 0.47, 0.53, 0.59)
+p.true[4,] <- c(0.02, 0.08, 0.14, 0.30, 0.48, 0.61)
+p.true[5,] <- c(0.03, 0.07, 0.11, 0.15, 0.30, 0.47)
+p.true[6,] <- c(0.06, 0.08, 0.11, 0.13, 0.16, 0.30)
+#
+#----------- 2. compute oc ----------------
+select_percent <- list()
+patient_percent <- list()
+samplesize <- list()
+toxic_percent <- list()
+#
+for( k in 1:6){
+  #  k <- 1
+  oc_single <- get.oc(target = target, p.true=p.true[k,], ncohort=ncohort, cohortsize=cohortsize, n.earlystop = n.earlystop, 
+                            startdose = 1, titration = TRUE, p.saf = 0.6 * target, p.tox = 1.4 * target, cutoff.eli = 0.95, extrasafe = FALSE, offset = 0.05, 
+                            boundMTD = FALSE, ntrial = 1000, seed = 123456)
+  select_percent[[k]]    <-  oc_single$selpercent
+  patient_percent[[k]]   <-  signif(100 * oc_single$npatients / sum(oc_single$npatients), 3)
+  samplesize[[k]] <- oc_single$totaln
+  toxic_percent[[k]] <- oc_single$percentstop
+  
+}
+
+
+select_percent
+patient_percent
+samplesize
+toxic_percent
+
+temp <- unlist( select_percent )
+temp.mat <- matrix(temp, nrow=6, ncol=6, byrow=T)
+write.csv(temp.mat , "temp.csv")
+
+temp <- unlist( patient_percent )
+temp.mat <- matrix(temp, nrow=6, ncol=6, byrow=T)
+write.csv(temp.mat , "temp.csv")
+```

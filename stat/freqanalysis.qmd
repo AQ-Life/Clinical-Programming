@@ -431,5 +431,112 @@ run;
 /*Wmethod=1: Wi=n0i+n1i*/
 /*Wmethod=2: Wi=1/(1/n0i+1/n1i)*/
 
-/*当stra设为0时,为不分层的MN方法*/
+/*当stra设为0时,为不分层的MN方法,但优先推荐使用SAS自带的procedure计算不分层的MN方法*/
+```
+
+### 逆方差法（Inverse Variance Method）计算率差及其置信区间
+
+``` sas
+
+/* 创建原始数据集 */
+data studies;
+    input study $ age_group $ n_treatment success_treatment n_control success_control;
+    datalines;
+1 30-40 100 45 100 30
+2 40-50 80 50 90 40
+3 30-40 150 75 150 60
+4 40-50 120 70 130 55
+;
+run;
+
+/* 计算各组的比例差及其标准误 */
+data effect_sizes;
+    set studies;
+
+    /* 计算治疗组和对照组的成功率 */
+    p_treatment = success_treatment / n_treatment;
+    p_control = success_control / n_control;
+
+    /* 计算比例差 */
+    prop_diff = p_treatment - p_control;
+
+    /* 计算标准误 */
+    se_prop_diff = sqrt((p_treatment * (1 - p_treatment) / n_treatment) + 
+                         (p_control * (1 - p_control) / n_control));
+
+    output; /* 输出每个研究的效应量和标准误 */
+run;
+
+/* 计算每个分层组的权重（逆方差法） */
+data weighted_effects;
+    set effect_sizes;
+    weight = 1 / (se_prop_diff**2); /* 逆方差法 */
+run;
+
+/* 合成总体效应量 */
+proc sql;
+    select 
+        sum(weight * prop_diff) / sum(weight) as combined_prop_diff,
+        sqrt(1 / sum(weight)) as combined_se
+    into :combined_diff, :combined_se
+    from weighted_effects;
+quit;
+
+/* 计算95%置信区间 */
+data confidence_interval;
+    lower_bound = &combined_diff - 1.96 * &combined_se; /* 正常置信区间计算 */
+    upper_bound = &combined_diff + 1.96 * &combined_se;
+    combined_proportion_difference = &combined_diff;
+run;
+
+data weightd_q;
+	set weighted_effects;
+	qdiff = weight * (prop_diff - &combined_diff.)**2;
+run;
+
+proc sql noprint;
+	select sum(qdiff) into: combined_q from weightd_q;
+quit;
+
+
+/* 计算P值 - 使用卡方检验 */
+data p_value;
+    Q = &combined_q; 
+    p_value = 1 - probchi(Q, 3); /* 双尾P值计算 */
+run;
+```
+
+### R语言计算RD, OR, RR
+
+R语言sasLM package（<https://cran.r-project.org/web/packages/sasLM/sasLM.pdf>）可以用于计算率差（RD），率比（RR），优势比（OR）
+
+``` r
+library(sasLM)
+
+###计算几何均值
+geoMean(mtcars$mpg)
+geoCV(mtcars$mpg)
+
+###无连续性校正
+RD(y1=55,
+   n1=67,
+   y2=43,
+   n2=51)
+
+###分层的MN方法计算率差
+y1 <- c(10, 12)
+n1 <- c(30, 50)
+y2 <- c(43, 55)
+n2 <- c(90, 80)
+d0 <- data.frame(y1, n1, y2, n2)
+RDmn(d0, conf.level = 0.95)
+
+###没有分层的MN方法计算率差
+RDmn1(y1=55,
+   n1=67,
+   y2=43,
+   n2=51)
+
+###逆方差法（inverse variance method）计算率差
+RDinv(d0, conf.level = 0.95)
 ```

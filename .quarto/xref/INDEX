@@ -73,5 +73,11 @@
   },
   "stat/datamanage.qmd": {
     "datamanage.html": "cc32c72a"
+  },
+  "clinical/clinical_dose.qmd": {
+    "clinical_dose.html": "52df9e8e"
+  },
+  "clinical/clinical.qmd": {
+    "clinical.html": "a84a3311"
   }
 }

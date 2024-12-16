@@ -33,42 +33,62 @@ value=40;output;
 run;
 
 data b;
-	set a;
-	if _n_<=5 then grp=1;
-	else grp=2;
+    set a;
+    if _n_<=5 then grp=1;
+    else grp=2;
 run;
 data b;
-	set b;
-	by grp;
-	if first.grp then _ord_=1;
-	else _ord_+1;
+    set b;
+    by grp;
+    if first.grp then _ord_=1;
+    else _ord_+1;
 run;
 
 proc sort;
-	by grp value;
-	run;
+    by grp value;
+    run;
 
 data b;
-	set b;
-	by grp;
-	if first.grp then rank=0;
-	else rank+1;
-	proc sort;
-		by grp _ord_;
+    set b;
+    by grp;
+    if first.grp then rank=0;
+    else rank+1;
+    proc sort;
+        by grp _ord_;
 run;
 
 proc sql noprint;
-	create table c as select *, max(rank) as max from b group by grp;
+    create table c as select *, max(rank) as max from b group by grp;
 quit;
 
 data c;
-	set c;
-	_rank_=(rank/max-0.5)*2;
-	epsilon=1e-6;
-	if _rank_=1 then _rank_=_rank_-epsilon;
-	else if _rank_=-1 then _rank_=_rank_+epsilon;
-	erf=erf(_rank_);
-	if _rank_ >= 0 then erfc=sqrt(cinv(abs(_rank_),1)/2);
-	else if _rank_ < 0 then erfc=-sqrt(cinv(abs(_rank_),1)/2);
+    set c;
+    _rank_=(rank/max-0.5)*2;
+    epsilon=1e-6;
+    if _rank_=1 then _rank_=_rank_-epsilon;
+    else if _rank_=-1 then _rank_=_rank_+epsilon;
+    erf=erf(_rank_);
+    if _rank_ >= 0 then erfc=sqrt(cinv(abs(_rank_),1)/2);
+    else if _rank_ < 0 then erfc=-sqrt(cinv(abs(_rank_),1)/2);
 run;
 ```
+
+# 缺失数据多重插补
+
+## 缺失数据类型
+
+| 缺失数据类型         | 说明                                             |
+|----------------------|--------------------------------------------------|
+| 完全随机缺失（MCAR） | 缺失与已有观测值和其他缺失值无关，只是由于偶然性 |
+| 随机缺失（MAR）      | 缺失与已有观测有关，与其他缺失值无关             |
+| 非随机缺失（MNAR）   | 缺失与已有观测和其他缺失值有关                   |
+
+## 多重插补
+
+处理缺失数据的一种策略是单次插补，为每个缺失值替换一个值。比如用其他非缺失值的平均值填补，用上一个非缺失值填补等等，这种策略不能反映缺失值预测的不确定性，由此产生的参数估计的估计方差趋向于0.
+
+而多重插补从其分布中抽取缺失值的随机样本，此过程会产生有效的统计推断，这些推断可以反映由于缺失值导致的不确定性。进行多重插补的三个步骤：
+
+1.  对缺失数据进行m次填充，以生成m个完整的数据集
+2.  m个完整的数据集使用统计方法进行分析
+3.  将m个完整数据集的结果合并得出推断结果

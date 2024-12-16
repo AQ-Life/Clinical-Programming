@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.553">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Clinical Programming - Surivival Analysis（生存分析）</title>
+<title>Surivival Analysis（生存分析） – Clinical Programming</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -69,6 +69,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -78,13 +107,13 @@ ul.task-list li input[type="checkbox"] {
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
-      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
         <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../stat/stat.html">Statistics (统计学)</a></li><li class="breadcrumb-item"><a href="../stat/survivalanalysis.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Surivival Analysis（生存分析）</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
-      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
         <i class="bi bi-search"></i>
       </button>
     </div>
@@ -116,7 +145,7 @@ ul.task-list li input[type="checkbox"] {
       <div class="sidebar-item-container"> 
             <a href="../sas/sasprog.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">SAS Skills</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -139,7 +168,7 @@ ul.task-list li input[type="checkbox"] {
       <div class="sidebar-item-container"> 
             <a href="../stat/stat.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Statistics (统计学)</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
@@ -172,13 +201,30 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a href="../cdisc/cdisc.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">CDISC</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <a href="../clinical/clinical.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Clinical Trial</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../clinical/clinical_dose.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">剂量选择设计</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../cdisc/cdisc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">CDISC</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../cdisc/cdiscae.html" class="sidebar-item-text sidebar-link">
@@ -221,7 +267,14 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#cox-模型中基于殃残差的比例风险判定" id="toc-cox-模型中基于殃残差的比例风险判定" class="nav-link active" data-scroll-target="#cox-模型中基于殃残差的比例风险判定">Cox 模型中基于殃残差的比例风险判定</a></li>
+  <li><a href="#生存函数" id="toc-生存函数" class="nav-link active" data-scroll-target="#生存函数">生存函数</a></li>
+  <li><a href="#生存函数的估计" id="toc-生存函数的估计" class="nav-link" data-scroll-target="#生存函数的估计">生存函数的估计</a></li>
+  <li><a href="#生存数据案例分析" id="toc-生存数据案例分析" class="nav-link" data-scroll-target="#生存数据案例分析">生存数据案例分析</a></li>
+  <li><a href="#log-rank检验" id="toc-log-rank检验" class="nav-link" data-scroll-target="#log-rank检验">Log-Rank检验</a></li>
+  <li><a href="#cox比例风险回归模型" id="toc-cox比例风险回归模型" class="nav-link" data-scroll-target="#cox比例风险回归模型">COX比例风险回归模型</a></li>
+  <li><a href="#hrharzed-ratio风险比" id="toc-hrharzed-ratio风险比" class="nav-link" data-scroll-target="#hrharzed-ratio风险比">HR（Harzed Ratio）风险比</a></li>
+  <li><a href="#sas实现cox比例风险回归模型" id="toc-sas实现cox比例风险回归模型" class="nav-link" data-scroll-target="#sas实现cox比例风险回归模型">SAS实现COX比例风险回归模型</a></li>
+  <li><a href="#cox-模型中基于殃残差的比例风险判定" id="toc-cox-模型中基于殃残差的比例风险判定" class="nav-link" data-scroll-target="#cox-模型中基于殃残差的比例风险判定">Cox 模型中基于殃残差的比例风险判定</a></li>
   <li><a href="#生存曲线的校正" id="toc-生存曲线的校正" class="nav-link" data-scroll-target="#生存曲线的校正">生存曲线的校正</a></li>
   </ul>
 </nav>
@@ -248,12 +301,59 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="生存函数" class="level2">
+<h2 class="anchored" data-anchor-id="生存函数">生存函数</h2>
+<p>生存数据也被称为Time-to-Event数据，主要有2个变量，一个是时间，一个是事件状态（事件发生与删失）。</p>
+<p>生存函数<span class="math inline">\(S(t)\)</span>, 定义为样本生存时间大于t的概率，即<span class="math inline">\(S(t)=P(T&gt;t)\)</span>, 时间为0时，生存概率为1，时间趋于无穷时，生存概率为0。</p>
+<p>生存函数<span class="math inline">\(S(t)\)</span>也是累积生存率，绘制出来就是生存曲线。</p>
+<p>中位生存时间表示当50%的样本生存的时间，即当<span class="math inline">\(S(t)=0.5\)</span>时所对应的时间t。其中生存时间的分布通常为偏态分布，使用均值生存时间不太准确，所以用中位数生存时间。</p>
+</section>
+<section id="生存函数的估计" class="level2">
+<h2 class="anchored" data-anchor-id="生存函数的估计">生存函数的估计</h2>
+<p>估计生存函数的非参数方法一般是乘积-极限法，生存函数的Kaplan-Meier估计为各个时段<strong>生存率</strong>的乘积。</p>
+<p><strong>生存率</strong>=生存的受试者数 / 该时段处于风险中的受试者数</p>
+<p><strong>处于风险中的受试者</strong>=上一时段生存且没有删失并进入该时段的受试者</p>
+</section>
+<section id="生存数据案例分析" class="level2">
+<h2 class="anchored" data-anchor-id="生存数据案例分析">生存数据案例分析</h2>
+<p>以一项试验为例，10个受试者的生存时间为（+表示删失）：<br>
+24+，16+，8，19，10，8+，5，17，20，10</p>
+<p><span class="math display">\[当t=0时，N_{AtRisk}=10, N_{death}=0, N_{censor}=0, 生存率=(10-0)/10=1, KM估计=1，则S(t=0)=1.\]</span> <span class="math display">\[当t=5时，N_{AtRisk}=10, N_{death}=1, N_{censor}=0, 生存率=(10-1)/10=0.9, KM估计=1*0.9=0.9，则S(t=5)=0.9.\]</span> <span class="math display">\[当t=8时，N_{AtRisk}=9, N_{death}=1, N_{censor}=1, 生存率=(9-1)/9=0.89, KM估计=1*0.9*0.89=0.80，则S(t=5)=0.80.\]</span> <span class="math display">\[当t=10时，N_{AtRisk}=7, N_{death}=2, N_{censor}=0, 生存率=(7-2)/7=0.71, KM估计=1*0.9*0.89*0.71=0.57，则S(t=5)=0.57.\]</span></p>
+</section>
+<section id="log-rank检验" class="level2">
+<h2 class="anchored" data-anchor-id="log-rank检验">Log-Rank检验</h2>
+<p>两组生存数据的比较，即两组生存数据的生存函数是否有统计学差异。含有删失数据时，常使用log-rank检验。</p>
+<p>在具体的时间点上，事件发生数服从超几何分布（一种离散概率分布，如不放回抽样事件发生的概率），根据中心极限定理（大量独立同分布的随机变量渐进服从正态分布，即使这些随机变量本身不服从正态分布），构建了服从正态分布的log-rank检验统计量。</p>
+</section>
+<section id="cox比例风险回归模型" class="level2">
+<h2 class="anchored" data-anchor-id="cox比例风险回归模型">COX比例风险回归模型</h2>
+<p>Kaplan-Meier曲线和log-rank检验是针对研究中的一个影响因素描述生存情况，且要求该影响因素为分类变量（试验组别）。而COX比例风险回归模型可以适用于定量和分类变量，可以同时评估多种影响因素对生存时间的影响。</p>
+<p>对比上面提到的生存函数<span class="math inline">\(S(t)\)</span>，可以构建风险函数<span class="math inline">\(h(t)\)</span>, 定义为在时间<span class="math inline">\(t\)</span>被观察到发生事件的概率。</p>
+<p><span class="math inline">\(h(t)=h_{0}(t)\times e^{b_1x_1+b_2x_2+...+b_px_p}\)</span></p>
+<p>其中，</p>
+<ol type="1">
+<li>t表示生存时间</li>
+<li><span class="math inline">\(h(t)\)</span>表示由p个协变量确定的风险函数</li>
+<li>系数（<span class="math inline">\(b_1,b_2,...,b_p\)</span>）表示衡量协变量的影响大小</li>
+<li><span class="math inline">\(h_0(t)\)</span>表示基线风险，当所有系数都为0时，对应的风险值</li>
+</ol>
+<p>可以看出风险函数<span class="math inline">\(h(t)\)</span>的前半部分<span class="math inline">\(h_0(t)\)</span>是非参数模型（不需要服从特定的分布），后半部分是参数模型，故COX回归模型是一种半参数模型。</p>
+</section>
+<section id="hrharzed-ratio风险比" class="level2">
+<h2 class="anchored" data-anchor-id="hrharzed-ratio风险比">HR（Harzed Ratio）风险比</h2>
+<p>根据上面提到的风险函数<span class="math inline">\(h(t)\)</span>的定义，固定时间<span class="math inline">\(t\)</span>，取风险函数<span class="math inline">\(h(t)\)</span>和基线风险<span class="math inline">\(h_0(t)\)</span>之比就得到该时刻下的风险比HR，该HR值是自变量x的函数，不再依赖时间t。</p>
+<p>当协变量的系数&gt;0时，即HR&gt;1，风险增加，该协变量被称为不良影响因素。</p>
+</section>
+<section id="sas实现cox比例风险回归模型" class="level2">
+<h2 class="anchored" data-anchor-id="sas实现cox比例风险回归模型">SAS实现COX比例风险回归模型</h2>
 <p>关于phreg中参考值的选择， 你可以在程序中加ref, 比如下面的例子</p>
 <pre class="sas"><code>ods output ParameterEstimates=HarzedRatio;
-proc phreg data = ads.adtte;
-  class cat(ref='A组');
-  model aval * CNSR(1 2 3) = cat trt / risklimits ties = exact  alpha=0.05;
+proc phreg data = adtte;
+  class trtn(ref='1');
+  model aval * CNSR(1) = trtn / risklimits ties = exact alpha=0.05;
+  strata strata1 strata2 strata3; *** 分层因素 ***;
 run;</code></pre>
+</section>
 <section id="cox-模型中基于殃残差的比例风险判定" class="level2">
 <h2 class="anchored" data-anchor-id="cox-模型中基于殃残差的比例风险判定">Cox 模型中基于殃残差的比例风险判定</h2>
 <p>Cox 模型中的比例风险假定判定的方法和软件操作，推荐 UCLA 的 IDRE 官方网页：</p>
@@ -270,7 +370,7 @@ run;</code></pre>
 <h2 class="anchored" data-anchor-id="生存曲线的校正">生存曲线的校正</h2>
 <p>对于生存数据，单因素分析时，通常绘制K-M曲线，多因素分析时，则通过 Cox 模型计算校正的HR。其实，如果能够同时展示校正的K-M曲线，那结果将会更加生动。如何做校正的K-M，分享一篇小综述。</p>
 <p>生存分析中，当有多个结局事件时，且某结局事件的发生会影响甚至阻止其它结局事件的发生，此时就会存在竞争风险。针对竞争分析，常用三种分析策略: (1) 复合终点; (2) 原因别风险; (3) Fine-Gray模型。三种分析策略的总结见下表：</p>
-<table class="table">
+<table class="caption-top table">
 <colgroup>
 <col style="width: 14%">
 <col style="width: 28%">
@@ -312,7 +412,7 @@ run;</code></pre>
 </table>
 <p>生存率，标准误，置信区间的算法：</p>
 <p><a href="https://blog.csdn.net/xiaohukun/article/details/77936022" class="uri">https://blog.csdn.net/xiaohukun/article/details/77936022</a></p>
-<p>关于lifetest 如果不加conftype=linear 默认的是loglog的方法，我以前做的经常是用conftype=linear是线性拟合的方法，其实结果相差不是很多，双方统一就行，针对敏感性分析有可能会有些区别，但是在常规分析中，我感觉都可以</p>
+<p>关于lifetest 如果不加conftype=linear 默认的是loglog的方法，有时候是用conftype=linear是线性拟合的方法，其实结果相差不是很多，双方统一就行，针对敏感性分析有可能会有些区别，但是在常规分析中，感觉都可以。</p>
 <pre class="sas"><code>ods output quartiles=quar /*25/50/75th percentile (95% C.I.)*/
         homtests=logrank;
 proc lifetest data=dsin timelist=12 18 24 outsurv=outsurv reduceout conftype=loglog method=km;
@@ -365,18 +465,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -408,7 +497,29 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
       var filterRegex = new RegExp('/' + window.location.host + '/');
@@ -416,7 +527,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
     // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
     for (var i=0; i<links.length; i++) {
       const link = links[i];
       if (!isInternal(link.href)) {
